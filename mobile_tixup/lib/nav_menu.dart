@@ -13,6 +13,7 @@ class NavigationMenu extends StatelessWidget {
         selectedIndex: 0,
         destinations: const [
           NavigationDestination(icon: Icon(Iconsax.home), label: 'Inicio'),
+          NavigationDestination(icon: Icon(Iconsax.medal), label: 'Eventos'),
           NavigationDestination(icon: Icon(Iconsax.shop), label: 'Loja'),
           NavigationDestination(icon: Icon(Iconsax.heart), label: 'Favoritos'),
           NavigationDestination(icon: Icon(Iconsax.user), label: 'Perfil'),
