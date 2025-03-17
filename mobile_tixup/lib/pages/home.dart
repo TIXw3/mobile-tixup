@@ -11,7 +11,7 @@ class TopAppBar extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.white60,
           elevation: 0,
-          title: Text('Salve, (nome da pessoa)!'),
+          title: Text('Salve, (nome da pessoa)!!'),
           actions: [
             IconButton(
               onPressed: () {
