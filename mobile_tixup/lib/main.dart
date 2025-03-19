@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_tixup/pages/home.dart';
+import 'package:mobile_tixup/nav_menu.dart';
 
 void main() {
   runApp(const MainApp());
@@ -10,6 +11,9 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: HomeScreen());
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: NavigationMenu(), //
+    );
   }
 }
