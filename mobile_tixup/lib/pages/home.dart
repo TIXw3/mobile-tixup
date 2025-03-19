@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 class TopAppBar extends StatelessWidget {
@@ -30,4 +31,26 @@ class TopAppBar extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget content(BuildContext context) {
+  return Container(
+    child: CarouselSlider(
+      items:
+          [1, 2, 3, 4, 5].map((i) {
+            return Container(
+              width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.symmetric(horizontal: 5),
+              decoration: BoxDecoration(
+                color: Colors.deepOrangeAccent,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: Text("Evento $i", style: TextStyle(fontSize: 40)),
+              ),
+            );
+          }).toList(),
+      options: CarouselOptions(height: 300),
+    ),
+  );
 }

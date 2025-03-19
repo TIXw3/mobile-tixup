@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_tixup/pages/home.dart';
 import 'nav_menu.dart'; // Importe o NavigationMenu
 
 void main() {
@@ -11,8 +12,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home:
-          NavigationMenu(), // Aqui você define o NavigationMenu como tela inicial
+      home: TopAppBar(), // Aqui você define o NavigationMenu como tela inicial
     );
   }
 }
