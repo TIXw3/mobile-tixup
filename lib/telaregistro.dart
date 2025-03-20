@@ -1,37 +1,16 @@
 import 'package:flutter/material.dart';
-import 'telaregistro.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class TelaRegistro extends StatefulWidget {
+  const TelaRegistro({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'TixUp',
-      theme: ThemeData(
-        primaryColor: Colors.orange[300], // Laranja mais claro
-        scaffoldBackgroundColor: Colors.white,
-      ),
-      home: const LoginScreen(),
-    );
-  }
+  _TelaRegistroState createState() => _TelaRegistroState();
 }
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
-
-  @override
-  _LoginScreenState createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
+class _TelaRegistroState extends State<TelaRegistro> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   bool _obscureText = true;
 
   void _togglePasswordVisibility() {
@@ -93,11 +72,31 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: _confirmPasswordController,
+              obscureText: _obscureText,
+              decoration: InputDecoration(
+                labelText: 'Confirmar Senha',
+                labelStyle: const TextStyle(color: Colors.orange),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _obscureText ? Icons.visibility : Icons.visibility_off,
+                    color: Colors.orange,
+                  ),
+                  onPressed: _togglePasswordVisibility,
+                ),
+              ),
+            ),
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
                 print('Email: ${_emailController.text}');
                 print('Password: ${_passwordController.text}');
+                print('Confirm Password: ${_confirmPasswordController.text}');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orange[300],
@@ -108,42 +107,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 textStyle: const TextStyle(fontSize: 18),
               ),
               child: const Text(
-                'Entrar',
+                'Registrar',
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.white,
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            GestureDetector(
-              onTap: () {
-                // Navega para a tela de Registro
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const TelaRegistro()),
-                );
-              },
-              child: const Text(
-                'Criar uma conta',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.orange,
-                  decoration: TextDecoration.underline,
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            GestureDetector(
-              onTap: () {
-                print('Ir para tela de recuperação de senha');
-              },
-              child: const Text(
-                'Esqueci minha senha',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.orange,
-                  decoration: TextDecoration.underline,
                 ),
               ),
             ),
