@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:mobile_tixup/pages/profile.dart';
-import 'package:mobile_tixup/pages/home.dart';
+import 'package:mobile_tixup/features/profile/profile_page.dart';
+import 'package:mobile_tixup/features/home/home_page.dart';
 
 class NavigationMenu extends StatefulWidget {
   const NavigationMenu({super.key});

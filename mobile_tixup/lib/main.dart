@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_tixup/pages/home.dart';
-import 'package:mobile_tixup/nav_menu.dart';
+import 'package:mobile_tixup/features/home/home_page.dart';
+import 'package:mobile_tixup/widgets/nav_menu.dart';
 
 void main() {
   runApp(const MainApp());
