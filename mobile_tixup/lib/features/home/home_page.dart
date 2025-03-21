@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_tixup/widgets/nav_menu.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_tixup/features/auth/presentation/pages/register_page.dart';
 import 'package:mobile_tixup/features/auth/services/auth_service.dart';
-import 'package:mobile_tixup/widgets/nav_menu.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
