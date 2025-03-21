@@ -1,16 +1,34 @@
-# mobileprojeto
+## TixUp
+ 
+TixUp é um aplicativo desenvolvido em Flutter para a compra e revenda de ingressos online para shows, festivais, baladas e outros eventos.
 
-A new Flutter project.
+# 💡 Recursos
 
-## Getting Started
+- Compra de ingressos diretamente pelo aplicativo
 
-This project is a starting point for a Flutter application.
+- Revenda segura de ingressos adquiridos
 
-A few resources to get you started if this is your first Flutter project:
+- Interface intuitiva e moderna
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Filtros para pesquisa de eventos por categoria, localização e data
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Sistema de pagamentos integrado
+
+- Perfil do usuário com histórico de compras e vendas
+
+# ⚙️ Tecnologias Utilizadas
+
+- Flutter - Desenvolvimento multiplataforma
+
+- Dart - Linguagem de programação
+
+- Firebase - Autenticação e banco de dados em tempo real
+
+- Stripe/Mercado Pago - Integração de pagamentos
+
+- Google Maps API - Localização de eventos
+
+# 🛠️ Status do Projeto
+
+O desenvolvimento está em andamento. Fique de olho nas atualizações!TicketApp
+
