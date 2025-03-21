@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'telaregistro.dart';
+import 'telaloading.dart'; 
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'TixUp',
       theme: ThemeData(
-        primaryColor: Colors.orange[300], // Laranja mais claro
+        primaryColor: Colors.deepOrange[300], 
         scaffoldBackgroundColor: Colors.white,
       ),
       home: const LoginScreen(),
@@ -45,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('TixUp'),
-        backgroundColor: Colors.orange[300],
+        backgroundColor: Colors.deepOrange[300],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -59,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 fontSize: 48,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Pacifico',
-                color: Colors.orange,
+                color: Colors.deepOrange,
               ),
             ),
             const SizedBox(height: 40),
@@ -67,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
               controller: _emailController,
               decoration: InputDecoration(
                 labelText: 'Email',
-                labelStyle: const TextStyle(color: Colors.orange),
+                labelStyle: const TextStyle(color: Colors.deepOrange),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -80,14 +81,14 @@ class _LoginScreenState extends State<LoginScreen> {
               obscureText: _obscureText,
               decoration: InputDecoration(
                 labelText: 'Password',
-                labelStyle: const TextStyle(color: Colors.orange),
+                labelStyle: const TextStyle(color: Colors.deepOrange),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
                 suffixIcon: IconButton(
                   icon: Icon(
                     _obscureText ? Icons.visibility : Icons.visibility_off,
-                    color: Colors.orange,
+                    color: Colors.deepOrange,
                   ),
                   onPressed: _togglePasswordVisibility,
                 ),
@@ -96,11 +97,13 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                print('Email: ${_emailController.text}');
-                print('Password: ${_passwordController.text}');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoadingScreen()),
+                );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange[300],
+                backgroundColor: Colors.deepOrange[300],
                 padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 40.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -118,7 +121,6 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 20),
             GestureDetector(
               onTap: () {
-                // Navega para a tela de Registro
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const TelaRegistro()),
@@ -128,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 'Criar uma conta',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.orange,
+                  color: Colors.deepOrange,
                   decoration: TextDecoration.underline,
                 ),
               ),
@@ -142,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 'Esqueci minha senha',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.orange,
+                  color: Colors.deepOrange,
                   decoration: TextDecoration.underline,
                 ),
               ),

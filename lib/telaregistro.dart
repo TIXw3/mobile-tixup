@@ -24,7 +24,7 @@ class _TelaRegistroState extends State<TelaRegistro> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('TixUp'),
-        backgroundColor: Colors.orange[300],
+        backgroundColor: Colors.deepOrange[300],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -38,7 +38,7 @@ class _TelaRegistroState extends State<TelaRegistro> {
                 fontSize: 48,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Pacifico',
-                color: Colors.orange,
+                color: Colors.deepOrange,
               ),
             ),
             const SizedBox(height: 40),
@@ -46,7 +46,7 @@ class _TelaRegistroState extends State<TelaRegistro> {
               controller: _emailController,
               decoration: InputDecoration(
                 labelText: 'Email',
-                labelStyle: const TextStyle(color: Colors.orange),
+                labelStyle: const TextStyle(color: Colors.deepOrange),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -59,14 +59,14 @@ class _TelaRegistroState extends State<TelaRegistro> {
               obscureText: _obscureText,
               decoration: InputDecoration(
                 labelText: 'Password',
-                labelStyle: const TextStyle(color: Colors.orange),
+                labelStyle: const TextStyle(color: Colors.deepOrange),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
                 suffixIcon: IconButton(
                   icon: Icon(
                     _obscureText ? Icons.visibility : Icons.visibility_off,
-                    color: Colors.orange,
+                    color: Colors.deepOrange,
                   ),
                   onPressed: _togglePasswordVisibility,
                 ),
@@ -78,14 +78,14 @@ class _TelaRegistroState extends State<TelaRegistro> {
               obscureText: _obscureText,
               decoration: InputDecoration(
                 labelText: 'Confirmar Senha',
-                labelStyle: const TextStyle(color: Colors.orange),
+                labelStyle: const TextStyle(color: Colors.deepOrange),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
                 suffixIcon: IconButton(
                   icon: Icon(
                     _obscureText ? Icons.visibility : Icons.visibility_off,
-                    color: Colors.orange,
+                    color: Colors.deepOrange,
                   ),
                   onPressed: _togglePasswordVisibility,
                 ),
@@ -99,7 +99,7 @@ class _TelaRegistroState extends State<TelaRegistro> {
                 print('Confirm Password: ${_confirmPasswordController.text}');
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange[300],
+                backgroundColor: Colors.deepOrange[300],
                 padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 40.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
