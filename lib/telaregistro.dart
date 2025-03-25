@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'telaloading.dart';
+import 'main.dart';
 
 class TelaRegistro extends StatefulWidget {
   const TelaRegistro({Key? key}) : super(key: key);
@@ -88,7 +90,18 @@ class _TelaRegistroState extends State<TelaRegistro> {
                   _buildTextField(null, 'CPF', Icons.badge, formatter: _cpfFormatter),
                   const SizedBox(height: 25),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoadingScreen()),
+                      );
+                      Future.delayed(const Duration(seconds: 3), () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => const LoginScreen()),
+                        );
+                      });
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 40.0),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'telaregistro.dart';
-import 'telaloading.dart';
+import 'TelaDePefil.dart'; 
+import 'telaloading.dart'; 
 
 void main() {
   runApp(const MyApp());
@@ -70,7 +71,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: Colors.white,
                     ),
                   ),
-
                   const SizedBox(height: 10),
                   Align(
                     alignment: Alignment.centerLeft,
@@ -87,19 +87,21 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 30),
-
                   _buildTextField(_emailController, 'Email', Icons.email),
                   _buildTextField(_passwordController, 'Senha', Icons.lock, isPassword: true),
-
                   const SizedBox(height: 25),
-
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => LoadingScreen()),
+                      );
+                      await Future.delayed(const Duration(seconds: 3));
+
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => TelaDePerfil()),
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -116,7 +118,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(fontSize: 18, color: Colors.deepOrange, fontFamily: 'sans-serif'),
                     ),
                   ),
-
                   const SizedBox(height: 15),
                   GestureDetector(
                     onTap: () {
@@ -146,7 +147,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 10),
                   GestureDetector(
                     onTap: () {
