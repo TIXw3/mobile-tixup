@@ -1,9 +1,14 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreen();
+}
+
+class _HomeScreen extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,49 +54,49 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-}
 
-Widget content(BuildContext context) {
-  return CarouselSlider(
-    items:
-        [1, 2, 3, 4, 5].map((i) {
-          return Container(
-            width: MediaQuery.of(context).size.width,
-            margin: EdgeInsets.symmetric(horizontal: 5),
-            decoration: BoxDecoration(
-              color: Colors.deepOrangeAccent,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Center(
-              child: Text("Evento $i", style: TextStyle(fontSize: 40)),
-            ),
-          );
-        }).toList(),
-    options: CarouselOptions(height: 200),
-  );
-}
+  Widget content(BuildContext context) {
+    return CarouselSlider(
+      items:
+          [1, 2, 3, 4, 5].map((i) {
+            return Container(
+              width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.symmetric(horizontal: 5),
+              decoration: BoxDecoration(
+                color: Colors.deepOrangeAccent,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: Text("Evento $i", style: TextStyle(fontSize: 40)),
+              ),
+            );
+          }).toList(),
+      options: CarouselOptions(height: 200),
+    );
+  }
 
-Widget categories(BuildContext context) {
-  return CarouselSlider(
-    items:
-        [1, 2, 3, 4, 5].map((i) {
-          return Container(
-            width: MediaQuery.of(context).size.width / 2,
-            margin: EdgeInsets.symmetric(horizontal: 5),
-            decoration: BoxDecoration(
-              color: Colors.deepOrangeAccent,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Center(
-              child: Text("Categoria $i", style: TextStyle(fontSize: 30)),
-            ),
-          );
-        }).toList(),
-    options: CarouselOptions(
-      height: 75,
-      enableInfiniteScroll: true, //ficar trocando
-      autoPlay: true,
-      viewportFraction: 0.5, // autoplay p melhor xp
-    ),
-  );
+  Widget categories(BuildContext context) {
+    return CarouselSlider(
+      items:
+          [1, 2, 3, 4, 5].map((i) {
+            return Container(
+              width: MediaQuery.of(context).size.width / 2,
+              margin: EdgeInsets.symmetric(horizontal: 5),
+              decoration: BoxDecoration(
+                color: Colors.deepOrangeAccent,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: Text("Categoria $i", style: TextStyle(fontSize: 30)),
+              ),
+            );
+          }).toList(),
+      options: CarouselOptions(
+        height: 75,
+        enableInfiniteScroll: true, //ficar trocando
+        autoPlay: true,
+        viewportFraction: 0.5, // autoplay p melhor xp
+      ),
+    );
+  }
 }

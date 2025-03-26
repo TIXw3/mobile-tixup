@@ -3,7 +3,7 @@ import 'package:mobile_tixup/features/auth/presentation/pages/register_page.dart
 import 'package:mobile_tixup/features/auth/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -69,7 +69,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 20),
 
@@ -130,22 +129,6 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: login,
-              // {
-              //   // auth supabase aqui
-              //   if (_emailController.text.isNotEmpty &&
-              //       _passwordController.text.isNotEmpty) {
-              //     Navigator.pushReplacement(
-              //       context,
-              //       MaterialPageRoute(
-              //         builder: (context) => NavigationMenu(),
-              //       ), // vai de home
-              //     );
-              //   } else {
-              //     ScaffoldMessenger.of(context).showSnackBar(
-              //       const SnackBar(content: Text('Preencha email e senha')),
-              //     );
-              //   }
-              // },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepOrange,
                 padding: const EdgeInsets.symmetric(

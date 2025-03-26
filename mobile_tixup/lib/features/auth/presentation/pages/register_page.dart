@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_tixup/features/auth/services/auth_service.dart';
 
 class TelaRegistro extends StatefulWidget {
-  const TelaRegistro({Key? key}) : super(key: key);
+  const TelaRegistro({super.key});
 
   @override
   _TelaRegistroState createState() => _TelaRegistroState();

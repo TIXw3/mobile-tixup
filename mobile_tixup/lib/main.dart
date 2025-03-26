@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_tixup/features/auth/presentation/pages/login_page.dart';
+import 'package:mobile_tixup/features/auth/services/auth_gate.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -17,14 +17,10 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'TixUp',
-      theme: ThemeData(
-        primaryColor: Colors.orange[300],
-        scaffoldBackgroundColor: Colors.white,
-      ),
-      home: const LoginScreen(), // login inicial
+      home: AuthGate(), // login inicial
     );
   }
 }

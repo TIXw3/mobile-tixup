@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_tixup/features/auth/presentation/pages/login_page.dart';
 import 'package:mobile_tixup/features/home/home_page.dart';
+import 'package:mobile_tixup/widgets/nav_menu.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthGate extends StatelessWidget {
@@ -12,15 +13,17 @@ class AuthGate extends StatelessWidget {
       stream: Supabase.instance.client.auth.onAuthStateChange,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(body: Center(child: CircularProgressIndicator()));
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
         }
 
         final session = snapshot.hasData ? snapshot.data!.session : null;
 
         if (session != null) {
-          return HomeScreen();
+          return const NavigationMenu();
         } else {
-          return LoginScreen();
+          return const LoginScreen();
         }
       },
     );
