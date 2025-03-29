@@ -27,7 +27,7 @@ class _HomeScreen extends State<HomeScreen> {
             onPressed: () {
               // lógica para abrir carrinho
             },
-            icon: Icon(Icons.store_rounded),
+            icon: Icon(Icons.arrow_right),
           ),
         ],
       ),
