@@ -51,23 +51,40 @@ class _TelaRegistroState extends State<TelaRegistro> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('TixUp'),
-        backgroundColor: Colors.deepOrange,
-      ),
+      backgroundColor: Color.fromARGB(255, 248, 247, 245),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'TixUp',
-              style: TextStyle(
-                fontSize: 48,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Pacifico',
-                color: Colors.orange,
+            Align(
+              alignment: Alignment.centerLeft,
+              child: RichText(
+                text: TextSpan(
+                  style: const TextStyle(
+                    fontSize: 44,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Pacifico',
+                    color: Color.fromARGB(206, 0, 0, 0),
+                  ),
+                  children: [
+                    TextSpan(
+                      text: 'Cadastre-se e',
+                      style: TextStyle(letterSpacing: -1),
+                    ),
+                    TextSpan(text: ' '), // Espaço entre as palavras
+                    TextSpan(
+                      text: 'encontre novas',
+                      style: TextStyle(letterSpacing: -1),
+                    ),
+                    TextSpan(text: ' '),
+                    TextSpan(
+                      text: 'experiências!',
+                      style: TextStyle(letterSpacing: -1),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 40),
@@ -75,9 +92,29 @@ class _TelaRegistroState extends State<TelaRegistro> {
               controller: _emailController,
               decoration: InputDecoration(
                 labelText: 'Email',
-                labelStyle: const TextStyle(color: Colors.deepOrange),
+                labelStyle: const TextStyle(
+                  color: Color.fromARGB(206, 0, 0, 0),
+                ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(206, 0, 0, 0),
+                    width: 1,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(
+                    color: Colors.deepOrange,
+                    width: 2,
+                  ),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 9.0,
+                  horizontal: 10.0,
                 ),
               ),
               keyboardType: TextInputType.emailAddress,
@@ -88,14 +125,34 @@ class _TelaRegistroState extends State<TelaRegistro> {
               obscureText: _obscureText,
               decoration: InputDecoration(
                 labelText: 'Password',
-                labelStyle: const TextStyle(color: Colors.deepOrange),
+                labelStyle: const TextStyle(
+                  color: Color.fromARGB(206, 0, 0, 0),
+                ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(206, 0, 0, 0),
+                    width: 1,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(
+                    color: Colors.deepOrange,
+                    width: 2,
+                  ),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 9,
+                  horizontal: 10,
                 ),
                 suffixIcon: IconButton(
                   icon: Icon(
                     _obscureText ? Icons.visibility : Icons.visibility_off,
-                    color: Colors.deepOrange,
+                    color: Color.fromARGB(206, 0, 0, 0),
                   ),
                   onPressed: _togglePasswordVisibility,
                 ),
@@ -107,20 +164,40 @@ class _TelaRegistroState extends State<TelaRegistro> {
               obscureText: _obscureText,
               decoration: InputDecoration(
                 labelText: 'Confirmar Senha',
-                labelStyle: const TextStyle(color: Colors.deepOrange),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
+                labelStyle: const TextStyle(
+                  color: Color.fromARGB(206, 0, 0, 0),
                 ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(206, 0, 0, 0),
+                    width: 1,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(
+                    color: Colors.deepOrange,
+                    width: 2,
+                  ),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 9.0,
+                  horizontal: 10.0,
+                ), //
                 suffixIcon: IconButton(
                   icon: Icon(
                     _obscureText ? Icons.visibility : Icons.visibility_off,
-                    color: Colors.deepOrange,
+                    color: Color.fromARGB(206, 0, 0, 0),
                   ),
                   onPressed: _togglePasswordVisibility,
                 ),
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: signUp,
               // {
@@ -150,18 +227,18 @@ class _TelaRegistroState extends State<TelaRegistro> {
               //   );
               // },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepOrange,
+                backgroundColor: Color.fromARGB(206, 231, 87, 47),
                 padding: const EdgeInsets.symmetric(
-                  vertical: 20.0,
-                  horizontal: 40.0,
+                  vertical: 13.0,
+                  horizontal: 160.0,
                 ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(30),
                 ),
                 textStyle: const TextStyle(fontSize: 18),
               ),
               child: const Text(
-                'Registrar',
+                'Criar',
                 style: TextStyle(fontSize: 18, color: Colors.white),
               ),
             ),
