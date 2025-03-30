@@ -124,7 +124,7 @@ class _TelaRegistroState extends State<TelaRegistro> {
               controller: _passwordController,
               obscureText: _obscureText,
               decoration: InputDecoration(
-                labelText: 'Password',
+                labelText: 'Senha',
                 labelStyle: const TextStyle(
                   color: Color.fromARGB(206, 0, 0, 0),
                 ),

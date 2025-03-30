@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_tixup/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:mobile_tixup/features/auth/presentation/pages/register_page.dart';
 import 'package:mobile_tixup/features/auth/services/auth_service.dart';
 
@@ -201,7 +202,12 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 20),
             GestureDetector(
               onTap: () {
-                print('Navegar para recuperação de senha');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ForgotPasswordScreen(),
+                  ),
+                );
               },
               child: const Text(
                 'Esqueci minha senha',
