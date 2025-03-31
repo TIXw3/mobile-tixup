@@ -1,4 +1,3 @@
-import 'package:mobile_tixup/features/auth/presentation/pages/login_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthService {
@@ -29,10 +28,7 @@ class AuthService {
   }
 
   Future<void> resetPassword(String email) async {
-    await _supabase.auth.resetPasswordForEmail(
-      email,
-      // redirectTo: (adicionar isso quando estiver em prod)
-    );
+    await _supabase.auth.resetPasswordForEmail(email);
   }
 
   //salvar email do usuario
