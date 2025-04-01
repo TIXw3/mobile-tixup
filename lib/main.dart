@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'telaregistro.dart';
-import 'TelaDePefil.dart'; 
-import 'telaloading.dart'; 
+import 'teladecompra.dart';
+import 'telaloading.dart';
 
 void main() {
   runApp(const MyApp());
@@ -40,6 +40,32 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _obscureText = !_obscureText;
     });
+  }
+
+  void _login(BuildContext context) async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Preencha os campos'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoadingScreen()),
+    );
+    await Future.delayed(const Duration(seconds: 3));
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => TelaDeCompra()),
+    );
   }
 
   @override
@@ -82,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
                           fontFamily: 'sans-serif',
-                          color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.9),
+                          color: Colors.white.withOpacity(0.9),
                         ),
                       ),
                     ),
@@ -92,18 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   _buildTextField(_passwordController, 'Senha', Icons.lock, isPassword: true),
                   const SizedBox(height: 25),
                   ElevatedButton(
-                    onPressed: () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoadingScreen()),
-                      );
-                      await Future.delayed(const Duration(seconds: 3));
-
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => TelaDePerfil()),
-                      );
-                    },
+                    onPressed: () => _login(context),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 40.0),

@@ -1,0 +1,232 @@
+import 'package:flutter/material.dart';
+
+class TelaDePerfil extends StatelessWidget {
+  const TelaDePerfil({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildHeader(),
+            _buildStatistics(),
+            _buildMainMenu(),
+            _buildSocialLinks(),
+            _buildSupportMenu(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        children: [
+          const CircleAvatar(
+            radius: 50,
+            backgroundColor: Colors.orange,
+            backgroundImage: NetworkImage(''),
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'Lucas Gabriel',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          const Text(
+            'lucasgabriel@email.com',
+            style: TextStyle(
+              color: Colors.black54,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 15),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepOrange,
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                ),
+                child: const Text(
+                  'Editar Perfil',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              const SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepOrange,
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                ),
+                child: const Text(
+                  'Compartilhar',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatistics() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+      decoration: BoxDecoration(
+        color: Colors.deepOrange.shade50,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.deepOrange.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildStatItem('10', 'Favoritos'),
+          _buildVerticalDivider(),
+          _buildStatItem('10', 'Seguindo'),
+          _buildVerticalDivider(),
+          _buildStatItem('R\$00,00', 'Saldo'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildVerticalDivider() {
+    return Container(
+      height: 40,
+      width: 1,
+      color: Colors.deepOrange.withOpacity(0.3),
+    );
+  }
+
+  Widget _buildStatItem(String value, String label) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.deepOrange.shade700,
+          ),
+        ),
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.deepOrange.shade900,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMainMenu() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.deepOrange, width: 1.5),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        children: [
+          _buildMenuItem('Meus Ingressos', Icons.confirmation_number_outlined),
+          _buildMenuItem('Carteirinhas', Icons.card_membership_outlined),
+          _buildMenuItem('Pedidos', Icons.shopping_bag_outlined),
+          _buildMenuItem('Minha Conta', Icons.person_outline),
+          _buildMenuItem('Meu Endereço', Icons.location_on_outlined),
+          _buildMenuItem('Tutorial', Icons.help_outline),
+          _buildMenuItem('Meus Cartões', Icons.credit_card_outlined),
+          _buildMenuItem('Vender Ingressos', Icons.sell_outlined),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSocialLinks() {
+    return Container(
+      margin: const EdgeInsets.all(20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildSocialButton('Instagram', Icons.camera_alt_outlined),
+          const SizedBox(width: 10),
+          _buildSocialButton('YouTube', Icons.play_arrow_outlined),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSupportMenu() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 18),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.deepOrange, width: 1.5),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        children: [
+          _buildMenuItem('Suporte', Icons.headset_mic_outlined),
+          _buildMenuItem('Sair', Icons.exit_to_app_outlined),
+          _buildMenuItem('Excluir Conta', Icons.delete_outline, color: Colors.red),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMenuItem(String title, IconData icon, {Color? color}) {
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: color ?? Colors.deepOrange,
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          color: color ?? Colors.black,
+          fontSize: 16,
+        ),
+      ),
+      trailing: const Icon(
+        Icons.chevron_right,
+        color: Colors.deepOrange,
+      ),
+      onTap: () {},
+    );
+  }
+
+  Widget _buildSocialButton(String title, IconData icon) {
+    return ElevatedButton.icon(
+      onPressed: () {},
+      icon: Icon(icon, color: Colors.white),
+      label: Text(
+        title,
+        style: const TextStyle(color: Colors.white),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.deepOrange,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      ),
+    );
+  }
+}
