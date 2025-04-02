@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:mobile_tixup/features/profile/profile_page.dart';
 import 'package:mobile_tixup/features/home/home_page.dart';
+import 'package:mobile_tixup/features/shop/shop_page.dart';
 
 class NavigationMenu extends StatefulWidget {
   const NavigationMenu({super.key});
@@ -16,7 +17,7 @@ class _NavigationMenuState extends State<NavigationMenu> {
   final List<Widget> _screens = [
     HomeScreen(), // home
     Scaffold(body: Center(child: Text("Eventos"))), // placeholder eventos
-    Scaffold(body: Center(child: Text("Loja"))), // placeholder loja
+    ShopScreen(), // placeholder loja
     Scaffold(body: Center(child: Text("Favoritos"))), // placeholder favoritos
     ProfileScreen(),
   ];
