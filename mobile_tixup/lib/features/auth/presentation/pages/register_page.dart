@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:mobile_tixup/features/auth/services/auth_service.dart';
 
 class TelaRegistro extends StatefulWidget {
@@ -14,6 +15,23 @@ class _TelaRegistroState extends State<TelaRegistro> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _fullName = TextEditingController();
+  final _birthDateFormatter = TextEditingController();
+  final birthDateFormatter = MaskTextInputFormatter(
+    mask: '##/##/####',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
+  final _cpfFormatter = TextEditingController();
+  final cpfFormatter = MaskTextInputFormatter(
+    mask: '###.###.###-##',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
+  final _phoneFormatter = TextEditingController();
+  final phoneFormatter = MaskTextInputFormatter(
+    mask: '(##) #####-####',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
+
   bool _obscureText = true;
 
   void signUp() async {
@@ -87,7 +105,42 @@ class _TelaRegistroState extends State<TelaRegistro> {
                 ),
               ),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 60),
+            TextField(
+              controller: _fullName,
+              decoration: InputDecoration(
+                labelText: 'Nome Completo',
+                labelStyle: const TextStyle(
+                  color: Color.fromARGB(206, 0, 0, 0),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(206, 0, 0, 0),
+                    width: 1,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(
+                    color: Colors.deepOrange,
+                    width: 2,
+                  ),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 9.0,
+                  horizontal: 10.0,
+                ),
+                suffixIcon: const Icon(
+                  Icons.person,
+                  color: Color.fromARGB(206, 0, 0, 0),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
             TextField(
               controller: _emailController,
               decoration: InputDecoration(
@@ -115,6 +168,10 @@ class _TelaRegistroState extends State<TelaRegistro> {
                 contentPadding: const EdgeInsets.symmetric(
                   vertical: 9.0,
                   horizontal: 10.0,
+                ),
+                suffixIcon: const Icon(
+                  Icons.mail,
+                  color: Color.fromARGB(206, 0, 0, 0),
                 ),
               ),
               keyboardType: TextInputType.emailAddress,
@@ -194,6 +251,114 @@ class _TelaRegistroState extends State<TelaRegistro> {
                     color: Color.fromARGB(206, 0, 0, 0),
                   ),
                   onPressed: _togglePasswordVisibility,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: _birthDateFormatter,
+              inputFormatters: [birthDateFormatter],
+              decoration: InputDecoration(
+                labelText: 'Data de Nascimento',
+                labelStyle: const TextStyle(
+                  color: Color.fromARGB(206, 0, 0, 0),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(206, 0, 0, 0),
+                    width: 1,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(
+                    color: Colors.deepOrange,
+                    width: 2,
+                  ),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 9,
+                  horizontal: 10,
+                ),
+                suffixIcon: const Icon(
+                  Icons.cake,
+                  color: Color.fromARGB(206, 0, 0, 0),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: _cpfFormatter,
+              inputFormatters: [cpfFormatter],
+              decoration: InputDecoration(
+                labelText: 'CPF',
+                labelStyle: const TextStyle(
+                  color: Color.fromARGB(206, 0, 0, 0),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(206, 0, 0, 0),
+                    width: 1,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(
+                    color: Colors.deepOrange,
+                    width: 2,
+                  ),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 9,
+                  horizontal: 10,
+                ),
+                suffixIcon: const Icon(
+                  Icons.badge,
+                  color: Color.fromARGB(206, 0, 0, 0),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: _phoneFormatter,
+              inputFormatters: [phoneFormatter],
+              decoration: InputDecoration(
+                labelText: 'Telefone',
+                labelStyle: const TextStyle(
+                  color: Color.fromARGB(206, 0, 0, 0),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(206, 0, 0, 0),
+                    width: 1,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(
+                    color: Colors.deepOrange,
+                    width: 2,
+                  ),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 9,
+                  horizontal: 10,
+                ),
+                suffixIcon: const Icon(
+                  Icons.phone,
+                  color: Color.fromARGB(206, 0, 0, 0),
                 ),
               ),
             ),
