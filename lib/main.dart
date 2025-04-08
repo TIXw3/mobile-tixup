@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'telaregistro.dart';
-import 'teladecompra.dart';
 import 'telaloading.dart';
+import 'pesquisa.dart';
 
 void main() {
   runApp(const MyApp());
@@ -64,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => TelaDeCompra()),
+      MaterialPageRoute(builder: (context) => const TelaPesquisa()),
     );
   }
 
@@ -164,9 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 10),
                   GestureDetector(
-                    onTap: () {
-                      print('Ir para tela de recuperação de senha');
-                    },
+                    onTap: () {},
                     child: Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(vertical: 12),
