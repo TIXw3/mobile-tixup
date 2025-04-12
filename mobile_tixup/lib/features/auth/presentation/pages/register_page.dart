@@ -37,17 +37,58 @@ class _TelaRegistroState extends State<TelaRegistro> {
 
   bool _obscureText = true;
 
+  bool verifyCPF(String cpf) {
+    cpf = cpf.replaceAll(RegExp(r'[^0-9]'), '');
+    if (cpf.length != 11 || cpf.split('').every((e) => e == cpf[0])) {
+      return false;
+    }
+
+    int soma1 = 0;
+    for (int i = 0; i < 9; i++) {
+      soma1 += int.parse(cpf[i]) * (10 - i);
+    }
+    int dv1 = 11 - (soma1 % 11);
+    if (dv1 == 10 || dv1 == 11) dv1 = 0;
+
+    int soma2 = 0;
+    for (int i = 0; i < 9; i++) {
+      soma2 += int.parse(cpf[i]) * (11 - i);
+    }
+    soma2 += dv1 * 2;
+    int dv2 = 11 - (soma2 % 11);
+    if (dv2 == 10 || dv2 == 11) dv2 = 0;
+
+    return cpf[9] == dv1.toString() && cpf[10] == dv2.toString();
+  }
+
+  bool isValidDate(String date) {
+    final parts = date.split('/');
+    if (parts.length != 3) return false;
+
+    final day = int.tryParse(parts[0]);
+    final month = int.tryParse(parts[1]);
+    final year = int.tryParse(parts[2]);
+
+    if (day == null || month == null || year == null) return false;
+
+    if (year < 1900 || month < 1 || month > 12) return false;
+
+    return true;
+  }
+
   void signUp() async {
     final email = _emailController.text;
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
+    final cpf = _cpfFormatter.text;
+    final birthDate = _birthDateFormatter.text;
 
     if (_fullName.text.isEmpty ||
         _emailController.text.isEmpty ||
         _passwordController.text.isEmpty ||
         _confirmPasswordController.text.isEmpty ||
-        _birthDateFormatter.text.isEmpty ||
-        _cpfFormatter.text.isEmpty ||
+        birthDate.isEmpty ||
+        cpf.isEmpty ||
         _phoneFormatter.text.isEmpty) {
       ScaffoldMessenger.of(
         context,
@@ -59,6 +100,20 @@ class _TelaRegistroState extends State<TelaRegistro> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text("As senhas não coincidem")));
+      return;
+    }
+
+    if (!verifyCPF(cpf)) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("CPF inválido")));
+      return;
+    }
+
+    if (!isValidDate(birthDate)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Data de nascimento inválida")),
+      );
       return;
     }
 
