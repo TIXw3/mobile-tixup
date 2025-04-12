@@ -104,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w900,
-                      color: Color.fromARGB(206, 231, 87, 47),
+                      color: Color.fromARGB(255, 249, 115, 22),
                     ),
                   ),
                 ),
@@ -184,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ElevatedButton(
               onPressed: login,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(206, 231, 87, 47),
+                backgroundColor: Color.fromARGB(255, 249, 115, 22),
                 padding: const EdgeInsets.symmetric(
                   vertical: 13.0,
                   horizontal: 160.0,
@@ -218,7 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   decorationColor: Colors.deepOrange, // Cor do sublinhado
                   decorationThickness:
                       1, // Espessura e leve afastamento do sublinhado
-                  color: Color.fromARGB(206, 231, 87, 47),
+                  color: Color.fromARGB(255, 249, 115, 22),
                 ),
               ),
             ),

@@ -13,7 +13,7 @@ class _ShopScreen extends State<ShopScreen> {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 248, 247, 245),
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(206, 231, 87, 47),
+        backgroundColor: Color.fromARGB(255, 249, 115, 22),
         centerTitle: true,
         title: const Icon(
           Icons.confirmation_number,
@@ -65,7 +65,7 @@ class _ShopScreen extends State<ShopScreen> {
                   Icon(
                     Icons.shopping_cart_outlined,
                     size: 80,
-                    color: Color.fromARGB(206, 231, 87, 47),
+                    color: Color.fromARGB(255, 249, 115, 22),
                   ),
                   SizedBox(height: 10),
                   Text(
@@ -86,7 +86,7 @@ class _ShopScreen extends State<ShopScreen> {
                 // Ação para comprar ingressos
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(206, 231, 87, 47),
+                backgroundColor: Color.fromARGB(255, 249, 115, 22),
                 padding: const EdgeInsets.symmetric(
                   vertical: 15.0,
                   horizontal: 40.0,

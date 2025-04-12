@@ -392,7 +392,7 @@ class _TelaRegistroState extends State<TelaRegistro> {
               //   );
               // },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(206, 231, 87, 47),
+                backgroundColor: Color.fromARGB(255, 249, 115, 22),
                 padding: const EdgeInsets.symmetric(
                   vertical: 13.0,
                   horizontal: 160.0,

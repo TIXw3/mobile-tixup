@@ -64,7 +64,7 @@ class _ProfileScreen extends State<ProfileScreen> {
               ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(206, 231, 87, 47),
+                  backgroundColor: Color.fromARGB(255, 249, 115, 22),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 30,
                     vertical: 12,
@@ -79,7 +79,7 @@ class _ProfileScreen extends State<ProfileScreen> {
               ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(206, 231, 87, 47),
+                  backgroundColor: Color.fromARGB(255, 249, 115, 22),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 30,
                     vertical: 12,
@@ -161,7 +161,10 @@ class _ProfileScreen extends State<ProfileScreen> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       decoration: BoxDecoration(
-        border: Border.all(color: Color.fromARGB(206, 231, 87, 47), width: 1.5),
+        border: Border.all(
+          color: Color.fromARGB(255, 249, 115, 22),
+          width: 1.5,
+        ),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -197,7 +200,10 @@ class _ProfileScreen extends State<ProfileScreen> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 18),
       decoration: BoxDecoration(
-        border: Border.all(color: Color.fromARGB(206, 231, 87, 47), width: 1.5),
+        border: Border.all(
+          color: Color.fromARGB(255, 249, 115, 22),
+          width: 1.5,
+        ),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
@@ -221,14 +227,14 @@ class _ProfileScreen extends State<ProfileScreen> {
     VoidCallback? onTap,
   }) {
     return ListTile(
-      leading: Icon(icon, color: color ?? Color.fromARGB(206, 231, 87, 47)),
+      leading: Icon(icon, color: color ?? Color.fromARGB(255, 249, 115, 22)),
       title: Text(
         title,
         style: TextStyle(color: color ?? Colors.black, fontSize: 16),
       ),
       trailing: const Icon(
         Icons.chevron_right,
-        color: Color.fromARGB(206, 231, 87, 47),
+        color: Color.fromARGB(255, 249, 115, 22),
       ),
       onTap: onTap,
     );
@@ -240,7 +246,7 @@ class _ProfileScreen extends State<ProfileScreen> {
       icon: Icon(icon, color: Colors.white),
       label: Text(title, style: const TextStyle(color: Colors.white)),
       style: ElevatedButton.styleFrom(
-        backgroundColor: Color.fromARGB(206, 231, 87, 47),
+        backgroundColor: Color.fromARGB(255, 249, 115, 22),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       ),
     );

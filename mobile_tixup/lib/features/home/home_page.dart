@@ -70,22 +70,32 @@ class _HomeScreen extends State<HomeScreen> {
   }
 
   Widget content(BuildContext context) {
+    List<String> imagePaths = [
+      'lib/assets/images/party1.jpg',
+      'lib/assets/images/party2.jpg',
+      'lib/assets/images/party3.jpg',
+      'lib/assets/images/party4.jpg',
+      'lib/assets/images/party5.jpg',
+    ];
+
     return CarouselSlider(
       items:
-          [1, 2, 3, 4, 5].map((i) {
-            return Container(
-              width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.symmetric(horizontal: 5),
-              decoration: BoxDecoration(
-                color: Color.fromARGB(206, 231, 87, 47),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Center(
-                child: Text("Evento $i", style: TextStyle(fontSize: 40)),
+          imagePaths.map((path) {
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.asset(
+                path,
+                width: MediaQuery.of(context).size.width,
+                fit: BoxFit.cover,
               ),
             );
           }).toList(),
-      options: CarouselOptions(height: 200),
+      options: CarouselOptions(
+        height: 200,
+        autoPlay: true,
+        enlargeCenterPage: true,
+        viewportFraction: 0.9,
+      ),
     );
   }
 
@@ -97,7 +107,7 @@ class _HomeScreen extends State<HomeScreen> {
               width: MediaQuery.of(context).size.width / 2,
               margin: EdgeInsets.symmetric(horizontal: 5),
               decoration: BoxDecoration(
-                color: Color.fromARGB(206, 231, 87, 47),
+                color: Color.fromARGB(255, 249, 115, 22),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
@@ -115,65 +125,70 @@ class _HomeScreen extends State<HomeScreen> {
   }
 
   Widget eventsLikedByFriends(BuildContext context) {
+    List<String> imagePaths = [
+      'lib/assets/images/party6.jpg',
+      'lib/assets/images/party3.jpg',
+      'lib/assets/images/party2.jpg',
+      'lib/assets/images/party4.jpg',
+      'lib/assets/images/party1.jpg',
+    ];
+
     return CarouselSlider(
       items:
-          [1, 2, 3, 4, 5].map((i) {
-            return Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start, // Alinha os textos à esquerda
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 180, // Define uma altura maior para os cards
-                  margin: EdgeInsets.symmetric(horizontal: 5),
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(206, 231, 87, 47),
+          List.generate(imagePaths.length, (i) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                crossAxisAlignment:
+                    CrossAxisAlignment.start, // Alinha os textos à esquerda
+                children: [
+                  ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "Evento $i",
-                      style: TextStyle(fontSize: 40, color: Colors.black),
+                    child: Image.asset(
+                      imagePaths[i],
+                      width: MediaQuery.of(context).size.width,
+                      height: 180,
+                      fit: BoxFit.cover,
                     ),
                   ),
-                ),
-                SizedBox(height: 12), // Espaçamento entre o card e os textos
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Nome do Evento $i", // Novo título
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                  SizedBox(height: 12), // Espaçamento entre o card e os textos
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Nome do Evento $i", // Novo título
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
                         ),
-                      ),
-                      Text(
-                        "25/04 - Londrina/PR", // Novo título
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                        Text(
+                          "25/04 - Londrina/PR", // Novo título
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 4,
-                      ), // Pequeno espaçamento entre os textos
-                      Text(
-                        "Curtido por Fulano e +3 ",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.grey[700],
+                        SizedBox(
+                          height: 4,
+                        ), // Pequeno espaçamento entre os textos
+                        Text(
+                          "Curtido por Fulano e +3 ",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[700],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             );
           }).toList(),
       options: CarouselOptions(
@@ -193,7 +208,7 @@ class _HomeScreen extends State<HomeScreen> {
             print("Botão pressionado!");
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Color.fromARGB(206, 231, 87, 47),
+            backgroundColor: Color.fromARGB(255, 249, 115, 22),
             padding: const EdgeInsets.symmetric(
               vertical: 13.0,
               horizontal: 130.0,
