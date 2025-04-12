@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:mobile_tixup/features/auth/services/auth_service.dart';
+import 'package:provider/provider.dart';
+import '../../../../models/user_model.dart';
+import '../../../../models/user_provider.dart';
 
 class TelaRegistro extends StatefulWidget {
   const TelaRegistro({super.key});
@@ -39,6 +42,19 @@ class _TelaRegistroState extends State<TelaRegistro> {
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
 
+    if (_fullName.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _passwordController.text.isEmpty ||
+        _confirmPasswordController.text.isEmpty ||
+        _birthDateFormatter.text.isEmpty ||
+        _cpfFormatter.text.isEmpty ||
+        _phoneFormatter.text.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Preencha todos os campos")));
+      return;
+    }
+
     if (password != confirmPassword) {
       ScaffoldMessenger.of(
         context,
@@ -49,13 +65,19 @@ class _TelaRegistroState extends State<TelaRegistro> {
     try {
       await authService.signUpEmailPassword(email, password);
 
+      if (mounted) {
+        Provider.of<UserProvider>(
+          context,
+          listen: false,
+        ).setUser(UserModel(email: email));
+      }
+
       Navigator.pop(context);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("As senhas não coincidem")),
+          SnackBar(content: Text('Erro ao criar conta: ${e.toString()}')),
         );
-        return;
       }
     }
   }
@@ -258,6 +280,7 @@ class _TelaRegistroState extends State<TelaRegistro> {
             TextField(
               controller: _birthDateFormatter,
               inputFormatters: [birthDateFormatter],
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Data de Nascimento',
                 labelStyle: const TextStyle(
@@ -294,6 +317,7 @@ class _TelaRegistroState extends State<TelaRegistro> {
             TextField(
               controller: _cpfFormatter,
               inputFormatters: [cpfFormatter],
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'CPF',
                 labelStyle: const TextStyle(
@@ -330,6 +354,7 @@ class _TelaRegistroState extends State<TelaRegistro> {
             TextField(
               controller: _phoneFormatter,
               inputFormatters: [phoneFormatter],
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Telefone',
                 labelStyle: const TextStyle(

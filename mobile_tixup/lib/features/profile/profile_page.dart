@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_tixup/features/auth/services/auth_service.dart';
+import '../../../../models/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -17,12 +19,15 @@ class _ProfileScreen extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final email = userProvider.user?.email ?? 'email@email.com';
+
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 248, 247, 245),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _buildHeader(),
+            _buildHeader(email),
             _buildStatistics(),
             _buildMainMenu(),
             _buildSocialLinks(),
@@ -34,7 +39,7 @@ class _ProfileScreen extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(String email) {
     return Container(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -53,9 +58,9 @@ class _ProfileScreen extends State<ProfileScreen> {
               color: Colors.black,
             ),
           ),
-          const Text(
-            'lucasgabriel@email.com',
-            style: TextStyle(color: Colors.black54, fontSize: 16),
+          Text(
+            email,
+            style: const TextStyle(color: Colors.black54, fontSize: 16),
           ),
           const SizedBox(height: 15),
           Row(
