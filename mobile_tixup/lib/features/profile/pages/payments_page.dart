@@ -34,6 +34,8 @@ class _PaymentsPageState extends State<PaymentsPage> {
     filter: {"#": RegExp(r'[0-9]')},
   );
 
+  List<Map<String, String>> addedCards = [];
+
   @override
   void initState() {
     super.initState();
@@ -82,6 +84,97 @@ class _PaymentsPageState extends State<PaymentsPage> {
     }
   }
 
+  Widget buildCard(Map<String, String> data) {
+    final brand = getCardBrand(data['number'] ?? '');
+    return Container(
+      padding: const EdgeInsets.all(20),
+      height: 200,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        gradient: const LinearGradient(
+          colors: [Colors.deepOrange, Color.fromARGB(255, 249, 115, 22)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 10,
+            offset: Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'TixCard',
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+              if (brand != null) getCardBrandIcon(brand) ?? Container(),
+            ],
+          ),
+          const Spacer(),
+          Text(
+            data['number'] ?? 'XXXX XXXX XXXX XXXX',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              letterSpacing: 2,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                data['name'] ?? '',
+                style: const TextStyle(color: Colors.white70, fontSize: 12),
+              ),
+              Text(
+                'Validade\n${data['expiry'] ?? ''}',
+                style: const TextStyle(color: Colors.white70, fontSize: 12),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _addCard() {
+    if (numberController.text.isEmpty ||
+        nameController.text.isEmpty ||
+        expiryController.text.isEmpty ||
+        cvvController.text.isEmpty)
+      return;
+
+    setState(() {
+      addedCards.add({
+        'number': numberController.text,
+        'name': nameController.text,
+        'expiry': expiryController.text,
+      });
+
+      numberController.clear();
+      nameController.clear();
+      expiryController.clear();
+      cvvController.clear();
+    });
+
+    Future.delayed(const Duration(milliseconds: 100), () {
+      _pageController.animateToPage(
+        addedCards.length - 1,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,14 +184,19 @@ class _PaymentsPageState extends State<PaymentsPage> {
         child: Column(
           children: [
             const SizedBox(height: 30),
-
             SizedBox(
               height: 210,
-              child: PageView(
+              child: PageView.builder(
                 controller: _pageController,
-                scrollDirection: Axis.horizontal,
-                children: [
-                  Padding(
+                itemCount: addedCards.length + 1,
+                itemBuilder: (context, index) {
+                  if (index < addedCards.length) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: buildCard(addedCards[index]),
+                    );
+                  }
+                  return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: FlipCard(
                       key: cardKey,
@@ -107,16 +205,11 @@ class _PaymentsPageState extends State<PaymentsPage> {
                       front: _buildCardFront(),
                       back: _buildCardBack(),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: _buildPlaceholderCard('Adicionar'),
-                  ),
-                ],
+                  );
+                },
               ),
             ),
             const SizedBox(height: 30),
-
             _buildTextField(
               icon: Icons.credit_card,
               hintText: 'Número do Cartão',
@@ -124,14 +217,12 @@ class _PaymentsPageState extends State<PaymentsPage> {
               inputFormatters: [cardNumberFormatter],
             ),
             const SizedBox(height: 12),
-
             _buildTextField(
               icon: Icons.person,
               hintText: 'Nome Completo',
               controller: nameController,
             ),
             const SizedBox(height: 12),
-
             Row(
               children: [
                 Expanded(
@@ -154,15 +245,11 @@ class _PaymentsPageState extends State<PaymentsPage> {
                 ),
               ],
             ),
-
             const SizedBox(height: 30),
-
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  // lógica de adicionar cartão
-                },
+                onPressed: _addCard,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 249, 115, 22),
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -306,54 +393,21 @@ class _PaymentsPageState extends State<PaymentsPage> {
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 30),
-          Text(
-            'CVV: ${cvvController.text}',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              letterSpacing: 4,
-            ),
-          ),
           const Spacer(),
-          const Center(
-            child: Text(
-              'Verso do cartão',
-              style: TextStyle(color: Colors.white38, fontSize: 12),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(width: 60, height: 15, color: Colors.black),
+              const SizedBox(width: 30),
+              Text(
+                cvvController.text.isEmpty ? 'CVV' : cvvController.text,
+                style: const TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ],
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildPlaceholderCard(String text, {bool dark = false}) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      height: 200,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: dark ? Colors.black87 : Colors.grey[300],
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 10,
-            offset: Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Center(
-        child: Text(
-          text,
-          style: TextStyle(
-            color: dark ? Colors.white70 : Colors.black54,
-            fontSize: 16,
-          ),
-          textAlign: TextAlign.center,
-        ),
       ),
     );
   }
