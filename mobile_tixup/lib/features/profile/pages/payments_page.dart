@@ -11,21 +11,16 @@ class PaymentsPage extends StatefulWidget {
 }
 
 class _PaymentsPageState extends State<PaymentsPage> {
-  final PageController _pageController = PageController(
-    viewportFraction: 0.95,
-  ); // Ajuste o fator de viewport para 0.8
+  final PageController _pageController = PageController(viewportFraction: 0.95);
 
-  // Flip control & focus
   final GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
   final FocusNode cvvFocusNode = FocusNode();
 
-  // Controllers
   final numberController = TextEditingController();
   final nameController = TextEditingController();
   final expiryController = TextEditingController();
   final cvvController = TextEditingController();
 
-  // Input formatters
   final cardNumberFormatter = MaskTextInputFormatter(
     mask: '#### #### #### ####',
     filter: {"#": RegExp(r'[0-9]')},
@@ -45,9 +40,9 @@ class _PaymentsPageState extends State<PaymentsPage> {
 
     cvvFocusNode.addListener(() {
       if (cvvFocusNode.hasFocus) {
-        cardKey.currentState?.toggleCard(); // flip para trás
+        cardKey.currentState?.toggleCard();
       } else {
-        cardKey.currentState?.toggleCard(); // volta pra frente
+        cardKey.currentState?.toggleCard();
       }
     });
   }
@@ -63,6 +58,30 @@ class _PaymentsPageState extends State<PaymentsPage> {
     super.dispose();
   }
 
+  String? getCardBrand(String cardNumber) {
+    final cleaned = cardNumber.replaceAll(' ', '');
+    if (cleaned.startsWith(RegExp(r'4'))) return 'Visa';
+    if (cleaned.startsWith(RegExp(r'5[1-5]'))) return 'Mastercard';
+    if (cleaned.startsWith(RegExp(r'3[47]'))) return 'American Express';
+    if (cleaned.startsWith(RegExp(r'6'))) return 'Discover';
+    return null;
+  }
+
+  Widget? getCardBrandIcon(String? brand) {
+    switch (brand) {
+      case 'Visa':
+        return Image.asset('lib/assets/cards/visa.png', width: 60);
+      case 'Mastercard':
+        return Image.asset('lib/assets/cards/mastercard.png', width: 60);
+      case 'American Express':
+        return Image.asset('lib/assets/cards/amex.png', width: 60);
+      case 'Discover':
+        return Image.asset('lib/assets/cards/discover.png', width: 60);
+      default:
+        return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,7 +92,6 @@ class _PaymentsPageState extends State<PaymentsPage> {
           children: [
             const SizedBox(height: 30),
 
-            // SWIPER DE CARTÕES
             SizedBox(
               height: 210,
               child: PageView(
@@ -81,9 +99,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 4,
-                    ), // Espaço horizontal entre os cartões
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: FlipCard(
                       key: cardKey,
                       flipOnTouch: false,
@@ -93,9 +109,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 4,
-                    ), // Espaço horizontal entre os cartões
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: _buildPlaceholderCard('Adicionar'),
                   ),
                 ],
@@ -103,7 +117,6 @@ class _PaymentsPageState extends State<PaymentsPage> {
             ),
             const SizedBox(height: 30),
 
-            // CAMPOS DE ENTRADA
             _buildTextField(
               icon: Icons.credit_card,
               hintText: 'Número do Cartão',
@@ -144,7 +157,6 @@ class _PaymentsPageState extends State<PaymentsPage> {
 
             const SizedBox(height: 30),
 
-            // BOTÃO
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -204,6 +216,8 @@ class _PaymentsPageState extends State<PaymentsPage> {
   }
 
   Widget _buildCardFront() {
+    final brand = getCardBrand(numberController.text);
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -226,9 +240,15 @@ class _PaymentsPageState extends State<PaymentsPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'TixCard',
-            style: TextStyle(color: Colors.white, fontSize: 18),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'TixCard',
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+              if (brand != null) getCardBrandIcon(brand) ?? Container(),
+            ],
           ),
           const Spacer(),
           Text(

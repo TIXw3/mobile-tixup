@@ -33,3 +33,7 @@ flutter:
   uses-material-design: true
   assets:
     - lib/assets/images/
+    - lib/assets/cards/visa.png
+    - lib/assets/cards/mastercard.png
+    - lib/assets/cards/amex.png
+    - lib/assets/cards/discover.png
