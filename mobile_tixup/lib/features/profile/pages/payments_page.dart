@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
+import 'package:flutter/services.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class PaymentsPage extends StatefulWidget {
   const PaymentsPage({Key? key}) : super(key: key);
@@ -9,8 +11,33 @@ class PaymentsPage extends StatefulWidget {
 }
 
 class _PaymentsPageState extends State<PaymentsPage> {
+  final PageController _pageController = PageController(
+    viewportFraction: 0.95,
+  ); // Ajuste o fator de viewport para 0.8
+
+  // Flip control & focus
   final GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
   final FocusNode cvvFocusNode = FocusNode();
+
+  // Controllers
+  final numberController = TextEditingController();
+  final nameController = TextEditingController();
+  final expiryController = TextEditingController();
+  final cvvController = TextEditingController();
+
+  // Input formatters
+  final cardNumberFormatter = MaskTextInputFormatter(
+    mask: '#### #### #### ####',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
+  final expiryFormatter = MaskTextInputFormatter(
+    mask: '##/##',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
+  final cvvFormatter = MaskTextInputFormatter(
+    mask: '###',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
 
   @override
   void initState() {
@@ -18,16 +45,21 @@ class _PaymentsPageState extends State<PaymentsPage> {
 
     cvvFocusNode.addListener(() {
       if (cvvFocusNode.hasFocus) {
-        cardKey.currentState?.toggleCard();
+        cardKey.currentState?.toggleCard(); // flip para trás
       } else {
-        cardKey.currentState?.toggleCard();
+        cardKey.currentState?.toggleCard(); // volta pra frente
       }
     });
   }
 
   @override
   void dispose() {
+    numberController.dispose();
+    nameController.dispose();
+    expiryController.dispose();
+    cvvController.dispose();
     cvvFocusNode.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -39,50 +71,72 @@ class _PaymentsPageState extends State<PaymentsPage> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            FlipCard(
-              key: cardKey,
-              flipOnTouch: false,
-              direction: FlipDirection.HORIZONTAL,
-              front: _buildCardFront(),
-              back: _buildCardBack(),
-            ),
-
             const SizedBox(height: 30),
 
-            const CardInputField(
+            // SWIPER DE CARTÕES
+            SizedBox(
+              height: 210,
+              child: PageView(
+                controller: _pageController,
+                scrollDirection: Axis.horizontal,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                    ), // Espaço horizontal entre os cartões
+                    child: FlipCard(
+                      key: cardKey,
+                      flipOnTouch: false,
+                      direction: FlipDirection.HORIZONTAL,
+                      front: _buildCardFront(),
+                      back: _buildCardBack(),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                    ), // Espaço horizontal entre os cartões
+                    child: _buildPlaceholderCard('Adicionar'),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 30),
+
+            // CAMPOS DE ENTRADA
+            _buildTextField(
               icon: Icons.credit_card,
               hintText: 'Número do Cartão',
+              controller: numberController,
+              inputFormatters: [cardNumberFormatter],
             ),
             const SizedBox(height: 12),
-            const CardInputField(icon: Icons.person, hintText: 'Nome Completo'),
+
+            _buildTextField(
+              icon: Icons.person,
+              hintText: 'Nome Completo',
+              controller: nameController,
+            ),
             const SizedBox(height: 12),
 
             Row(
               children: [
-                const Expanded(
-                  child: CardInputField(
+                Expanded(
+                  child: _buildTextField(
                     icon: Icons.date_range,
                     hintText: 'MM/YY',
+                    controller: expiryController,
+                    inputFormatters: [expiryFormatter],
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: TextFormField(
+                  child: _buildTextField(
+                    icon: Icons.lock,
+                    hintText: 'CVV',
+                    controller: cvvController,
+                    inputFormatters: [cvvFormatter],
                     focusNode: cvvFocusNode,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.lock),
-                      hintText: 'CVV',
-                      filled: true,
-                      fillColor: Colors.grey[100],
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 18,
-                        horizontal: 16,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
                   ),
                 ),
               ],
@@ -90,6 +144,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
 
             const SizedBox(height: 30),
 
+            // BOTÃO
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -119,6 +174,35 @@ class _PaymentsPageState extends State<PaymentsPage> {
     );
   }
 
+  Widget _buildTextField({
+    required IconData icon,
+    required String hintText,
+    required TextEditingController controller,
+    List<TextInputFormatter>? inputFormatters,
+    FocusNode? focusNode,
+  }) {
+    return TextFormField(
+      controller: controller,
+      focusNode: focusNode,
+      inputFormatters: inputFormatters,
+      onChanged: (_) => setState(() {}),
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon),
+        hintText: hintText,
+        filled: true,
+        fillColor: Colors.grey[100],
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 18,
+          horizontal: 16,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
+  }
+
   Widget _buildCardFront() {
     return Container(
       width: double.infinity,
@@ -141,29 +225,38 @@ class _PaymentsPageState extends State<PaymentsPage> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Text('TixCard', style: TextStyle(color: Colors.white, fontSize: 18)),
-          Spacer(),
+        children: [
+          const Text(
+            'TixCard',
+            style: TextStyle(color: Colors.white, fontSize: 18),
+          ),
+          const Spacer(),
           Text(
-            'XXXX  XXXX  XXXX  XXXX',
-            style: TextStyle(
+            numberController.text.isEmpty
+                ? 'XXXX XXXX XXXX XXXX'
+                : numberController.text,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 20,
               letterSpacing: 2,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Info\nCartao',
-                style: TextStyle(color: Colors.white70, fontSize: 12),
+                nameController.text.isEmpty
+                    ? 'Nome Completo'
+                    : nameController.text,
+                style: const TextStyle(color: Colors.white70, fontSize: 12),
               ),
               Text(
-                'Validade\n08/2022',
-                style: TextStyle(color: Colors.white70, fontSize: 12),
+                expiryController.text.isEmpty
+                    ? 'Validade\nMM/YY'
+                    : 'Validade\n${expiryController.text}',
+                style: const TextStyle(color: Colors.white70, fontSize: 12),
               ),
             ],
           ),
@@ -194,20 +287,20 @@ class _PaymentsPageState extends State<PaymentsPage> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
-        children: const [
-          SizedBox(height: 30),
+        children: [
+          const SizedBox(height: 30),
           Text(
-            'CVV: ',
-            style: TextStyle(
+            'CVV: ${cvvController.text}',
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 18,
               letterSpacing: 4,
             ),
           ),
-          Spacer(),
-          Center(
+          const Spacer(),
+          const Center(
             child: Text(
-              '',
+              'Verso do cartão',
               style: TextStyle(color: Colors.white38, fontSize: 12),
             ),
           ),
@@ -215,30 +308,31 @@ class _PaymentsPageState extends State<PaymentsPage> {
       ),
     );
   }
-}
 
-class CardInputField extends StatelessWidget {
-  final IconData icon;
-  final String hintText;
-
-  const CardInputField({Key? key, required this.icon, required this.hintText})
-    : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      decoration: InputDecoration(
-        prefixIcon: Icon(icon),
-        hintText: hintText,
-        filled: true,
-        fillColor: Colors.grey[100],
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 18,
-          horizontal: 16,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
+  Widget _buildPlaceholderCard(String text, {bool dark = false}) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      height: 200,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: dark ? Colors.black87 : Colors.grey[300],
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 10,
+            offset: Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Center(
+        child: Text(
+          text,
+          style: TextStyle(
+            color: dark ? Colors.white70 : Colors.black54,
+            fontSize: 16,
+          ),
+          textAlign: TextAlign.center,
         ),
       ),
     );
