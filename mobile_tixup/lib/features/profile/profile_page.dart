@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_tixup/features/auth/services/auth_service.dart';
+import 'package:mobile_tixup/features/profile/pages/payments_page.dart';
 import '../../../../models/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -180,7 +181,16 @@ class _ProfileScreen extends State<ProfileScreen> {
           _buildMenuItem('Minha Conta', Icons.person_outline),
           _buildMenuItem('Meu Endereço', Icons.location_on_outlined),
           _buildMenuItem('Tutorial', Icons.help_outline),
-          _buildMenuItem('Meus Cartões', Icons.credit_card_outlined),
+          _buildMenuItem(
+            'Meus Cartões',
+            Icons.credit_card_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PaymentsPage()),
+              );
+            },
+          ),
           _buildMenuItem('Vender Ingressos', Icons.sell_outlined),
         ],
       ),
