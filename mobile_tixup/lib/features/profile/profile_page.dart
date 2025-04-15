@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_tixup/features/auth/services/auth_service.dart';
 import 'package:mobile_tixup/features/profile/pages/balance_page.dart';
 import 'package:mobile_tixup/features/profile/pages/following_page.dart';
+import 'package:mobile_tixup/features/profile/pages/orders_page.dart';
 import 'package:mobile_tixup/features/profile/pages/payments_page.dart';
 import 'package:mobile_tixup/features/profile/pages/suporte_page.dart';
 import 'package:mobile_tixup/features/profile/pages/tutorial_page.dart';
@@ -198,7 +199,16 @@ class _ProfileScreen extends State<ProfileScreen> {
         children: [
           _buildMenuItem('Meus Ingressos', Icons.confirmation_number_outlined),
           _buildMenuItem('Carteirinhas', Icons.card_membership_outlined),
-          _buildMenuItem('Pedidos', Icons.shopping_bag_outlined),
+          _buildMenuItem(
+            'Pedidos',
+            Icons.shopping_bag_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => OrdersScreen()),
+              );
+            },
+          ),
           _buildMenuItem('Minha Conta', Icons.person_outline),
           _buildMenuItem('Meu Endereço', Icons.location_on_outlined),
           _buildMenuItem(
