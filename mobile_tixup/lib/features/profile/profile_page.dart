@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_tixup/features/auth/services/auth_service.dart';
+import 'package:mobile_tixup/features/profile/pages/balance_page.dart';
+import 'package:mobile_tixup/features/profile/pages/following_page.dart';
 import 'package:mobile_tixup/features/profile/pages/payments_page.dart';
+import 'package:mobile_tixup/features/profile/pages/suporte_page.dart';
+import 'package:mobile_tixup/features/profile/pages/tutorial_page.dart';
 import '../../../../models/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -124,9 +128,26 @@ class _ProfileScreen extends State<ProfileScreen> {
         children: [
           _buildStatItem('10', 'Favoritos'),
           _buildVerticalDivider(),
-          _buildStatItem('10', 'Seguindo'),
           _buildVerticalDivider(),
-          _buildStatItem('R\$00,00', 'Saldo'),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SeguindoPage()),
+              );
+            },
+            child: _buildStatItem('10', 'Seguindo'),
+          ),
+          _buildVerticalDivider(),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SaldoPage()),
+              );
+            },
+            child: _buildStatItem('R\$0,00', 'Saldo'),
+          ),
         ],
       ),
     );
@@ -180,7 +201,16 @@ class _ProfileScreen extends State<ProfileScreen> {
           _buildMenuItem('Pedidos', Icons.shopping_bag_outlined),
           _buildMenuItem('Minha Conta', Icons.person_outline),
           _buildMenuItem('Meu Endereço', Icons.location_on_outlined),
-          _buildMenuItem('Tutorial', Icons.help_outline),
+          _buildMenuItem(
+            'Tutorial',
+            Icons.help_outline,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TelaTutorial()),
+              );
+            },
+          ),
           _buildMenuItem(
             'Meus Cartões',
             Icons.credit_card_outlined,
@@ -223,7 +253,16 @@ class _ProfileScreen extends State<ProfileScreen> {
       ),
       child: Column(
         children: [
-          _buildMenuItem('Suporte', Icons.headset_mic_outlined),
+          _buildMenuItem(
+            'Suporte',
+            Icons.headset_mic_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TelaDeSuporte()),
+              );
+            },
+          ),
           _buildMenuItem('Sair', Icons.exit_to_app_outlined, onTap: logout),
           _buildMenuItem(
             'Excluir Conta',
