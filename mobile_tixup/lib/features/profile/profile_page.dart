@@ -4,6 +4,7 @@ import 'package:mobile_tixup/features/profile/pages/balance_page.dart';
 import 'package:mobile_tixup/features/profile/pages/following_page.dart';
 import 'package:mobile_tixup/features/profile/pages/orders_page.dart';
 import 'package:mobile_tixup/features/profile/pages/payments_page.dart';
+import 'package:mobile_tixup/features/profile/pages/student_id_page.dart';
 import 'package:mobile_tixup/features/profile/pages/suporte_page.dart';
 import 'package:mobile_tixup/features/profile/pages/tutorial_page.dart';
 import '../../../../models/user_provider.dart';
@@ -198,7 +199,16 @@ class _ProfileScreen extends State<ProfileScreen> {
       child: Column(
         children: [
           _buildMenuItem('Meus Ingressos', Icons.confirmation_number_outlined),
-          _buildMenuItem('Carteirinhas', Icons.card_membership_outlined),
+          _buildMenuItem(
+            'Carteirinhas',
+            Icons.card_membership_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => StudentIdScreen()),
+              );
+            },
+          ),
           _buildMenuItem(
             'Pedidos',
             Icons.shopping_bag_outlined,
