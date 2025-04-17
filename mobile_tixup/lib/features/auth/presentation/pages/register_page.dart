@@ -168,7 +168,7 @@ class _TelaRegistroState extends State<TelaRegistro> {
                       text: 'Cadastre-se e',
                       style: TextStyle(letterSpacing: -1),
                     ),
-                    TextSpan(text: ' '), // Espaço entre as palavras
+                    TextSpan(text: ' '),
                     TextSpan(
                       text: 'encontre novas',
                       style: TextStyle(letterSpacing: -1),
@@ -443,48 +443,29 @@ class _TelaRegistroState extends State<TelaRegistro> {
               ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: signUp,
-              // {
-              //   if (_emailController.text.isEmpty ||
-              //       _passwordController.text.isEmpty ||
-              //       _confirmPasswordController.text.isEmpty) {
-              //     ScaffoldMessenger.of(context).showSnackBar(
-              //       const SnackBar(content: Text('Preencha todos os campos')),
-              //     );
-              //     return;
-              //   }
-
-              //   if (_passwordController.text !=
-              //       _confirmPasswordController.text) {
-              //     ScaffoldMessenger.of(context).showSnackBar(
-              //       const SnackBar(content: Text('As senhas não coincidem')),
-              //     );
-              //     return;
-              //   }
-
-              //   // registrou -> vai pra login -> loga -> vai pra home
-              //   Navigator.pop(context);
-              //   ScaffoldMessenger.of(context).showSnackBar(
-              //     const SnackBar(
-              //       content: Text('Conta criada com sucesso! Faça login.'),
-              //     ),
-              //   );
-              // },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 249, 115, 22),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 13.0,
-                  horizontal: 160.0,
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: signUp,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 249, 115, 22),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 13.0,
+                    horizontal: 20.0,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  textStyle: const TextStyle(fontSize: 18),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                child: const Text(
+                  'Criar',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                    letterSpacing: 0,
+                  ),
                 ),
-                textStyle: const TextStyle(fontSize: 18),
-              ),
-              child: const Text(
-                'Criar',
-                style: TextStyle(fontSize: 18, color: Colors.white),
               ),
             ),
           ],

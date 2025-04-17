@@ -181,22 +181,21 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: login,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 249, 115, 22),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 13.0,
-                  horizontal: 160.0,
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: login,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 249, 115, 22),
+                  minimumSize: const Size.fromHeight(50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                child: const Text(
+                  'Entrar',
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
-                textStyle: const TextStyle(fontSize: 18),
-              ),
-              child: const Text(
-                'Entrar',
-                style: TextStyle(fontSize: 18, color: Colors.white),
               ),
             ),
             const SizedBox(height: 20),
