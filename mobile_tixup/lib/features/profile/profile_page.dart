@@ -5,6 +5,7 @@ import 'package:mobile_tixup/features/profile/pages/balance_page.dart';
 import 'package:mobile_tixup/features/profile/pages/following_page.dart';
 import 'package:mobile_tixup/features/profile/pages/orders_page.dart';
 import 'package:mobile_tixup/features/profile/pages/payments_page.dart';
+import 'package:mobile_tixup/features/profile/pages/sellTickets_page.dart';
 import 'package:mobile_tixup/features/profile/pages/student_id_page.dart';
 import 'package:mobile_tixup/features/profile/pages/suporte_page.dart';
 import 'package:mobile_tixup/features/profile/pages/tickets_page.dart';
@@ -261,7 +262,16 @@ class _ProfileScreen extends State<ProfileScreen> {
               );
             },
           ),
-          _buildMenuItem('Vender Ingressos', Icons.sell_outlined),
+          _buildMenuItem(
+            'Vender Ingressos',
+            Icons.sell_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TelaVenderIngresso()),
+              );
+            },
+          ),
         ],
       ),
     );
