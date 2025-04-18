@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_tixup/features/auth/services/auth_service.dart';
+import 'package:mobile_tixup/features/profile/pages/account_page.dart';
 import 'package:mobile_tixup/features/profile/pages/balance_page.dart';
 import 'package:mobile_tixup/features/profile/pages/following_page.dart';
 import 'package:mobile_tixup/features/profile/pages/orders_page.dart';
 import 'package:mobile_tixup/features/profile/pages/payments_page.dart';
 import 'package:mobile_tixup/features/profile/pages/student_id_page.dart';
 import 'package:mobile_tixup/features/profile/pages/suporte_page.dart';
+import 'package:mobile_tixup/features/profile/pages/tickets_page.dart';
 import 'package:mobile_tixup/features/profile/pages/tutorial_page.dart';
 import '../../../../models/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -198,7 +200,16 @@ class _ProfileScreen extends State<ProfileScreen> {
       ),
       child: Column(
         children: [
-          _buildMenuItem('Meus Ingressos', Icons.confirmation_number_outlined),
+          _buildMenuItem(
+            'Meus Ingressos',
+            Icons.confirmation_number_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MeusIngressos()),
+              );
+            },
+          ),
           _buildMenuItem(
             'Carteirinhas',
             Icons.card_membership_outlined,
@@ -219,7 +230,16 @@ class _ProfileScreen extends State<ProfileScreen> {
               );
             },
           ),
-          _buildMenuItem('Minha Conta', Icons.person_outline),
+          _buildMenuItem(
+            'Minha Conta',
+            Icons.person_outline,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MeuPerfil()),
+              );
+            },
+          ),
           _buildMenuItem('Meu Endereço', Icons.location_on_outlined),
           _buildMenuItem(
             'Tutorial',
