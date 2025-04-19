@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:mobile_tixup/features/auth/services/auth_service.dart';
+import 'package:provider/provider.dart';
+import '../../../../models/user_model.dart';
+import '../../../../models/user_provider.dart';
 
 class TelaRegistro extends StatefulWidget {
   const TelaRegistro({super.key});
@@ -34,10 +37,64 @@ class _TelaRegistroState extends State<TelaRegistro> {
 
   bool _obscureText = true;
 
+  bool verifyCPF(String cpf) {
+    cpf = cpf.replaceAll(RegExp(r'[^0-9]'), '');
+    if (cpf.length != 11 || cpf.split('').every((e) => e == cpf[0])) {
+      return false;
+    }
+
+    int soma1 = 0;
+    for (int i = 0; i < 9; i++) {
+      soma1 += int.parse(cpf[i]) * (10 - i);
+    }
+    int dv1 = 11 - (soma1 % 11);
+    if (dv1 == 10 || dv1 == 11) dv1 = 0;
+
+    int soma2 = 0;
+    for (int i = 0; i < 9; i++) {
+      soma2 += int.parse(cpf[i]) * (11 - i);
+    }
+    soma2 += dv1 * 2;
+    int dv2 = 11 - (soma2 % 11);
+    if (dv2 == 10 || dv2 == 11) dv2 = 0;
+
+    return cpf[9] == dv1.toString() && cpf[10] == dv2.toString();
+  }
+
+  bool isValidDate(String date) {
+    final parts = date.split('/');
+    if (parts.length != 3) return false;
+
+    final day = int.tryParse(parts[0]);
+    final month = int.tryParse(parts[1]);
+    final year = int.tryParse(parts[2]);
+
+    if (day == null || month == null || year == null) return false;
+
+    if (year < 1900 || month < 1 || month > 12) return false;
+
+    return true;
+  }
+
   void signUp() async {
     final email = _emailController.text;
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
+    final cpf = _cpfFormatter.text;
+    final birthDate = _birthDateFormatter.text;
+
+    if (_fullName.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _passwordController.text.isEmpty ||
+        _confirmPasswordController.text.isEmpty ||
+        birthDate.isEmpty ||
+        cpf.isEmpty ||
+        _phoneFormatter.text.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Preencha todos os campos")));
+      return;
+    }
 
     if (password != confirmPassword) {
       ScaffoldMessenger.of(
@@ -46,16 +103,36 @@ class _TelaRegistroState extends State<TelaRegistro> {
       return;
     }
 
+    if (!verifyCPF(cpf)) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("CPF inválido")));
+      return;
+    }
+
+    if (!isValidDate(birthDate)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Data de nascimento inválida")),
+      );
+      return;
+    }
+
     try {
       await authService.signUpEmailPassword(email, password);
+
+      if (mounted) {
+        Provider.of<UserProvider>(
+          context,
+          listen: false,
+        ).setUser(UserModel(email: email));
+      }
 
       Navigator.pop(context);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("As senhas não coincidem")),
+          SnackBar(content: Text('Erro ao criar conta: ${e.toString()}')),
         );
-        return;
       }
     }
   }
@@ -91,7 +168,7 @@ class _TelaRegistroState extends State<TelaRegistro> {
                       text: 'Cadastre-se e',
                       style: TextStyle(letterSpacing: -1),
                     ),
-                    TextSpan(text: ' '), // Espaço entre as palavras
+                    TextSpan(text: ' '),
                     TextSpan(
                       text: 'encontre novas',
                       style: TextStyle(letterSpacing: -1),
@@ -258,6 +335,7 @@ class _TelaRegistroState extends State<TelaRegistro> {
             TextField(
               controller: _birthDateFormatter,
               inputFormatters: [birthDateFormatter],
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Data de Nascimento',
                 labelStyle: const TextStyle(
@@ -294,6 +372,7 @@ class _TelaRegistroState extends State<TelaRegistro> {
             TextField(
               controller: _cpfFormatter,
               inputFormatters: [cpfFormatter],
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'CPF',
                 labelStyle: const TextStyle(
@@ -330,6 +409,7 @@ class _TelaRegistroState extends State<TelaRegistro> {
             TextField(
               controller: _phoneFormatter,
               inputFormatters: [phoneFormatter],
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Telefone',
                 labelStyle: const TextStyle(
@@ -363,48 +443,29 @@ class _TelaRegistroState extends State<TelaRegistro> {
               ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: signUp,
-              // {
-              //   if (_emailController.text.isEmpty ||
-              //       _passwordController.text.isEmpty ||
-              //       _confirmPasswordController.text.isEmpty) {
-              //     ScaffoldMessenger.of(context).showSnackBar(
-              //       const SnackBar(content: Text('Preencha todos os campos')),
-              //     );
-              //     return;
-              //   }
-
-              //   if (_passwordController.text !=
-              //       _confirmPasswordController.text) {
-              //     ScaffoldMessenger.of(context).showSnackBar(
-              //       const SnackBar(content: Text('As senhas não coincidem')),
-              //     );
-              //     return;
-              //   }
-
-              //   // registrou -> vai pra login -> loga -> vai pra home
-              //   Navigator.pop(context);
-              //   ScaffoldMessenger.of(context).showSnackBar(
-              //     const SnackBar(
-              //       content: Text('Conta criada com sucesso! Faça login.'),
-              //     ),
-              //   );
-              // },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(206, 231, 87, 47),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 13.0,
-                  horizontal: 160.0,
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: signUp,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 249, 115, 22),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 13.0,
+                    horizontal: 20.0,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  textStyle: const TextStyle(fontSize: 18),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                child: const Text(
+                  'Criar',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                    letterSpacing: 0,
+                  ),
                 ),
-                textStyle: const TextStyle(fontSize: 18),
-              ),
-              child: const Text(
-                'Criar',
-                style: TextStyle(fontSize: 18, color: Colors.white),
               ),
             ),
           ],

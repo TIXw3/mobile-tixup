@@ -113,22 +113,29 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _resetPassword,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(206, 231, 87, 47),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 13.0,
-                  horizontal: 160.0,
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _resetPassword,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 249, 115, 22),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 13.0,
+                    horizontal: 20.0,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  textStyle: const TextStyle(fontSize: 18),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                child: const Text(
+                  'Enviar',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                    letterSpacing: 0,
+                  ),
                 ),
-                textStyle: const TextStyle(fontSize: 18),
-              ),
-              child: const Text(
-                'Enviar',
-                style: TextStyle(fontSize: 18, color: Colors.white),
               ),
             ),
           ],

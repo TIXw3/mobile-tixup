@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_tixup/features/auth/services/auth_gate.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'models/user_provider.dart';
 
 void main() async {
   await Supabase.initialize(
@@ -9,7 +11,12 @@ void main() async {
     url: "https://bnjnneplxomokieofrdq.supabase.co",
   );
 
-  runApp(const MainApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => UserProvider(),
+      child: const MainApp(),
+    ),
+  );
 }
 
 class MainApp extends StatelessWidget {
@@ -20,7 +27,7 @@ class MainApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'TixUp',
-      home: AuthGate(), // login inicial
+      home: AuthGate(),
     );
   }
 }

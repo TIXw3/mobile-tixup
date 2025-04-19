@@ -104,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w900,
-                      color: Color.fromARGB(206, 231, 87, 47),
+                      color: Color.fromARGB(255, 249, 115, 22),
                     ),
                   ),
                 ),
@@ -181,22 +181,21 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: login,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(206, 231, 87, 47),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 13.0,
-                  horizontal: 160.0,
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: login,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 249, 115, 22),
+                  minimumSize: const Size.fromHeight(50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                child: const Text(
+                  'Entrar',
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
-                textStyle: const TextStyle(fontSize: 18),
-              ),
-              child: const Text(
-                'Entrar',
-                style: TextStyle(fontSize: 18, color: Colors.white),
               ),
             ),
             const SizedBox(height: 20),
@@ -218,7 +217,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   decorationColor: Colors.deepOrange, // Cor do sublinhado
                   decorationThickness:
                       1, // Espessura e leve afastamento do sublinhado
-                  color: Color.fromARGB(206, 231, 87, 47),
+                  color: Color.fromARGB(255, 249, 115, 22),
                 ),
               ),
             ),
