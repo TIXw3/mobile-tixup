@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_tixup/features/events/detailedEvent_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -35,10 +36,9 @@ class _HomeScreen extends State<HomeScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 10), // espaço topo
-            content(context), //carrossel (Eventos)
-            SizedBox(height: 20), // espaçamento widgets
-
+            SizedBox(height: 10),
+            content(context),
+            SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Align(
@@ -49,18 +49,14 @@ class _HomeScreen extends State<HomeScreen> {
                 ),
               ),
             ),
-            categories(context), // carrossel (Categorias)
-            SizedBox(height: 1), // espaçamento resto
-
+            categories(context),
+            SizedBox(height: 1),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Align(alignment: Alignment.centerLeft),
             ),
-            eventsLikedByFriends(
-              context,
-            ), // Carrossel de eventos curtidos por amigos
+            eventsLikedByFriends(context),
             SizedBox(height: 20),
-
             goToEventsPage(context),
             SizedBox(height: 20),
           ],
@@ -81,12 +77,20 @@ class _HomeScreen extends State<HomeScreen> {
     return CarouselSlider(
       items:
           imagePaths.map((path) {
-            return ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                path,
-                width: MediaQuery.of(context).size.width,
-                fit: BoxFit.cover,
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const EventScreen()),
+                );
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.asset(
+                  path,
+                  width: MediaQuery.of(context).size.width,
+                  fit: BoxFit.cover,
+                ),
               ),
             );
           }).toList(),
@@ -102,7 +106,7 @@ class _HomeScreen extends State<HomeScreen> {
   Widget categories(BuildContext context) {
     return CarouselSlider(
       items:
-          [1, 2, 3, 4, 5].map((i) {
+          ["Show", "Festas", "Baladas", "Universitárias", "Diversos"].map((i) {
             return Container(
               width: MediaQuery.of(context).size.width / 2,
               margin: EdgeInsets.symmetric(horizontal: 5),
@@ -110,16 +114,14 @@ class _HomeScreen extends State<HomeScreen> {
                 color: Color.fromARGB(255, 249, 115, 22),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Center(
-                child: Text("Categoria $i", style: TextStyle(fontSize: 30)),
-              ),
+              child: Center(child: Text("$i", style: TextStyle(fontSize: 30))),
             );
           }).toList(),
       options: CarouselOptions(
         height: 75,
-        enableInfiniteScroll: true, //ficar trocando
+        enableInfiniteScroll: true,
         autoPlay: true,
-        viewportFraction: 0.5, // autoplay p melhor xp
+        viewportFraction: 0.5,
       ),
     );
   }
@@ -134,65 +136,69 @@ class _HomeScreen extends State<HomeScreen> {
     ];
 
     return CarouselSlider(
-      items:
-          List.generate(imagePaths.length, (i) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start, // Alinha os textos à esquerda
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.asset(
-                      imagePaths[i],
-                      width: MediaQuery.of(context).size.width,
-                      height: 180,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  SizedBox(height: 12), // Espaçamento entre o card e os textos
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Nome do Evento $i", // Novo título
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        Text(
-                          "25/04 - Londrina/PR", // Novo título
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ), // Pequeno espaçamento entre os textos
-                        Text(
-                          "Curtido por Fulano e +3 ",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey[700],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+      items: List.generate(imagePaths.length, (i) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const EventScreen()),
             );
-          }).toList(),
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.asset(
+                    imagePaths[i],
+                    width: MediaQuery.of(context).size.width,
+                    height: 180,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                SizedBox(height: 12),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Nome do Evento $i",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Text(
+                        "25/04 - Londrina/PR",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        "Curtido por Fulano e +3 ",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }),
       options: CarouselOptions(
-        height: 270, // Ajustado para acomodar melhor os textos
+        height: 270,
         enableInfiniteScroll: true,
         autoPlay: true,
       ),
