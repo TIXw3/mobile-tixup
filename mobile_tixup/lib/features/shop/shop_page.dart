@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_tixup/features/events/events_page.dart';
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
@@ -11,9 +12,9 @@ class _ShopScreen extends State<ShopScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 248, 247, 245),
+      backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 249, 115, 22),
+        backgroundColor: const Color.fromARGB(255, 249, 115, 22),
         centerTitle: true,
         title: const Icon(
           Icons.confirmation_number,
@@ -83,10 +84,13 @@ class _ShopScreen extends State<ShopScreen> {
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                // Ação para comprar ingressos
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const TelaPesquisa()),
+                );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 249, 115, 22),
+                backgroundColor: const Color.fromARGB(255, 249, 115, 22),
                 padding: const EdgeInsets.symmetric(
                   vertical: 15.0,
                   horizontal: 40.0,

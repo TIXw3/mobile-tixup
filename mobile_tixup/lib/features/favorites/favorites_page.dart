@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_tixup/features/events/events_page.dart';
 
 class FavoriteScreen extends StatelessWidget {
   const FavoriteScreen({Key? key}) : super(key: key);
@@ -84,7 +85,14 @@ class FavoriteScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 55,
                 child: OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TelaPesquisa(),
+                      ),
+                    );
+                  },
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(
                       color: Color.fromARGB(255, 249, 115, 22),

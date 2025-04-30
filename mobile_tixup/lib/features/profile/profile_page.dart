@@ -10,6 +10,7 @@ import 'package:mobile_tixup/features/profile/pages/student_id_page.dart';
 import 'package:mobile_tixup/features/profile/pages/suporte_page.dart';
 import 'package:mobile_tixup/features/profile/pages/tickets_page.dart';
 import 'package:mobile_tixup/features/profile/pages/tutorial_page.dart';
+import 'package:mobile_tixup/features/profile/pages/editprofile_page.dart';
 import '../../../../models/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +34,7 @@ class _ProfileScreen extends State<ProfileScreen> {
     final email = userProvider.user?.email ?? 'email@email.com';
 
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 248, 247, 245),
+      backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -52,47 +53,33 @@ class _ProfileScreen extends State<ProfileScreen> {
   Widget _buildHeader(String email) {
     return Container(
       padding: const EdgeInsets.all(20),
-      child: Column(
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-          const CircleAvatar(
-            radius: 50,
-            backgroundColor: Color.fromARGB(255, 240, 228, 211),
-            backgroundImage: NetworkImage(''),
-          ),
-          const SizedBox(height: 10),
-          const Text(
-            'Lucas Gabriel',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
-          Text(
-            email,
-            style: const TextStyle(color: Colors.black54, fontSize: 16),
-          ),
-          const SizedBox(height: 15),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Column(
             children: [
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 249, 115, 22),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 30,
-                    vertical: 12,
-                  ),
-                ),
-                child: const Text(
-                  'Editar Perfil',
-                  style: TextStyle(color: Colors.white),
+              const CircleAvatar(
+                radius: 50,
+                backgroundColor: Color.fromARGB(255, 240, 228, 211),
+                backgroundImage: NetworkImage(''), 
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Lucas Gabriel',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 ),
               ),
-              const SizedBox(width: 10),
+              Text(
+                email,
+                style: const TextStyle(color: Colors.black54, fontSize: 16),
+              ),
+              const SizedBox(height: 15),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color.fromARGB(255, 249, 115, 22),
                   padding: const EdgeInsets.symmetric(
@@ -107,6 +94,29 @@ class _ProfileScreen extends State<ProfileScreen> {
               ),
             ],
           ),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfileScreen()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 249, 115, 22),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'Editar Perfil',
+                style: TextStyle(color: Colors.white, fontSize: 14),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -117,7 +127,7 @@ class _ProfileScreen extends State<ProfileScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
       decoration: BoxDecoration(
-        color: Color.fromARGB(111, 231, 87, 47),
+        color: const Color.fromARGB(111, 231, 87, 47),
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
@@ -194,7 +204,7 @@ class _ProfileScreen extends State<ProfileScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       decoration: BoxDecoration(
         border: Border.all(
-          color: Color.fromARGB(255, 249, 115, 22),
+          color: const Color.fromARGB(255, 249, 115, 22),
           width: 1.5,
         ),
         borderRadius: BorderRadius.circular(10),
@@ -296,7 +306,7 @@ class _ProfileScreen extends State<ProfileScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 18),
       decoration: BoxDecoration(
         border: Border.all(
-          color: Color.fromARGB(255, 249, 115, 22),
+          color: const Color.fromARGB(255, 249, 115, 22),
           width: 1.5,
         ),
         borderRadius: BorderRadius.circular(8),
@@ -331,7 +341,7 @@ class _ProfileScreen extends State<ProfileScreen> {
     VoidCallback? onTap,
   }) {
     return ListTile(
-      leading: Icon(icon, color: color ?? Color.fromARGB(255, 249, 115, 22)),
+      leading: Icon(icon, color: color ?? const Color.fromARGB(255, 249, 115, 22)),
       title: Text(
         title,
         style: TextStyle(color: color ?? Colors.black, fontSize: 16),
@@ -350,7 +360,7 @@ class _ProfileScreen extends State<ProfileScreen> {
       icon: Icon(icon, color: Colors.white),
       label: Text(title, style: const TextStyle(color: Colors.white)),
       style: ElevatedButton.styleFrom(
-        backgroundColor: Color.fromARGB(255, 249, 115, 22),
+        backgroundColor: const Color.fromARGB(255, 249, 115, 22),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       ),
     );
