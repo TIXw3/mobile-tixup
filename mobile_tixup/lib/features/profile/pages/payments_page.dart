@@ -12,7 +12,6 @@ class PaymentsPage extends StatefulWidget {
 
 class _PaymentsPageState extends State<PaymentsPage> {
   final PageController _pageController = PageController(viewportFraction: 0.95);
-
   final GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
   final FocusNode cvvFocusNode = FocusNode();
 
@@ -39,7 +38,6 @@ class _PaymentsPageState extends State<PaymentsPage> {
   @override
   void initState() {
     super.initState();
-
     cvvFocusNode.addListener(() {
       if (cvvFocusNode.hasFocus) {
         cardKey.currentState?.toggleCard();
@@ -179,95 +177,115 @@ class _PaymentsPageState extends State<PaymentsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 248, 247, 245),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            const SizedBox(height: 30),
-            SizedBox(
-              height: 210,
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: addedCards.length + 1,
-                itemBuilder: (context, index) {
-                  if (index < addedCards.length) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: buildCard(addedCards[index]),
-                    );
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: FlipCard(
-                      key: cardKey,
-                      flipOnTouch: false,
-                      direction: FlipDirection.HORIZONTAL,
-                      front: _buildCardFront(),
-                      back: _buildCardBack(),
-                    ),
-                  );
-                },
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 30),
+                      SizedBox(
+                        height: 210,
+                        child: PageView.builder(
+                          controller: _pageController,
+                          itemCount: addedCards.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index < addedCards.length) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                ),
+                                child: buildCard(addedCards[index]),
+                              );
+                            }
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                              ),
+                              child: FlipCard(
+                                key: cardKey,
+                                flipOnTouch: false,
+                                direction: FlipDirection.HORIZONTAL,
+                                front: _buildCardFront(),
+                                back: _buildCardBack(),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      _buildTextField(
+                        icon: Icons.credit_card,
+                        hintText: 'Número do Cartão',
+                        controller: numberController,
+                        inputFormatters: [cardNumberFormatter],
+                      ),
+                      const SizedBox(height: 12),
+                      _buildTextField(
+                        icon: Icons.person,
+                        hintText: 'Nome Completo',
+                        controller: nameController,
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildTextField(
+                              icon: Icons.date_range,
+                              hintText: 'MM/YY',
+                              controller: expiryController,
+                              inputFormatters: [expiryFormatter],
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _buildTextField(
+                              icon: Icons.lock,
+                              hintText: 'CVV',
+                              controller: cvvController,
+                              inputFormatters: [cvvFormatter],
+                              focusNode: cvvFocusNode,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _addCard,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(
+                              255,
+                              249,
+                              115,
+                              22,
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text(
+                            'Adicionar cartão',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(height: 30),
-            _buildTextField(
-              icon: Icons.credit_card,
-              hintText: 'Número do Cartão',
-              controller: numberController,
-              inputFormatters: [cardNumberFormatter],
-            ),
-            const SizedBox(height: 12),
-            _buildTextField(
-              icon: Icons.person,
-              hintText: 'Nome Completo',
-              controller: nameController,
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildTextField(
-                    icon: Icons.date_range,
-                    hintText: 'MM/YY',
-                    controller: expiryController,
-                    inputFormatters: [expiryFormatter],
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildTextField(
-                    icon: Icons.lock,
-                    hintText: 'CVV',
-                    controller: cvvController,
-                    inputFormatters: [cvvFormatter],
-                    focusNode: cvvFocusNode,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _addCard,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 249, 115, 22),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: const Text(
-                  'Adicionar cartão',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
@@ -304,7 +322,6 @@ class _PaymentsPageState extends State<PaymentsPage> {
 
   Widget _buildCardFront() {
     final brand = getCardBrand(numberController.text);
-
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
