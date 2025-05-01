@@ -106,7 +106,7 @@ class _HomeScreen extends State<HomeScreen> {
   Widget categories(BuildContext context) {
     return CarouselSlider(
       items:
-          ["Show", "Festas", "Baladas", "Universitárias", "Diversos"].map((i) {
+          ["Show", "Festas", "Baladas", "Boate", "Diversos"].map((i) {
             return Container(
               width: MediaQuery.of(context).size.width / 2,
               margin: EdgeInsets.symmetric(horizontal: 5),

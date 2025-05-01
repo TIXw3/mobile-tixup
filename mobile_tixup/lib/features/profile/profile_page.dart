@@ -61,7 +61,7 @@ class _ProfileScreen extends State<ProfileScreen> {
               const CircleAvatar(
                 radius: 50,
                 backgroundColor: Color.fromARGB(255, 240, 228, 211),
-                backgroundImage: NetworkImage(''), 
+                backgroundImage: NetworkImage(''),
               ),
               const SizedBox(height: 10),
               const Text(
@@ -78,8 +78,7 @@ class _ProfileScreen extends State<ProfileScreen> {
               ),
               const SizedBox(height: 15),
               ElevatedButton(
-                onPressed: () {
-                },
+                onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color.fromARGB(255, 249, 115, 22),
                   padding: const EdgeInsets.symmetric(
@@ -101,12 +100,15 @@ class _ProfileScreen extends State<ProfileScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ProfileScreen()),
+                  MaterialPageRoute(builder: (context) => EditProfilePage()),
                 );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 249, 115, 22),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -341,7 +343,10 @@ class _ProfileScreen extends State<ProfileScreen> {
     VoidCallback? onTap,
   }) {
     return ListTile(
-      leading: Icon(icon, color: color ?? const Color.fromARGB(255, 249, 115, 22)),
+      leading: Icon(
+        icon,
+        color: color ?? const Color.fromARGB(255, 249, 115, 22),
+      ),
       title: Text(
         title,
         style: TextStyle(color: color ?? Colors.black, fontSize: 16),
