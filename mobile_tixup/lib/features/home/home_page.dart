@@ -1,6 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_tixup/features/events/detailedEvent_page.dart';
+import 'package:mobile_tixup/features/events/events_page.dart';
+import 'package:mobile_tixup/features/shop/shop_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,13 +23,19 @@ class _HomeScreen extends State<HomeScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              // lógica para abrir busca
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const TelaPesquisa()),
+              );
             },
             icon: Icon(Icons.search),
           ),
           IconButton(
             onPressed: () {
-              // lógica para abrir carrinho
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ShopScreen()),
+              );
             },
             icon: Icon(Icons.shop_2),
           ),
@@ -106,7 +114,7 @@ class _HomeScreen extends State<HomeScreen> {
   Widget categories(BuildContext context) {
     return CarouselSlider(
       items:
-          ["Show", "Festas", "Baladas", "Boate", "Diversos"].map((i) {
+          ["Show", "Festas", "Baladas", "Boates", "Diversos"].map((i) {
             return Container(
               width: MediaQuery.of(context).size.width / 2,
               margin: EdgeInsets.symmetric(horizontal: 5),
@@ -211,7 +219,10 @@ class _HomeScreen extends State<HomeScreen> {
         SizedBox(height: 20),
         ElevatedButton(
           onPressed: () {
-            print("Botão pressionado!");
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const TelaPesquisa()),
+            );
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Color.fromARGB(255, 249, 115, 22),
