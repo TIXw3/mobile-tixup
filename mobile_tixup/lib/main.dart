@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
-import 'nav_menu.dart'; // Importe o NavigationMenu
+import 'package:mobile_tixup/features/auth/services/auth_gate.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'models/user_provider.dart';
 
-void main() {
-  runApp(const MainApp());
+void main() async {
+  await Supabase.initialize(
+    anonKey:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJuam5uZXBseG9tb2tpZW9mcmRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI0MTA1MDQsImV4cCI6MjA1Nzk4NjUwNH0.KA0De-qj8yoMzAdEZlIsvB2CAwT3D1W60cJ1lq_cvl4",
+    url: "https://bnjnneplxomokieofrdq.supabase.co",
+  );
+
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => UserProvider(),
+      child: const MainApp(),
+    ),
+  );
 }
 
 class MainApp extends StatelessWidget {
@@ -11,8 +25,9 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home:
-          NavigationMenu(), // Aqui você define o NavigationMenu como tela inicial
+      debugShowCheckedModeBanner: false,
+      title: 'TixUp',
+      home: AuthGate(),
     );
   }
 }
