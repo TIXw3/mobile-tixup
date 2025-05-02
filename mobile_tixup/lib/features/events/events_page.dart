@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TelaPesquisa extends StatefulWidget {
   const TelaPesquisa({Key? key}) : super(key: key);
@@ -10,39 +11,46 @@ class TelaPesquisa extends StatefulWidget {
 class _TelaPesquisaState extends State<TelaPesquisa> {
   final TextEditingController _searchController = TextEditingController();
 
-  // Novo laranja (orange-500)
   final Color laranjaPrincipal = const Color.fromARGB(255, 249, 115, 22);
 
-  final List<Map<String, String>> _todosEventos = [
-    {'data': '06 de Abr', 'nome': 'FILIN', 'local': 'Maringá/PR'},
-    {'data': '12 de Abr', 'nome': 'FOLKS', 'local': 'Maringá/PR'},
-    {'data': '19 de Abr', 'nome': 'DOUHA', 'local': 'Maringá/PR'},
-    {'data': '27 de Abr', 'nome': 'CASA DA VÓ', 'local': 'Maringá/PR'},
-    {'data': '04 de Mai', 'nome': 'BUTIQUIM', 'local': 'Maringá/PR'},
-    {'data': '11 de Mai', 'nome': 'NEW YORK', 'local': 'Maringá/PR'},
-    {'data': '18 de Mai', 'nome': 'BLACK NIGHT', 'local': 'Maringá/PR'},
-  ];
+  final supabase = Supabase.instance.client;
 
-  List<Map<String, String>> _eventosFiltrados = [];
+  List<Map<String, dynamic>> _todosEventos = [];
+  List<Map<String, dynamic>> _eventosFiltrados = [];
+  bool _carregando = true;
 
   @override
   void initState() {
     super.initState();
-    _eventosFiltrados = _todosEventos;
+    _buscarEventos();
     _searchController.addListener(_filtrarEventos);
+  }
+
+  Future<void> _buscarEventos() async {
+    try {
+      final List data = await supabase.from('eventos').select();
+      setState(() {
+        _todosEventos = List<Map<String, dynamic>>.from(data);
+        _eventosFiltrados = _todosEventos;
+        _carregando = false;
+      });
+    } catch (e) {
+      print('Erro ao buscar eventos: $e');
+      setState(() {
+        _carregando = false;
+      });
+    }
   }
 
   void _filtrarEventos() {
     final query = _searchController.text.toLowerCase();
     setState(() {
       _eventosFiltrados =
-          _todosEventos
-              .where(
-                (evento) =>
-                    evento['nome']!.toLowerCase().contains(query) ||
-                    evento['local']!.toLowerCase().contains(query),
-              )
-              .toList();
+          _todosEventos.where((evento) {
+            final nome = (evento['nome'] ?? '').toString().toLowerCase();
+            final local = (evento['local'] ?? '').toString().toLowerCase();
+            return nome.contains(query) || local.contains(query);
+          }).toList();
     });
   }
 
@@ -52,7 +60,7 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
     super.dispose();
   }
 
-  Widget _buildEventoCard(Map<String, String> evento) {
+  Widget _buildEventoCard(Map<String, dynamic> evento) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       padding: const EdgeInsets.all(12),
@@ -88,7 +96,7 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  evento['data']!,
+                  evento['data'] ?? '',
                   style: TextStyle(
                     fontSize: 14,
                     color: laranjaPrincipal,
@@ -98,7 +106,7 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  evento['nome']!,
+                  evento['nome'] ?? '',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -110,7 +118,7 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
                 Row(
                   children: [
                     Text(
-                      '${evento['local']}',
+                      evento['local'] ?? '',
                       style: const TextStyle(
                         fontSize: 14,
                         color: Colors.black,
@@ -139,7 +147,7 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 248, 247, 245),
+      backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       appBar: AppBar(
         backgroundColor: laranjaPrincipal,
         centerTitle: true,
@@ -194,7 +202,9 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
             const SizedBox(height: 30),
             Expanded(
               child:
-                  _eventosFiltrados.isEmpty
+                  _carregando
+                      ? const Center(child: CircularProgressIndicator())
+                      : _eventosFiltrados.isEmpty
                       ? Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

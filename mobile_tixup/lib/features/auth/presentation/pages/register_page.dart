@@ -144,15 +144,16 @@ class _TelaRegistroState extends State<TelaRegistro> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromARGB(255, 248, 247, 245),
-      body: Padding(
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: const Color.fromARGB(255, 248, 247, 245),
+    body: SafeArea(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            const SizedBox(height: 20),
             Align(
               alignment: Alignment.centerLeft,
               child: RichText(
@@ -164,25 +165,14 @@ class _TelaRegistroState extends State<TelaRegistro> {
                     color: Color.fromARGB(206, 0, 0, 0),
                   ),
                   children: [
-                    TextSpan(
-                      text: 'Cadastre-se e',
-                      style: TextStyle(letterSpacing: -1),
-                    ),
-                    TextSpan(text: ' '),
-                    TextSpan(
-                      text: 'encontre novas',
-                      style: TextStyle(letterSpacing: -1),
-                    ),
-                    TextSpan(text: ' '),
-                    TextSpan(
-                      text: 'experiências!',
-                      style: TextStyle(letterSpacing: -1),
-                    ),
+                    TextSpan(text: 'Cadastre-se e '),
+                    TextSpan(text: 'encontre novas '),
+                    TextSpan(text: 'experiências!'),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 60),
+            const SizedBox(height: 40),
             TextField(
               controller: _fullName,
               decoration: InputDecoration(
@@ -207,10 +197,8 @@ class _TelaRegistroState extends State<TelaRegistro> {
                     width: 2,
                   ),
                 ),
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 9.0,
-                  horizontal: 10.0,
-                ),
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 9.0, horizontal: 10.0),
                 suffixIcon: const Icon(
                   Icons.person,
                   color: Color.fromARGB(206, 0, 0, 0),
@@ -222,30 +210,23 @@ class _TelaRegistroState extends State<TelaRegistro> {
               controller: _emailController,
               decoration: InputDecoration(
                 labelText: 'Email',
-                labelStyle: const TextStyle(
-                  color: Color.fromARGB(206, 0, 0, 0),
-                ),
+                labelStyle:
+                    const TextStyle(color: Color.fromARGB(206, 0, 0, 0)),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: const BorderSide(
-                    color: Color.fromARGB(206, 0, 0, 0),
-                    width: 1,
-                  ),
+                      color: Color.fromARGB(206, 0, 0, 0), width: 1),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
-                  borderSide: const BorderSide(
-                    color: Colors.deepOrange,
-                    width: 2,
-                  ),
+                  borderSide:
+                      const BorderSide(color: Colors.deepOrange, width: 2),
                 ),
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 9.0,
-                  horizontal: 10.0,
-                ),
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 9.0, horizontal: 10.0),
                 suffixIcon: const Icon(
                   Icons.mail,
                   color: Color.fromARGB(206, 0, 0, 0),
@@ -259,30 +240,23 @@ class _TelaRegistroState extends State<TelaRegistro> {
               obscureText: _obscureText,
               decoration: InputDecoration(
                 labelText: 'Senha',
-                labelStyle: const TextStyle(
-                  color: Color.fromARGB(206, 0, 0, 0),
-                ),
+                labelStyle:
+                    const TextStyle(color: Color.fromARGB(206, 0, 0, 0)),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: const BorderSide(
-                    color: Color.fromARGB(206, 0, 0, 0),
-                    width: 1,
-                  ),
+                      color: Color.fromARGB(206, 0, 0, 0), width: 1),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
-                  borderSide: const BorderSide(
-                    color: Colors.deepOrange,
-                    width: 2,
-                  ),
+                  borderSide:
+                      const BorderSide(color: Colors.deepOrange, width: 2),
                 ),
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 9,
-                  horizontal: 10,
-                ),
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 9, horizontal: 10),
                 suffixIcon: IconButton(
                   icon: Icon(
                     _obscureText ? Icons.visibility : Icons.visibility_off,
@@ -298,30 +272,23 @@ class _TelaRegistroState extends State<TelaRegistro> {
               obscureText: _obscureText,
               decoration: InputDecoration(
                 labelText: 'Confirmar Senha',
-                labelStyle: const TextStyle(
-                  color: Color.fromARGB(206, 0, 0, 0),
-                ),
+                labelStyle:
+                    const TextStyle(color: Color.fromARGB(206, 0, 0, 0)),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: const BorderSide(
-                    color: Color.fromARGB(206, 0, 0, 0),
-                    width: 1,
-                  ),
+                      color: Color.fromARGB(206, 0, 0, 0), width: 1),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
-                  borderSide: const BorderSide(
-                    color: Colors.deepOrange,
-                    width: 2,
-                  ),
+                  borderSide:
+                      const BorderSide(color: Colors.deepOrange, width: 2),
                 ),
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 9.0,
-                  horizontal: 10.0,
-                ), //
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 9.0, horizontal: 10.0),
                 suffixIcon: IconButton(
                   icon: Icon(
                     _obscureText ? Icons.visibility : Icons.visibility_off,
@@ -338,30 +305,23 @@ class _TelaRegistroState extends State<TelaRegistro> {
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Data de Nascimento',
-                labelStyle: const TextStyle(
-                  color: Color.fromARGB(206, 0, 0, 0),
-                ),
+                labelStyle:
+                    const TextStyle(color: Color.fromARGB(206, 0, 0, 0)),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: const BorderSide(
-                    color: Color.fromARGB(206, 0, 0, 0),
-                    width: 1,
-                  ),
+                      color: Color.fromARGB(206, 0, 0, 0), width: 1),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
-                  borderSide: const BorderSide(
-                    color: Colors.deepOrange,
-                    width: 2,
-                  ),
+                  borderSide:
+                      const BorderSide(color: Colors.deepOrange, width: 2),
                 ),
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 9,
-                  horizontal: 10,
-                ),
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 9, horizontal: 10),
                 suffixIcon: const Icon(
                   Icons.cake,
                   color: Color.fromARGB(206, 0, 0, 0),
@@ -375,30 +335,23 @@ class _TelaRegistroState extends State<TelaRegistro> {
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'CPF',
-                labelStyle: const TextStyle(
-                  color: Color.fromARGB(206, 0, 0, 0),
-                ),
+                labelStyle:
+                    const TextStyle(color: Color.fromARGB(206, 0, 0, 0)),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: const BorderSide(
-                    color: Color.fromARGB(206, 0, 0, 0),
-                    width: 1,
-                  ),
+                      color: Color.fromARGB(206, 0, 0, 0), width: 1),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
-                  borderSide: const BorderSide(
-                    color: Colors.deepOrange,
-                    width: 2,
-                  ),
+                  borderSide:
+                      const BorderSide(color: Colors.deepOrange, width: 2),
                 ),
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 9,
-                  horizontal: 10,
-                ),
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 9, horizontal: 10),
                 suffixIcon: const Icon(
                   Icons.badge,
                   color: Color.fromARGB(206, 0, 0, 0),
@@ -412,30 +365,23 @@ class _TelaRegistroState extends State<TelaRegistro> {
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Telefone',
-                labelStyle: const TextStyle(
-                  color: Color.fromARGB(206, 0, 0, 0),
-                ),
+                labelStyle:
+                    const TextStyle(color: Color.fromARGB(206, 0, 0, 0)),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: const BorderSide(
-                    color: Color.fromARGB(206, 0, 0, 0),
-                    width: 1,
-                  ),
+                      color: Color.fromARGB(206, 0, 0, 0), width: 1),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
-                  borderSide: const BorderSide(
-                    color: Colors.deepOrange,
-                    width: 2,
-                  ),
+                  borderSide:
+                      const BorderSide(color: Colors.deepOrange, width: 2),
                 ),
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 9,
-                  horizontal: 10,
-                ),
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 9, horizontal: 10),
                 suffixIcon: const Icon(
                   Icons.phone,
                   color: Color.fromARGB(206, 0, 0, 0),
@@ -450,9 +396,7 @@ class _TelaRegistroState extends State<TelaRegistro> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 249, 115, 22),
                   padding: const EdgeInsets.symmetric(
-                    vertical: 13.0,
-                    horizontal: 20.0,
-                  ),
+                      vertical: 13.0, horizontal: 20.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -468,9 +412,11 @@ class _TelaRegistroState extends State<TelaRegistro> {
                 ),
               ),
             ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+ }
 }
