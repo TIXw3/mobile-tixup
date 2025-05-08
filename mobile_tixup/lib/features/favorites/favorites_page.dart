@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_tixup/features/events/events_page.dart';
 
 class FavoriteScreen extends StatelessWidget {
-  const FavoriteScreen({Key? key}) : super(key: key);
+  const FavoriteScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +43,14 @@ class FavoriteScreen extends StatelessWidget {
               const SizedBox(height: 40),
               Center(
                 child: Container(
-                  width: 300, // largura centralizada
+                  width: 300,
                   padding: const EdgeInsets.symmetric(vertical: 40),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Colors.orangeAccent, Colors.deepOrange],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+                    border: Border.all(
+                      color: const Color.fromARGB(255, 249, 115, 22),
+                      width: 1.5,
                     ),
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
@@ -65,7 +65,7 @@ class FavoriteScreen extends StatelessWidget {
                     children: const [
                       Icon(
                         Icons.sentiment_dissatisfied,
-                        color: Colors.white,
+                        color: Color.fromARGB(255, 249, 115, 22),
                         size: 60,
                       ),
                       SizedBox(height: 16),
@@ -75,7 +75,7 @@ class FavoriteScreen extends StatelessWidget {
                           'Você ainda não curtiu nenhum evento',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Color.fromARGB(255, 249, 115, 22),
                             fontSize: 18,
                             fontFamily: 'sans-serif',
                             fontWeight: FontWeight.w600,
@@ -90,7 +90,7 @@ class FavoriteScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 height: 55,
-                child: OutlinedButton(
+                child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -99,18 +99,17 @@ class FavoriteScreen extends StatelessWidget {
                       ),
                     );
                   },
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(
-                      color: Color.fromARGB(255, 249, 115, 22),
-                    ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 249, 115, 22), 
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
                   ),
                   child: const Text(
                     'Explorar eventos',
                     style: TextStyle(
-                      color: Color.fromARGB(255, 249, 115, 22),
+                      color: Colors.white,
                       fontSize: 18,
                       fontFamily: 'sans-serif',
                       fontWeight: FontWeight.w600,

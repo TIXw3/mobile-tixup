@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_tixup/features/events/InformationPurchase_page.dart'; 
 
 class EventScreen extends StatefulWidget {
-  const EventScreen({super.key});
+  const EventScreen({super.key, required Map<String, int> ticketCounts});
 
   @override
   State<EventScreen> createState() => _EventScreen();
@@ -45,7 +46,12 @@ class _EventScreen extends State<EventScreen> {
             ),
           ),
           onPressed: () {
-            // Finalizar compra
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => InformationPurchasePage(), 
+              ),
+            );
           },
           child: Text(
             'Finalizar compra!',
@@ -57,79 +63,52 @@ class _EventScreen extends State<EventScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              children: [
-                SizedBox(
-                  height: 250,
-                  child: Stack(
+            SizedBox(
+              height: 250,
+              child: Stack(
+                children: [
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.only(
-                                bottomRight: Radius.circular(20),
-                              ),
-                              child: Image.asset(
-                                'lib/assets/images/party1.jpg',
-                                height: 250,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                      Expanded(
+                        flex: 3,
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            bottomRight: Radius.circular(20),
                           ),
-                          Expanded(flex: 1, child: SizedBox()),
-                        ],
-                      ),
-                      Positioned(
-                        top: 0,
-                        right: 0,
-                        width: MediaQuery.of(context).size.width * 0.25,
-                        height: 200,
-                        child: Container(
-                          decoration: BoxDecoration(color: Colors.grey[400]),
-                        ),
-                      ),
-                      Positioned(
-                        top: 200,
-                        right: 34,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 1),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                onPressed: () {},
-                                icon: Icon(Icons.bookmark_border),
-                                iconSize: 28,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 200,
-                        right: 0,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 1),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                onPressed: () {},
-                                icon: Icon(Icons.share_outlined),
-                                iconSize: 28,
-                              ),
-                            ],
+                          child: Image.asset(
+                            'lib/assets/images/party1.jpg',
+                            height: 250,
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
                     ],
                   ),
-                ),
-              ],
+                  Positioned(
+                    top: 15,
+                    right: 15,
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.bookmark_border),
+                      iconSize: 28,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Positioned(
+                    top: 15,
+                    right: 60,
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.share_outlined),
+                      iconSize: 28,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
             ),
 
+            // Detalhes do evento
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -167,8 +146,8 @@ class _EventScreen extends State<EventScreen> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
-                  ...ticketCounts.keys.map((type) => ticketTile(type)).toList(),
-                  SizedBox(height: 40), // Espaço para botão não sobrepor
+                  ...ticketCounts.keys.map((type) => ticketTile(type)),
+                  SizedBox(height: 40), 
                 ],
               ),
             ),

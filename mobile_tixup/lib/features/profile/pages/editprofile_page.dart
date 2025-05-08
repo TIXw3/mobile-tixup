@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({Key? key}) : super(key: key);
+  const EditProfilePage({super.key});
 
   @override
   State<EditProfilePage> createState() => _EditProfilePageState();
@@ -9,10 +11,44 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormState>();
+  File? _profileImage;  
 
   String name = 'Lucas Gabriel';
   String email = 'email@email.com';
-  String phone = '(11) 99999-9999';
+  String phone = '(44) 99999-0000';
+  String address = 'Rua X, Jardim Y, 89898993';
+  final ImagePicker _picker = ImagePicker();  
+
+  Future<void> _selectImage() async {
+    final pickedFile = await showDialog<XFile?>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Escolha uma opção'),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              final image = await _picker.pickImage(source: ImageSource.gallery);
+              Navigator.pop(context, image);
+            },
+            child: const Text('Galeria'),
+          ),
+          TextButton(
+            onPressed: () async {
+              final image = await _picker.pickImage(source: ImageSource.camera);
+              Navigator.pop(context, image);
+            },
+            child: const Text('Câmera'),
+          ),
+        ],
+      ),
+    );
+
+    if (pickedFile != null) {
+      setState(() {
+        _profileImage = File(pickedFile.path);  
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,21 +64,23 @@ class _EditProfilePageState extends State<EditProfilePage> {
           key: _formKey,
           child: ListView(
             children: [
-
               Center(
                 child: CircleAvatar(
                   radius: 60,
                   backgroundColor: const Color.fromARGB(255, 240, 228, 211),
-                  backgroundImage: NetworkImage(''), // URL da imagem atual
-                  child: const Icon(Icons.person, size: 60, color: Colors.white),
+                  backgroundImage: _profileImage != null
+                      ? FileImage(_profileImage!)  
+                      : null,
+                  child: _profileImage == null
+                      ? const Icon(Icons.person, size: 60, color: Colors.white)
+                      : null,
                 ),
               ),
               const SizedBox(height: 12),
 
               Center(
                 child: OutlinedButton.icon(
-                  onPressed: () {
-                  },
+                  onPressed: _selectImage,  
                   icon: const Icon(Icons.photo_camera, color: Color.fromARGB(255, 249, 115, 22)),
                   label: const Text(
                     'Selecionar Imagem',
@@ -85,6 +123,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 validator: (value) =>
                     value == null || value.length < 10 ? 'Digite um número válido' : null,
                 onChanged: (value) => phone = value,
+              ),
+              const SizedBox(height: 20),
+
+              TextFormField(
+                initialValue: address,
+                decoration: _inputDecoration('Endereço', Icons.house),
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Digite seu endereço' : null,
+                onChanged: (value) => address = value,
               ),
               const SizedBox(height: 40),
 

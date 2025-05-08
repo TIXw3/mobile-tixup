@@ -1,15 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TelaDeSuporte extends StatelessWidget {
-  TelaDeSuporte({Key? key}) : super(key: key);
+  const TelaDeSuporte({super.key});
 
   final Color orange500 = const Color.fromARGB(255, 249, 115, 22);
   final Color black = const Color.fromRGBO(33, 33, 33, 1);
 
+  Future<void> _launchEmail(BuildContext context) async {
+    final Uri emailUri = Uri(
+      scheme: 'mailto',
+      path: 'tixupsuporte@gmail.com',
+      queryParameters: {
+        'subject': 'Suporte - Problema com o App',
+      },
+    );
+
+    try {
+      if (await canLaunchUrl(emailUri)) {
+        await launchUrl(emailUri);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Não foi possível abrir o e-mail.')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erro ao tentar abrir o e-mail.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 248, 247, 245),
+      backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -77,7 +102,7 @@ class TelaDeSuporte extends StatelessWidget {
             const SizedBox(height: 30),
             Center(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () => _launchEmail(context), 
                 style: ElevatedButton.styleFrom(
                   backgroundColor: orange500,
                   padding: const EdgeInsets.symmetric(

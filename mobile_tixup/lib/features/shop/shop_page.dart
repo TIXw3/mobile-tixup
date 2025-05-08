@@ -22,12 +22,12 @@ class _ShopScreen extends State<ShopScreen> {
           color: Colors.white,
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 140),
+            const SizedBox(height: 40),
             const Text(
               'Carrinho',
               style: TextStyle(
@@ -47,19 +47,16 @@ class _ShopScreen extends State<ShopScreen> {
                 fontFamily: 'sans-serif',
               ),
             ),
-            const SizedBox(height: 50),
+            const SizedBox(height: 30),
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.deepOrange[50],
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 5,
-                    offset: Offset(0, 2),
-                  ),
-                ],
+                border: Border.all(
+                  color: const Color.fromARGB(255, 249, 115, 22),
+                  width: 2,
+                ),
               ),
               child: Column(
                 children: const [
@@ -109,6 +106,7 @@ class _ShopScreen extends State<ShopScreen> {
                 ),
               ),
             ),
+            const SizedBox(height: 20),
           ],
         ),
       ),

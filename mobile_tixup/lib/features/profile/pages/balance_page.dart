@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SaldoPage extends StatelessWidget {
-  const SaldoPage({Key? key}) : super(key: key);
+  const SaldoPage({super.key});
 
   final Color orange500 = const Color.fromARGB(255, 249, 115, 22);
 
@@ -58,7 +58,7 @@ class SaldoPage extends StatelessWidget {
                   padding: const EdgeInsets.all(20),
                   margin: const EdgeInsets.symmetric(horizontal: 20),
                   decoration: BoxDecoration(
-                    color: orange500.withOpacity(0.1),
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: orange500, width: 1.5),
                   ),

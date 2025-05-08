@@ -15,11 +15,19 @@ class _HomeScreen extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 248, 247, 245),
+      backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 248, 247, 245),
+        backgroundColor: const Color.fromARGB(255, 248, 247, 245),
         elevation: 0,
-        title: Text('Salve, nome!'),
+        title: const Text(
+          'Salve, nome!',
+          style: TextStyle(
+            fontFamily: 'sans-serif',
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
         actions: [
           IconButton(
             onPressed: () {
@@ -28,7 +36,7 @@ class _HomeScreen extends State<HomeScreen> {
                 MaterialPageRoute(builder: (context) => const TelaPesquisa()),
               );
             },
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search, color: Colors.black),
           ),
           IconButton(
             onPressed: () {
@@ -37,36 +45,36 @@ class _HomeScreen extends State<HomeScreen> {
                 MaterialPageRoute(builder: (context) => const ShopScreen()),
               );
             },
-            icon: Icon(Icons.shop_2),
+            icon: const Icon(Icons.shop_2, color: Colors.black),
           ),
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             content(context),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
+            const SizedBox(height: 20),
+            const Padding(
+              padding: EdgeInsets.all(16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Categorias",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'sans-serif',
+                  ),
                 ),
               ),
             ),
             categories(context),
-            SizedBox(height: 1),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Align(alignment: Alignment.centerLeft),
-            ),
+            const SizedBox(height: 20),
             eventsLikedByFriends(context),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             goToEventsPage(context),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -83,25 +91,33 @@ class _HomeScreen extends State<HomeScreen> {
     ];
 
     return CarouselSlider(
-      items:
-          imagePaths.map((path) {
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const EventScreen()),
-                );
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  path,
-                  width: MediaQuery.of(context).size.width,
-                  fit: BoxFit.cover,
+      items: imagePaths.map((path) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EventScreen(
+                  ticketCounts: {
+                    "Meia MASCULINO": 0,
+                    "Meia FEMININO": 0,
+                    "Inteira MASCULINO": 0,
+                    "Inteira FEMININO": 0,
+                  },
                 ),
               ),
             );
-          }).toList(),
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.asset(
+              path,
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.cover,
+            ),
+          ),
+        );
+      }).toList(),
       options: CarouselOptions(
         height: 200,
         autoPlay: true,
@@ -113,18 +129,27 @@ class _HomeScreen extends State<HomeScreen> {
 
   Widget categories(BuildContext context) {
     return CarouselSlider(
-      items:
-          ["Show", "Festas", "Baladas", "Boates", "Diversos"].map((i) {
-            return Container(
-              width: MediaQuery.of(context).size.width / 2,
-              margin: EdgeInsets.symmetric(horizontal: 5),
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 249, 115, 22),
-                borderRadius: BorderRadius.circular(10),
+      items: ["Show", "Festas", "Baladas", "Boates", "Diversos"].map((i) {
+        return Container(
+          width: MediaQuery.of(context).size.width / 2,
+          margin: const EdgeInsets.symmetric(horizontal: 5),
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 249, 115, 22),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Center(
+            child: Text(
+              i,
+              style: const TextStyle(
+                fontSize: 26,
+                color: Colors.white,
+                fontFamily: 'sans-serif',
+                fontWeight: FontWeight.w600,
               ),
-              child: Center(child: Text("$i", style: TextStyle(fontSize: 30))),
-            );
-          }).toList(),
+            ),
+          ),
+        );
+      }).toList(),
       options: CarouselOptions(
         height: 75,
         enableInfiniteScroll: true,
@@ -149,7 +174,16 @@ class _HomeScreen extends State<HomeScreen> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const EventScreen()),
+              MaterialPageRoute(
+                builder: (context) => EventScreen(
+                  ticketCounts: {
+                    "Meia MASCULINO": 0,
+                    "Meia FEMININO": 0,
+                    "Inteira MASCULINO": 0,
+                    "Inteira FEMININO": 0,
+                  },
+                ),
+              ),
             );
           },
           child: Padding(
@@ -166,35 +200,38 @@ class _HomeScreen extends State<HomeScreen> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         "Nome do Evento $i",
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
+                          fontFamily: 'sans-serif',
                         ),
                       ),
-                      Text(
+                      const Text(
                         "25/04 - Londrina/PR",
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
+                          fontFamily: 'sans-serif',
                         ),
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Text(
-                        "Curtido por Fulano e +3 ",
+                        "Curtido por Fulano e +3",
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                           color: Colors.grey[700],
+                          fontFamily: 'sans-serif',
                         ),
                       ),
                     ],
@@ -214,33 +251,34 @@ class _HomeScreen extends State<HomeScreen> {
   }
 
   Widget goToEventsPage(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const TelaPesquisa()),
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Color.fromARGB(255, 249, 115, 22),
-            padding: const EdgeInsets.symmetric(
-              vertical: 13.0,
-              horizontal: 130.0,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            textStyle: const TextStyle(fontSize: 18),
-          ),
-          child: const Text(
-            'Eventos',
-            style: TextStyle(fontSize: 18, color: Colors.black),
+    return SizedBox(
+      width: double.infinity,
+      height: 55,
+      child: OutlinedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const TelaPesquisa()),
+          );
+        },
+        style: OutlinedButton.styleFrom(
+          side: const BorderSide(color: Color.fromARGB(255, 249, 115, 22), width: 2),
+          backgroundColor: const Color.fromARGB(255, 249, 115, 22),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
-      ],
+        child: const Text(
+          'Evento',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontFamily: 'sans-serif',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
     );
   }
 }

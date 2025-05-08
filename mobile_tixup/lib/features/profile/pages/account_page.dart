@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MeuPerfil extends StatelessWidget {
-  MeuPerfil({Key? key}) : super(key: key);
+  MeuPerfil({super.key});
 
-  final Color laranjaPrincipal = const Color.fromARGB(255, 249, 115, 22);
-
-  // Simulação de dados do usuário
   final Map<String, String> usuario = {
     'nome': 'Lucas Gabriel',
     'email': 'email@email.com',
@@ -14,12 +11,14 @@ class MeuPerfil extends StatelessWidget {
     'endereco': 'Rua X, Jardim Y, 89898993',
   };
 
+  final Color laranja = const Color.fromARGB(255, 249, 115, 22);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       appBar: AppBar(
-        backgroundColor: laranjaPrincipal,
+        backgroundColor: laranja,
         centerTitle: true,
         title: const Text(
           'Meu Perfil',
@@ -40,8 +39,8 @@ class MeuPerfil extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 40,
-                  backgroundColor: laranjaPrincipal.withOpacity(0.1),
-                  child: Icon(Icons.person, size: 50, color: laranjaPrincipal),
+                  backgroundColor: laranja.withOpacity(0.1),
+                  child: Icon(Icons.person, size: 50, color: laranja),
                 ),
                 const SizedBox(height: 10),
                 Text(
@@ -79,7 +78,7 @@ class MeuPerfil extends StatelessWidget {
   Widget _buildInfoRow(IconData icon, String label, String value) {
     return Row(
       children: [
-        Icon(icon, color: laranjaPrincipal),
+        Icon(icon, color: const Color.fromARGB(255, 249, 115, 22)),
         const SizedBox(width: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,25 +117,24 @@ class MeuPerfil extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(10),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: isDestructive ? Colors.red.withOpacity(0.05) : Colors.white,
-          border: Border.all(
-            color: isDestructive ? Colors.red : laranjaPrincipal,
-          ),
+          color: const Color.fromARGB(255, 249, 115, 22),
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: isDestructive ? Colors.red : laranjaPrincipal),
+            Icon(icon, color: Colors.white),
             const SizedBox(width: 10),
-            Text(
-              label,
+            const Text(
+              'Histórico de Compras',
               style: TextStyle(
                 fontSize: 16,
                 fontFamily: 'sans-serif',
-                fontWeight: FontWeight.w500,
-                color: isDestructive ? Colors.red : Colors.black,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
           ],
