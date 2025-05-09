@@ -91,35 +91,51 @@ class _HomeScreen extends State<HomeScreen> {
     ];
 
     return CarouselSlider(
-      items: imagePaths.map((path) {
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => EventScreen(
-                  ticketCounts: {
-                    "Meia MASCULINO": 0,
-                    "Meia FEMININO": 0,
-                    "Inteira MASCULINO": 0,
-                    "Inteira FEMININO": 0,
-                  },
+      items:
+          imagePaths.map((path) {
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => EventScreen(
+                          ticketCounts: {
+                            "Meia MASCULINO": 0,
+                            "Meia FEMININO": 0,
+                            "Inteira MASCULINO": 0,
+                            "Inteira FEMININO": 0,
+                          },
+                        ),
+                  ),
+                );
+              },
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color.fromARGB(255, 249, 115, 22),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.asset(
+                    path,
+                    width: MediaQuery.of(context).size.width,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             );
-          },
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
-              path,
-              width: MediaQuery.of(context).size.width,
-              fit: BoxFit.cover,
-            ),
-          ),
-        );
-      }).toList(),
+          }).toList(),
       options: CarouselOptions(
-        height: 200,
+        height: 230,
         autoPlay: true,
         enlargeCenterPage: true,
         viewportFraction: 0.9,
@@ -129,32 +145,37 @@ class _HomeScreen extends State<HomeScreen> {
 
   Widget categories(BuildContext context) {
     return CarouselSlider(
-      items: ["Show", "Festas", "Baladas", "Boates", "Diversos"].map((i) {
-        return Container(
-          width: MediaQuery.of(context).size.width / 2,
-          margin: const EdgeInsets.symmetric(horizontal: 5),
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 249, 115, 22),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Center(
-            child: Text(
-              i,
-              style: const TextStyle(
-                fontSize: 26,
+      items:
+          ["Show", "Festas", "Baladas", "Boates", "Diversos"].map((i) {
+            return Container(
+              width: 150,
+              margin: const EdgeInsets.symmetric(horizontal: 5),
+              decoration: BoxDecoration(
                 color: Colors.white,
-                fontFamily: 'sans-serif',
-                fontWeight: FontWeight.w600,
+                borderRadius: BorderRadius.circular(50),
+                border: Border.all(
+                  color: const Color.fromARGB(255, 249, 115, 22), // Laranja
+                  width: 1.5,
+                ),
               ),
-            ),
-          ),
-        );
-      }).toList(),
+              child: Center(
+                child: Text(
+                  i,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    color: Colors.black,
+                    fontFamily: 'sans-serif',
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
       options: CarouselOptions(
-        height: 75,
+        height: 45,
         enableInfiniteScroll: true,
         autoPlay: true,
-        viewportFraction: 0.5,
+        viewportFraction: 0.3,
       ),
     );
   }
@@ -175,14 +196,15 @@ class _HomeScreen extends State<HomeScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => EventScreen(
-                  ticketCounts: {
-                    "Meia MASCULINO": 0,
-                    "Meia FEMININO": 0,
-                    "Inteira MASCULINO": 0,
-                    "Inteira FEMININO": 0,
-                  },
-                ),
+                builder:
+                    (context) => EventScreen(
+                      ticketCounts: {
+                        "Meia MASCULINO": 0,
+                        "Meia FEMININO": 0,
+                        "Inteira MASCULINO": 0,
+                        "Inteira FEMININO": 0,
+                      },
+                    ),
               ),
             );
           },
@@ -211,7 +233,7 @@ class _HomeScreen extends State<HomeScreen> {
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: const Color.fromARGB(255, 249, 115, 22),
                           fontFamily: 'sans-serif',
                         ),
                       ),
@@ -230,7 +252,7 @@ class _HomeScreen extends State<HomeScreen> {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: Colors.grey[700],
+                          color: Colors.grey[930],
                           fontFamily: 'sans-serif',
                         ),
                       ),
@@ -252,7 +274,7 @@ class _HomeScreen extends State<HomeScreen> {
 
   Widget goToEventsPage(BuildContext context) {
     return SizedBox(
-      width: double.infinity,
+      width: 150, // largura reduzida
       height: 55,
       child: OutlinedButton(
         onPressed: () {
@@ -262,7 +284,10 @@ class _HomeScreen extends State<HomeScreen> {
           );
         },
         style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: Color.fromARGB(255, 249, 115, 22), width: 2),
+          side: const BorderSide(
+            color: Color.fromARGB(255, 249, 115, 22),
+            width: 2,
+          ),
           backgroundColor: const Color.fromARGB(255, 249, 115, 22),
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
           shape: RoundedRectangleBorder(

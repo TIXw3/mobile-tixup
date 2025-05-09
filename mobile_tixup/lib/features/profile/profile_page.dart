@@ -45,7 +45,9 @@ class _ProfileScreen extends State<ProfileScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Excluir Conta"),
-          content: const Text("Tem certeza de que deseja excluir sua conta? Essa ação é irreversível."),
+          content: const Text(
+            "Tem certeza de que deseja excluir sua conta? Essa ação é irreversível.",
+          ),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancelar'),
@@ -123,26 +125,44 @@ class _ProfileScreen extends State<ProfileScreen> {
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 249, 115, 22),
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 30,
+                    vertical: 12,
+                  ),
                 ),
                 child: const Text(
                   'Compartilhar',
-                  style: TextStyle(color: Colors.white, fontFamily: 'sans-serif'),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'sans-serif',
+                  ),
                 ),
               ),
               const SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfilePage()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => EditProfilePage()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 249, 115, 22),
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 30,
+                    vertical: 12,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
                 child: const Text(
                   'Editar Perfil',
-                  style: TextStyle(color: Colors.white, fontSize: 14, fontFamily: 'sans-serif'),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontFamily: 'sans-serif',
+                  ),
                 ),
               ),
             ],
@@ -158,7 +178,10 @@ class _ProfileScreen extends State<ProfileScreen> {
       padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: const Color.fromARGB(255, 249, 115, 22), width: 1.5),
+        border: Border.all(
+          color: const Color.fromARGB(255, 249, 115, 22),
+          width: 1.5,
+        ),
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
@@ -174,21 +197,30 @@ class _ProfileScreen extends State<ProfileScreen> {
         children: [
           GestureDetector(
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const FavoriteScreen()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const FavoriteScreen()),
+              );
             },
             child: _buildStatItem('10', 'Favoritos'),
           ),
           _buildVerticalDivider(),
           GestureDetector(
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const SeguindoPage()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SeguindoPage()),
+              );
             },
             child: _buildStatItem('10', 'Seguindo'),
           ),
           _buildVerticalDivider(),
           GestureDetector(
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const SaldoPage()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SaldoPage()),
+              );
             },
             child: _buildStatItem('R\$0,00', 'Saldo'),
           ),
@@ -239,28 +271,77 @@ class _ProfileScreen extends State<ProfileScreen> {
       ),
       child: Column(
         children: [
-          _buildMenuItem('Meus Ingressos', Icons.confirmation_number_outlined, onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => MeusIngressos()));
-          }),
-          _buildMenuItem('Carteirinhas', Icons.card_membership_outlined, onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => StudentIdScreen()));
-          }),
-          _buildMenuItem('Pedidos', Icons.shopping_bag_outlined, onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => OrdersScreen()));
-          }),
-          _buildMenuItem('Minha Conta', Icons.person_outline, onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => MeuPerfil()));
-          }),
+          _buildMenuItem(
+            'Meus Ingressos',
+            Icons.confirmation_number_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MeusIngressos()),
+              );
+            },
+          ),
+          _buildMenuItem(
+            'Carteirinhas',
+            Icons.card_membership_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => StudentIdScreen()),
+              );
+            },
+          ),
+          _buildMenuItem(
+            'Pedidos',
+            Icons.shopping_bag_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => OrdersScreen()),
+              );
+            },
+          ),
+          _buildMenuItem(
+            'Minha Conta',
+            Icons.person_outline,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MeuPerfil()),
+              );
+            },
+          ),
           _buildMenuItem('Meu Endereço', Icons.location_on_outlined),
-          _buildMenuItem('Tutorial', Icons.help_outline, onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => TelaTutorial()));
-          }),
-          _buildMenuItem('Meus Cartões', Icons.credit_card_outlined, onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentsPage()));
-          }),
-          _buildMenuItem('Vender Ingressos', Icons.sell_outlined, onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => TelaVenderIngresso()));
-          }),
+          _buildMenuItem(
+            'Tutorial',
+            Icons.help_outline,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TelaTutorial()),
+              );
+            },
+          ),
+          _buildMenuItem(
+            'Meus Cartões',
+            Icons.credit_card_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PaymentsPage()),
+              );
+            },
+          ),
+          _buildMenuItem(
+            'Vender Ingressos',
+            Icons.sell_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TelaVenderIngresso()),
+              );
+            },
+          ),
         ],
       ),
     );
@@ -270,29 +351,59 @@ class _ProfileScreen extends State<ProfileScreen> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 18),
       decoration: BoxDecoration(
-        border: Border.all(color: const Color.fromARGB(255, 249, 115, 22), width: 1.5),
+        border: Border.all(
+          color: const Color.fromARGB(255, 249, 115, 22),
+          width: 1.5,
+        ),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         children: [
-          _buildMenuItem('Suporte', Icons.headset_mic_outlined, onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => TelaDeSuporte()));
-          }),
+          _buildMenuItem(
+            'Suporte',
+            Icons.headset_mic_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TelaDeSuporte()),
+              );
+            },
+          ),
           _buildMenuItem('Sair', Icons.exit_to_app_outlined, onTap: logout),
-          _buildMenuItem('Excluir Conta', Icons.delete_outline, color: Colors.red, onTap: _confirmDeleteAccount),
+          _buildMenuItem(
+            'Excluir Conta',
+            Icons.delete_outline,
+            color: Colors.red,
+            onTap: _confirmDeleteAccount,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildMenuItem(String title, IconData icon, {Color? color, VoidCallback? onTap}) {
+  Widget _buildMenuItem(
+    String title,
+    IconData icon, {
+    Color? color,
+    VoidCallback? onTap,
+  }) {
     return ListTile(
-      leading: Icon(icon, color: color ?? const Color.fromARGB(255, 249, 115, 22)),
+      leading: Icon(
+        icon,
+        color: color ?? const Color.fromARGB(255, 249, 115, 22),
+      ),
       title: Text(
         title,
-        style: TextStyle(color: color ?? Colors.black, fontSize: 16, fontFamily: 'sans-serif'),
+        style: TextStyle(
+          color: color ?? Colors.black,
+          fontSize: 16,
+          fontFamily: 'sans-serif',
+        ),
       ),
-      trailing: const Icon(Icons.chevron_right, color: Color.fromARGB(255, 249, 115, 22)),
+      trailing: const Icon(
+        Icons.chevron_right,
+        color: Color.fromARGB(255, 249, 115, 22),
+      ),
       onTap: onTap,
     );
   }
@@ -303,15 +414,30 @@ class _ProfileScreen extends State<ProfileScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _buildSocialButton('Instagram', Icons.camera_alt_outlined, 'instagram://user?username=tixup_oficial', 'https://www.instagram.com/tixup_oficial'),
+          _buildSocialButton(
+            'Instagram',
+            Icons.camera_alt_outlined,
+            'instagram://user?username=tixup_oficial',
+            'https://www.instagram.com/tixup_oficial',
+          ),
           const SizedBox(width: 10),
-          _buildSocialButton('YouTube', Icons.play_arrow_outlined, 'vnd.youtube://channel/UCXXXXXXX', 'https://www.youtube.com/@tixup'),
+          _buildSocialButton(
+            'YouTube',
+            Icons.play_arrow_outlined,
+            'vnd.youtube://channel/UCXXXXXXX',
+            'https://www.youtube.com/@tixup',
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildSocialButton(String title, IconData icon, String appUrl, String webUrl) {
+  Widget _buildSocialButton(
+    String title,
+    IconData icon,
+    String appUrl,
+    String webUrl,
+  ) {
     return ElevatedButton.icon(
       onPressed: () async {
         final Uri appUri = Uri.parse(appUrl);
@@ -322,16 +448,23 @@ class _ProfileScreen extends State<ProfileScreen> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text("Escolha uma opção"),
-              content: const Text("Você quer abrir o link no aplicativo ou no navegador?"),
+              content: const Text(
+                "Você quer abrir o link no aplicativo ou no navegador?",
+              ),
               actions: <Widget>[
                 TextButton(
                   child: const Text('Abrir no App'),
                   onPressed: () async {
                     if (await canLaunchUrl(appUri)) {
-                      await launchUrl(appUri, mode: LaunchMode.externalApplication);
+                      await launchUrl(
+                        appUri,
+                        mode: LaunchMode.externalApplication,
+                      );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('O app não está instalado: $title')),
+                        SnackBar(
+                          content: Text('O app não está instalado: $title'),
+                        ),
                       );
                     }
                     Navigator.of(context).pop();
@@ -341,10 +474,15 @@ class _ProfileScreen extends State<ProfileScreen> {
                   child: const Text('Abrir no Navegador'),
                   onPressed: () async {
                     if (await canLaunchUrl(webUri)) {
-                      await launchUrl(webUri, mode: LaunchMode.externalApplication);
+                      await launchUrl(
+                        webUri,
+                        mode: LaunchMode.externalApplication,
+                      );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Não foi possível abrir no navegador.')),
+                        const SnackBar(
+                          content: Text('Não foi possível abrir no navegador.'),
+                        ),
                       );
                     }
                     Navigator.of(context).pop();
@@ -356,7 +494,10 @@ class _ProfileScreen extends State<ProfileScreen> {
         );
       },
       icon: Icon(icon, color: Colors.white),
-      label: Text(title, style: const TextStyle(color: Colors.white, fontFamily: 'sans-serif')),
+      label: Text(
+        title,
+        style: const TextStyle(color: Colors.white, fontFamily: 'sans-serif'),
+      ),
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color.fromARGB(255, 249, 115, 22),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
