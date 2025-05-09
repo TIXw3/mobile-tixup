@@ -97,7 +97,9 @@ class _ProfileScreen extends State<ProfileScreen> {
           const CircleAvatar(
             radius: 50,
             backgroundColor: Color.fromARGB(255, 240, 228, 211),
-            backgroundImage: NetworkImage(''),
+            backgroundImage: NetworkImage(
+              'https://img.freepik.com/fotos-gratis/jovem-barbudo-com-camisa-listrada_273609-5677.jpg',
+            ),
           ),
           const SizedBox(height: 10),
           const Text(

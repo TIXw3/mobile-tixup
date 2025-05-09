@@ -19,14 +19,26 @@ class _HomeScreen extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 248, 247, 245),
         elevation: 0,
-        title: const Text(
-          'Salve, nome!',
-          style: TextStyle(
-            fontFamily: 'sans-serif',
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
+        title: Row(
+          children: [
+            const CircleAvatar(
+              radius: 20,
+              backgroundColor: Color.fromARGB(255, 240, 228, 211),
+              backgroundImage: NetworkImage(
+                'https://img.freepik.com/fotos-gratis/jovem-barbudo-com-camisa-listrada_273609-5677.jpg',
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Text(
+              'Salve, nome!',
+              style: TextStyle(
+                fontFamily: 'sans-serif',
+                fontSize: 26,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+            ),
+          ],
         ),
         actions: [
           IconButton(
@@ -49,6 +61,7 @@ class _HomeScreen extends State<HomeScreen> {
           ),
         ],
       ),
+
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -62,7 +75,7 @@ class _HomeScreen extends State<HomeScreen> {
                 child: Text(
                   "Categorias",
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'sans-serif',
                   ),
@@ -213,13 +226,22 @@ class _HomeScreen extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
-                    imagePaths[i],
-                    width: MediaQuery.of(context).size.width,
-                    height: 180,
-                    fit: BoxFit.cover,
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: const Color.fromARGB(255, 249, 115, 22), // Laranja
+                      width: 1,
+                    ),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.asset(
+                      imagePaths[i],
+                      width: MediaQuery.of(context).size.width,
+                      height: 180,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -233,7 +255,7 @@ class _HomeScreen extends State<HomeScreen> {
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: const Color.fromARGB(255, 249, 115, 22),
+                          color: Color.fromARGB(255, 249, 115, 22),
                           fontFamily: 'sans-serif',
                         ),
                       ),
@@ -295,7 +317,7 @@ class _HomeScreen extends State<HomeScreen> {
           ),
         ),
         child: const Text(
-          'Evento',
+          'Eventos',
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,
