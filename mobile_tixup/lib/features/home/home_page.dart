@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_tixup/features/events/detailedEvent_page.dart';
 import 'package:mobile_tixup/features/events/events_page.dart';
@@ -21,13 +22,22 @@ class _HomeScreen extends State<HomeScreen> {
         elevation: 0,
         title: Row(
           children: [
-            const CircleAvatar(
-              radius: 20,
-              backgroundColor: Color.fromARGB(255, 240, 228, 211),
-              backgroundImage: NetworkImage(
-                'https://img.freepik.com/fotos-gratis/jovem-barbudo-com-camisa-listrada_273609-5677.jpg',
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.black, width: 1.5),
+              ),
+              child: const CircleAvatar(
+                radius: 20,
+                backgroundColor: Color.fromARGB(255, 240, 228, 211),
+                backgroundImage: NetworkImage(
+                  'https://img.freepik.com/fotos-gratis/jovem-barbudo-com-camisa-listrada_273609-5677.jpg',
+                ),
               ),
             ),
+
             const SizedBox(width: 12),
             const Text(
               'Salve, nome!',
@@ -57,7 +67,7 @@ class _HomeScreen extends State<HomeScreen> {
                 MaterialPageRoute(builder: (context) => const ShopScreen()),
               );
             },
-            icon: const Icon(Icons.shop_2, color: Colors.black),
+            icon: const Icon(CupertinoIcons.cart_fill, color: Colors.black),
           ),
         ],
       ),
@@ -164,7 +174,7 @@ class _HomeScreen extends State<HomeScreen> {
               width: 150,
               margin: const EdgeInsets.symmetric(horizontal: 5),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Color.fromARGB(255, 248, 247, 245),
                 borderRadius: BorderRadius.circular(50),
                 border: Border.all(
                   color: const Color.fromARGB(255, 249, 115, 22), // Laranja

@@ -11,41 +11,46 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormState>();
-  File? _profileImage;  
+  File? _profileImage;
 
   String name = 'Lucas Gabriel';
   String email = 'email@email.com';
   String phone = '(44) 99999-0000';
   String address = 'Rua X, Jardim Y, 89898993';
-  final ImagePicker _picker = ImagePicker();  
+  final ImagePicker _picker = ImagePicker();
 
   Future<void> _selectImage() async {
     final pickedFile = await showDialog<XFile?>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Escolha uma opção'),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              final image = await _picker.pickImage(source: ImageSource.gallery);
-              Navigator.pop(context, image);
-            },
-            child: const Text('Galeria'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Escolha uma opção'),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  final image = await _picker.pickImage(
+                    source: ImageSource.gallery,
+                  );
+                  Navigator.pop(context, image);
+                },
+                child: const Text('Galeria'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  final image = await _picker.pickImage(
+                    source: ImageSource.camera,
+                  );
+                  Navigator.pop(context, image);
+                },
+                child: const Text('Câmera'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () async {
-              final image = await _picker.pickImage(source: ImageSource.camera);
-              Navigator.pop(context, image);
-            },
-            child: const Text('Câmera'),
-          ),
-        ],
-      ),
     );
 
     if (pickedFile != null) {
       setState(() {
-        _profileImage = File(pickedFile.path);  
+        _profileImage = File(pickedFile.path);
       });
     }
   }
@@ -54,10 +59,30 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Editar Perfil'),
+        elevation: 2,
         backgroundColor: const Color.fromARGB(255, 249, 115, 22),
         foregroundColor: Colors.white,
+        centerTitle: true,
+        title: const Text(
+          'Editar Perfil',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
+          ),
+        ),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ),
+
+      backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Form(
@@ -65,33 +90,60 @@ class _EditProfilePageState extends State<EditProfilePage> {
           child: ListView(
             children: [
               Center(
-                child: CircleAvatar(
-                  radius: 60,
-                  backgroundColor: const Color.fromARGB(255, 240, 228, 211),
-                  backgroundImage: _profileImage != null
-                      ? FileImage(_profileImage!)  
-                      : null,
-                  child: _profileImage == null
-                      ? const Icon(Icons.person, size: 60, color: Colors.white)
-                      : null,
+                child: Container(
+                  width: 130,
+                  height: 130,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.black, width: 1.5),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: CircleAvatar(
+                    radius: 60,
+                    backgroundColor: const Color.fromARGB(255, 250, 233, 215),
+                    backgroundImage:
+                        _profileImage != null
+                            ? FileImage(_profileImage!)
+                            : null,
+                    child:
+                        _profileImage == null
+                            ? const Icon(
+                              Icons.person,
+                              size: 60,
+                              color: Colors.white,
+                            )
+                            : null,
+                  ),
                 ),
               ),
-              const SizedBox(height: 12),
-
+              const SizedBox(height: 16),
               Center(
-                child: OutlinedButton.icon(
-                  onPressed: _selectImage,  
-                  icon: const Icon(Icons.photo_camera, color: Color.fromARGB(255, 249, 115, 22)),
+                child: ElevatedButton.icon(
+                  onPressed: _selectImage,
+                  icon: const Icon(Icons.photo_camera, color: Colors.white),
                   label: const Text(
                     'Selecionar Imagem',
                     style: TextStyle(
-                      color: Color.fromARGB(255, 249, 115, 22),
+                      color: Colors.white,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color.fromARGB(255, 249, 115, 22)),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 249, 115, 22),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                    elevation: 2,
                   ),
                 ),
               ),
@@ -100,8 +152,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
               TextFormField(
                 initialValue: name,
                 decoration: _inputDecoration('Nome', Icons.person),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Digite seu nome' : null,
+                validator:
+                    (value) =>
+                        value == null || value.isEmpty
+                            ? 'Digite seu nome'
+                            : null,
                 onChanged: (value) => name = value,
               ),
               const SizedBox(height: 20),
@@ -110,8 +165,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 initialValue: email,
                 decoration: _inputDecoration('E-mail', Icons.email),
                 keyboardType: TextInputType.emailAddress,
-                validator: (value) =>
-                    value == null || !value.contains('@') ? 'Digite um e-mail válido' : null,
+                validator:
+                    (value) =>
+                        value == null || !value.contains('@')
+                            ? 'Digite um e-mail válido'
+                            : null,
                 onChanged: (value) => email = value,
               ),
               const SizedBox(height: 20),
@@ -120,8 +178,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 initialValue: phone,
                 decoration: _inputDecoration('Número de Celular', Icons.phone),
                 keyboardType: TextInputType.phone,
-                validator: (value) =>
-                    value == null || value.length < 10 ? 'Digite um número válido' : null,
+                validator:
+                    (value) =>
+                        value == null || value.length < 10
+                            ? 'Digite um número válido'
+                            : null,
                 onChanged: (value) => phone = value,
               ),
               const SizedBox(height: 20),
@@ -129,8 +190,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
               TextFormField(
                 initialValue: address,
                 decoration: _inputDecoration('Endereço', Icons.house),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Digite seu endereço' : null,
+                validator:
+                    (value) =>
+                        value == null || value.isEmpty
+                            ? 'Digite seu endereço'
+                            : null,
                 onChanged: (value) => address = value,
               ),
               const SizedBox(height: 40),
@@ -139,19 +203,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Perfil atualizado com sucesso!')),
+                      const SnackBar(
+                        content: Text('Perfil atualizado com sucesso!'),
+                      ),
                     );
                     Navigator.pop(context);
                   }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 249, 115, 22),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  elevation: 3,
                 ),
                 child: const Text(
                   'Salvar',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
             ],
@@ -164,12 +233,29 @@ class _EditProfilePageState extends State<EditProfilePage> {
   InputDecoration _inputDecoration(String label, IconData icon) {
     return InputDecoration(
       labelText: label,
-      prefixIcon: Icon(icon, color: const Color.fromARGB(255, 249, 115, 22)),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-      focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Color.fromARGB(255, 249, 115, 22)),
-        borderRadius: BorderRadius.circular(10),
+      labelStyle: const TextStyle(
+        color: Color.fromARGB(206, 0, 0, 0),
+        fontWeight: FontWeight.w500,
       ),
+      prefixIcon: Icon(icon, color: const Color.fromARGB(255, 249, 115, 22)),
+      filled: true,
+      fillColor: Colors.white,
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide: const BorderSide(
+          color: Color.fromARGB(206, 0, 0, 0),
+          width: 1,
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide: const BorderSide(
+          color: Color.fromARGB(255, 249, 115, 22),
+          width: 2,
+        ),
+      ),
+      contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
     );
   }
 }
