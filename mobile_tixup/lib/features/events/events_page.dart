@@ -26,15 +26,60 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
 
   void _carregarEventosFixos() {
     _todosEventos = [
-      {'nome': 'Festa 1', 'data': '30-07-2025', 'dj': 'DJ Ensek', 'local': 'Rua Pedro Paulo'},
-      {'nome': 'Festa 2', 'data': '30-07-2025', 'dj': 'DJ Ensek', 'local': 'Rua Pedro Paulo'},
-      {'nome': 'Festa 3', 'data': '30-07-2025', 'dj': 'DJ Ensek', 'local': 'Rua Pedro Paulo'},
-      {'nome': 'Festa 4', 'data': '20-08-2025', 'dj': 'DJ Gabriel', 'local': 'Rua Giovanne Leite'},
-      {'nome': 'Festa 5', 'data': '20-08-2025', 'dj': 'DJ Gabriel', 'local': 'Rua Giovanne Leite'},
-      {'nome': 'Festa 6', 'data': '20-08-2025', 'dj': 'DJ Gabriel', 'local': 'Rua Giovanne Leite'},
-      {'nome': 'Festa 7', 'data': '10-09-2025', 'dj': 'DJ Lucas', 'local': 'Rua Thiago Poliseli'},
-      {'nome': 'Festa 8', 'data': '10-09-2025', 'dj': 'DJ Lucas', 'local': 'Rua Thiago Poliseli'},
-      {'nome': 'Festa 9', 'data': '10-09-2025', 'dj': 'DJ Lucas', 'local': 'Rua Thiago Poliseli'},
+      {
+        'nome': 'Festa 1',
+        'data': '30/07',
+        'dj': 'DJ Ensek',
+        'local': 'Rua Pedro Paulo',
+      },
+      {
+        'nome': 'Festa 2',
+        'data': '30/07',
+        'dj': 'DJ Ensek',
+        'local': 'Rua Pedro Paulo',
+      },
+      {
+        'nome': 'Festa 3',
+        'data': '30/07',
+        'dj': 'DJ Ensek',
+        'local': 'Rua Pedro Paulo',
+      },
+      {
+        'nome': 'Festa 4',
+        'data': '20/08',
+        'dj': 'DJ Gabriel',
+        'local': 'Rua Giovanne Leite',
+      },
+      {
+        'nome': 'Festa 5',
+        'data': '20/08',
+        'dj': 'DJ Gabriel',
+        'local': 'Rua Giovanne Leite',
+      },
+      {
+        'nome': 'Festa 6',
+        'data': '20/08',
+        'dj': 'DJ Gabriel',
+        'local': 'Rua Giovanne Leite',
+      },
+      {
+        'nome': 'Festa 7',
+        'data': '10/09',
+        'dj': 'DJ Lucas',
+        'local': 'Rua Thiago Poliseli',
+      },
+      {
+        'nome': 'Festa 8',
+        'data': '10/09',
+        'dj': 'DJ Lucas',
+        'local': 'Rua Thiago Poliseli',
+      },
+      {
+        'nome': 'Festa 9',
+        'data': '10/09',
+        'dj': 'DJ Lucas',
+        'local': 'Rua Thiago Poliseli',
+      },
     ];
     setState(() {
       _eventosFiltrados = _todosEventos;
@@ -45,13 +90,17 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
   void _filtrarEventos() {
     final query = _searchController.text.toLowerCase();
     setState(() {
-      _eventosFiltrados = _todosEventos.where((evento) {
-        final nome = (evento['nome'] ?? '').toString().toLowerCase();
-        final local = (evento['local'] ?? '').toString().toLowerCase();
-        final dj = (evento['dj'] ?? '').toString().toLowerCase();
-        final data = (evento['data'] ?? '').toString().toLowerCase();
-        return nome.contains(query) || local.contains(query) || dj.contains(query) || data.contains(query);
-      }).toList();
+      _eventosFiltrados =
+          _todosEventos.where((evento) {
+            final nome = (evento['nome'] ?? '').toString().toLowerCase();
+            final local = (evento['local'] ?? '').toString().toLowerCase();
+            final dj = (evento['dj'] ?? '').toString().toLowerCase();
+            final data = (evento['data'] ?? '').toString().toLowerCase();
+            return nome.contains(query) ||
+                local.contains(query) ||
+                dj.contains(query) ||
+                data.contains(query);
+          }).toList();
     });
   }
 
@@ -67,27 +116,22 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => EventScreen(ticketCounts: {
-              'Pista': 0,
-              'VIP': 0,
-              'Camarote': 0,
-            }),
+            builder:
+                (context) => EventScreen(
+                  ticketCounts: {'Pista': 0, 'VIP': 0, 'Camarote': 0},
+                ),
           ),
         );
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 20),
         padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          border: Border.all(color: laranjaPrincipal),
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.white,
-        ),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
         child: Row(
           children: [
             Container(
-              width: 80,
-              height: 80,
+              width: 220,
+              height: 145,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 border: Border.all(color: laranjaPrincipal, width: 2),
@@ -113,7 +157,7 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
                     evento['data'] ?? '',
                     style: TextStyle(
                       fontSize: 14,
-                      color: laranjaPrincipal,
+                      color: Color.fromARGB(118, 0, 0, 0),
                       fontFamily: 'sans-serif',
                       fontWeight: FontWeight.bold,
                     ),
@@ -121,36 +165,34 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
                   const SizedBox(height: 4),
                   Text(
                     evento['nome'] ?? '',
-                    style: const TextStyle(
-                      fontSize: 16,
+                    style: TextStyle(
+                      fontSize: 22,
                       fontWeight: FontWeight.w600,
                       fontFamily: 'sans-serif',
-                      color: Colors.black,
+                      color: laranjaPrincipal,
                     ),
                   ),
                   const SizedBox(height: 2),
-                  Row(
-                    children: [
-                      Text(
-                        evento['local'] ?? '',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.black,
-                          fontFamily: 'sans-serif',
-                        ),
-                      ),
-                      if (evento['dj'] != null)
-                        Text(
-                          ' • ${evento['dj']}',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: laranjaPrincipal,
-                            fontFamily: 'sans-serif',
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                    ],
+                  Text(
+                    evento['local'] ?? '',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black,
+                      fontFamily: 'sans-serif',
+                    ),
                   ),
+                  if (evento['dj'] != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      evento['dj'],
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black,
+                        fontFamily: 'sans-serif',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -217,35 +259,36 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
             ),
             const SizedBox(height: 30),
             Expanded(
-              child: _carregando
-                  ? const Center(child: CircularProgressIndicator())
-                  : _eventosFiltrados.isEmpty
+              child:
+                  _carregando
+                      ? const Center(child: CircularProgressIndicator())
+                      : _eventosFiltrados.isEmpty
                       ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.search_off_outlined,
-                              size: 80,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.search_off_outlined,
+                            size: 80,
+                            color: laranjaPrincipal,
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            'Nenhum resultado encontrado',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
                               color: laranjaPrincipal,
+                              fontFamily: 'sans-serif',
                             ),
-                            const SizedBox(height: 20),
-                            Text(
-                              'Nenhum resultado encontrado',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                color: laranjaPrincipal,
-                                fontFamily: 'sans-serif',
-                              ),
-                            ),
-                          ],
-                        )
+                          ),
+                        ],
+                      )
                       : ListView.builder(
-                          itemCount: _eventosFiltrados.length,
-                          itemBuilder: (context, index) {
-                            return _buildEventoCard(_eventosFiltrados[index]);
-                          },
-                        ),
+                        itemCount: _eventosFiltrados.length,
+                        itemBuilder: (context, index) {
+                          return _buildEventoCard(_eventosFiltrados[index]);
+                        },
+                      ),
             ),
           ],
         ),
