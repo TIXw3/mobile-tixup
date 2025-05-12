@@ -231,7 +231,7 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
                 color: Colors.black,
               ),
               decoration: InputDecoration(
-                hintText: 'Buscar eventos por nome, DJ ou data...',
+                hintText: 'Busque eventos por nome, DJ ou data...',
                 hintStyle: const TextStyle(
                   color: Colors.grey,
                   fontFamily: 'sans-serif',
