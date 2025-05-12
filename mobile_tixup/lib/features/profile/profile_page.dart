@@ -445,55 +445,17 @@ class _ProfileScreen extends State<ProfileScreen> {
         final Uri appUri = Uri.parse(appUrl);
         final Uri webUri = Uri.parse(webUrl);
 
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text("Escolha uma opção"),
-              content: const Text(
-                "Você quer abrir o link no aplicativo ou no navegador?",
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('Abrir no App'),
-                  onPressed: () async {
-                    if (await canLaunchUrl(appUri)) {
-                      await launchUrl(
-                        appUri,
-                        mode: LaunchMode.externalApplication,
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('O app não está instalado: $title'),
-                        ),
-                      );
-                    }
-                    Navigator.of(context).pop();
-                  },
-                ),
-                TextButton(
-                  child: const Text('Abrir no Navegador'),
-                  onPressed: () async {
-                    if (await canLaunchUrl(webUri)) {
-                      await launchUrl(
-                        webUri,
-                        mode: LaunchMode.externalApplication,
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Não foi possível abrir no navegador.'),
-                        ),
-                      );
-                    }
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
+        if (await canLaunchUrl(appUri)) {
+          await launchUrl(appUri, mode: LaunchMode.externalApplication);
+        } else {
+          if (await canLaunchUrl(webUri)) {
+            await launchUrl(webUri, mode: LaunchMode.externalApplication);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: const Text('Não foi possível abrir o link.')),
             );
-          },
-        );
+          }
+        }
       },
       icon: Icon(icon, color: Colors.white),
       label: Text(

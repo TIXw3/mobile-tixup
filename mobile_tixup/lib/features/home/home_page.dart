@@ -17,89 +17,120 @@ class _HomeScreen extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 248, 247, 245),
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 248, 247, 245),
-        elevation: 0,
-        title: Row(
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.black, width: 1.5),
-              ),
-              child: const CircleAvatar(
-                radius: 20,
-                backgroundColor: Color.fromARGB(255, 240, 228, 211),
-                backgroundImage: NetworkImage(
-                  'https://img.freepik.com/fotos-gratis/jovem-barbudo-com-camisa-listrada_273609-5677.jpg',
-                ),
-              ),
-            ),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor: const Color.fromARGB(255, 248, 247, 245),
+            elevation: 0,
+            pinned: true,
+            floating: true,
+            snap: true,
+            expandedHeight: 150,
+            collapsedHeight: 70,
+            flexibleSpace: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                final double percentage =
+                    (constraints.maxHeight - kToolbarHeight) /
+                    (160 - kToolbarHeight);
+                final double textSize = 24 * percentage.clamp(0.8, 1.1);
+                final double avatarSize = 46 * percentage.clamp(0.8, 1.1);
 
-            const SizedBox(width: 12),
-            const Text(
-              'Salve, nome!',
-              style: TextStyle(
-                fontFamily: 'sans-serif',
-                fontSize: 26,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
+                return Padding(
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top + 10,
+                    left: 16,
+                    right: 16,
+                  ),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: avatarSize,
+                          height: avatarSize,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.black, width: 1.5),
+                          ),
+                          child: const CircleAvatar(
+                            backgroundColor: Color.fromARGB(255, 240, 228, 211),
+                            backgroundImage: NetworkImage(
+                              'https://img.freepik.com/fotos-gratis/jovem-barbudo-com-camisa-listrada_273609-5677.jpg',
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Salve, nome!',
+                          style: TextStyle(
+                            fontFamily: 'sans-serif',
+                            fontSize: textSize,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const TelaPesquisa()),
-              );
-            },
-            icon: const Icon(Icons.search, color: Colors.black),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TelaPesquisa(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.search, color: Colors.black),
+              ),
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ShopScreen()),
+                  );
+                },
+                icon: const Icon(CupertinoIcons.cart_fill, color: Colors.black),
+              ),
+            ],
           ),
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ShopScreen()),
-              );
-            },
-            icon: const Icon(CupertinoIcons.cart_fill, color: Colors.black),
-          ),
-        ],
-      ),
 
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            content(context),
-            const SizedBox(height: 20),
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Categorias",
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'sans-serif',
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                content(context),
+                const SizedBox(height: 20),
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Categorias",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'sans-serif',
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                categories(context),
+                const SizedBox(height: 20),
+                eventsLikedByFriends(context),
+                const SizedBox(height: 20),
+                recommendedEventsCarousel(context),
+                const SizedBox(height: 20),
+                goToEventsPage(context),
+                const SizedBox(height: 20),
+              ],
             ),
-            categories(context),
-            const SizedBox(height: 20),
-            eventsLikedByFriends(context),
-            const SizedBox(height: 20),
-            goToEventsPage(context),
-            const SizedBox(height: 20),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -304,9 +335,110 @@ class _HomeScreen extends State<HomeScreen> {
     );
   }
 
+  Widget recommendedEventsCarousel(BuildContext context) {
+    List<String> imagePaths = [
+      'lib/assets/images/party6.jpg',
+      'lib/assets/images/party3.jpg',
+      'lib/assets/images/party2.jpg',
+      'lib/assets/images/party1.jpg',
+      'lib/assets/images/party4.jpg',
+    ];
+
+    return CarouselSlider(
+      items: List.generate(imagePaths.length, (i) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => EventScreen(
+                      ticketCounts: {
+                        "Meia MASCULINO": 0,
+                        "Meia FEMININO": 0,
+                        "Inteira MASCULINO": 0,
+                        "Inteira FEMININO": 0,
+                      },
+                    ),
+              ),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: const Color.fromARGB(255, 249, 115, 22), // Laranja
+                      width: 1,
+                    ),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.asset(
+                      imagePaths[i],
+                      width: MediaQuery.of(context).size.width,
+                      height: 180,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Nome do Evento $i",
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 249, 115, 22),
+                          fontFamily: 'sans-serif',
+                        ),
+                      ),
+                      const Text(
+                        "25/04 - Londrina/PR",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                          fontFamily: 'sans-serif',
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "Curtido por Fulano e +3",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey[930],
+                          fontFamily: 'sans-serif',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }),
+      options: CarouselOptions(
+        height: 270,
+        enableInfiniteScroll: true,
+        autoPlay: true,
+      ),
+    );
+  }
+
   Widget goToEventsPage(BuildContext context) {
     return SizedBox(
-      width: 150, // largura reduzida
+      width: 300, // largura reduzida
       height: 55,
       child: OutlinedButton(
         onPressed: () {
