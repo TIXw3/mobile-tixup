@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_tixup/features/events/detailedEvent_page.dart';
 import 'package:mobile_tixup/features/events/events_page.dart';
+import 'package:mobile_tixup/features/profile/profile_page.dart';
 import 'package:mobile_tixup/features/shop/shop_page.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -10,6 +11,86 @@ class HomeScreen extends StatefulWidget {
 
   @override
   State<HomeScreen> createState() => _HomeScreen();
+}
+
+class AnimatedEventButton extends StatefulWidget {
+  const AnimatedEventButton({super.key});
+
+  @override
+  State<AnimatedEventButton> createState() => _AnimatedEventButtonState();
+}
+
+class _AnimatedEventButtonState extends State<AnimatedEventButton> {
+  bool isAnimating = false;
+  double arrowPosition = 0;
+
+  void _onPressed(BuildContext context) async {
+    setState(() {
+      isAnimating = true;
+      arrowPosition = 250;
+    });
+
+    await Future.delayed(const Duration(milliseconds: 330));
+
+    if (!mounted) return;
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const TelaPesquisa()),
+    );
+
+    if (mounted) {
+      setState(() {
+        isAnimating = false;
+        arrowPosition = 0;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 300,
+      height: 55,
+      child: Stack(
+        children: [
+          ElevatedButton(
+            onPressed: isAnimating ? null : () => _onPressed(context),
+            style: ElevatedButton.styleFrom(
+              elevation: 4,
+              backgroundColor: const Color(0xFFF97316),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              textStyle: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 1.2,
+              ),
+              shadowColor: const Color(0xFFFFA260),
+            ),
+            child: const Center(child: Text('Ver eventos')),
+          ),
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 350),
+            left: arrowPosition,
+            top: 15,
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 180),
+              opacity: isAnimating ? 1 : 0,
+              child: const Icon(
+                Icons.arrow_forward,
+                color: Colors.white,
+                size: 24,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _HomeScreen extends State<HomeScreen> {
@@ -46,17 +127,35 @@ class _HomeScreen extends State<HomeScreen> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Container(
-                          width: avatarSize,
-                          height: avatarSize,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.black, width: 1.5),
-                          ),
-                          child: const CircleAvatar(
-                            backgroundColor: Color.fromARGB(255, 240, 228, 211),
-                            backgroundImage: NetworkImage(
-                              'https://img.freepik.com/fotos-gratis/jovem-barbudo-com-camisa-listrada_273609-5677.jpg',
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ProfileScreen(),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            width: avatarSize,
+                            height: avatarSize,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 1.5,
+                              ),
+                            ),
+                            child: const CircleAvatar(
+                              backgroundColor: Color.fromARGB(
+                                255,
+                                240,
+                                228,
+                                211,
+                              ),
+                              backgroundImage: NetworkImage(
+                                'https://img.freepik.com/fotos-gratis/jovem-barbudo-com-camisa-listrada_273609-5677.jpg',
+                              ),
                             ),
                           ),
                         ),
@@ -469,37 +568,6 @@ class _HomeScreen extends State<HomeScreen> {
   }
 
   Widget goToEventsPage(BuildContext context) {
-    return SizedBox(
-      width: 300, // largura reduzida
-      height: 55,
-      child: OutlinedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const TelaPesquisa()),
-          );
-        },
-        style: OutlinedButton.styleFrom(
-          side: const BorderSide(
-            color: Color.fromARGB(255, 249, 115, 22),
-            width: 2,
-          ),
-          backgroundColor: const Color.fromARGB(255, 249, 115, 22),
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        child: const Text(
-          'Eventos',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontFamily: 'sans-serif',
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
+    return const AnimatedEventButton();
   }
 }

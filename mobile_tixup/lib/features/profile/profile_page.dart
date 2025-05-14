@@ -420,7 +420,7 @@ class _ProfileScreen extends State<ProfileScreen> {
             'Instagram',
             Icons.camera_alt_outlined,
             'instagram://user?username=tixup_oficial',
-            'https://www.instagram.com/tixup_oficial',
+            'https://www.instagram.com/tixup_oficial/',
           ),
           const SizedBox(width: 10),
           _buildSocialButton(
@@ -434,6 +434,24 @@ class _ProfileScreen extends State<ProfileScreen> {
     );
   }
 
+  Future<void> _launchURL(String appUrl, String webUrl) async {
+    final Uri appUri = Uri.parse(appUrl);
+    final Uri webUri = Uri.parse(webUrl);
+
+    try {
+      if (await canLaunchUrl(appUri)) {
+        await launchUrl(appUri, mode: LaunchMode.externalApplication);
+      } else {
+        await launchUrl(webUri, mode: LaunchMode.platformDefault);
+      }
+    } catch (e) {
+      await launchUrl(webUri, mode: LaunchMode.platformDefault);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erro ao abrir $appUrl: $e')));
+    }
+  }
+
   Widget _buildSocialButton(
     String title,
     IconData icon,
@@ -441,30 +459,20 @@ class _ProfileScreen extends State<ProfileScreen> {
     String webUrl,
   ) {
     return ElevatedButton.icon(
-      onPressed: () async {
-        final Uri appUri = Uri.parse(appUrl);
-        final Uri webUri = Uri.parse(webUrl);
-
-        if (await canLaunchUrl(appUri)) {
-          await launchUrl(appUri, mode: LaunchMode.externalApplication);
-        } else {
-          if (await canLaunchUrl(webUri)) {
-            await launchUrl(webUri, mode: LaunchMode.externalApplication);
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: const Text('Não foi possível abrir o link.')),
-            );
-          }
-        }
-      },
+      onPressed: () => _launchURL(appUrl, webUrl),
       icon: Icon(icon, color: Colors.white),
       label: Text(
         title,
-        style: const TextStyle(color: Colors.white, fontFamily: 'sans-serif'),
+        style: const TextStyle(
+          color: Colors.white,
+          fontFamily: 'sans-serif',
+          fontSize: 14,
+        ),
       ),
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color.fromARGB(255, 249, 115, 22),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
       ),
     );
   }
