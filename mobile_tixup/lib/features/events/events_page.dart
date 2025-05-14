@@ -224,38 +224,70 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            TextField(
-              controller: _searchController,
-              style: const TextStyle(
-                fontFamily: 'sans-serif',
-                color: Colors.black,
-              ),
-              decoration: InputDecoration(
-                hintText: 'Busque eventos por nome, DJ ou data...',
-                hintStyle: const TextStyle(
-                  color: Colors.grey,
-                  fontFamily: 'sans-serif',
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _searchController,
+                    style: const TextStyle(
+                      fontFamily: 'sans-serif',
+                      color: Colors.black,
+                      fontSize: 16,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'Busque eventos por nome, DJ ou data...',
+                      hintStyle: const TextStyle(
+                        color: Colors.grey,
+                        fontFamily: 'sans-serif',
+                      ),
+                      prefixIcon: Icon(Icons.search, color: laranjaPrincipal),
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 8,
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: laranjaPrincipal),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: laranjaPrincipal),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: laranjaPrincipal,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                  ),
                 ),
-                prefixIcon: Icon(Icons.search, color: laranjaPrincipal),
-                filled: true,
-                fillColor: Colors.grey[100],
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 14,
+                const SizedBox(width: 10),
+                PopupMenuButton<String>(
+                  icon: Icon(Icons.more_vert, color: laranjaPrincipal),
+                  onSelected: (String result) {
+                    if (result == 'cat1') {
+                      print('Categoria1 selecionado');
+                    } else if (result == 'cat2') {
+                      print('Categoria2 selecionado');
+                    }
+                  },
+                  itemBuilder:
+                      (BuildContext context) => <PopupMenuEntry<String>>[
+                        const PopupMenuItem<String>(
+                          value: 'cat1',
+                          child: Text('Categoria1'),
+                        ),
+                        const PopupMenuItem<String>(
+                          value: 'cat2',
+                          child: Text('Categoria2'),
+                        ),
+                      ],
                 ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: laranjaPrincipal),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: laranjaPrincipal),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: laranjaPrincipal, width: 2),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
+              ],
             ),
             const SizedBox(height: 30),
             Expanded(

@@ -212,20 +212,20 @@ class _ProfileScreen extends State<ProfileScreen> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const SeguindoPage()),
+                MaterialPageRoute(builder: (context) => const SaldoPage()),
               );
             },
-            child: _buildStatItem('10', 'Seguindo'),
+            child: _buildStatItem('R\$0,00', 'Saldo'),
           ),
           _buildVerticalDivider(),
           GestureDetector(
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const SaldoPage()),
+                MaterialPageRoute(builder: (context) => const SeguindoPage()),
               );
             },
-            child: _buildStatItem('R\$0,00', 'Saldo'),
+            child: _buildStatItem('10', 'Seguindo'),
           ),
         ],
       ),
@@ -294,7 +294,7 @@ class _ProfileScreen extends State<ProfileScreen> {
               );
             },
           ),
-          _buildMenuItem(
+          /*_buildMenuItem(
             'Pedidos',
             Icons.shopping_bag_outlined,
             onTap: () {
@@ -303,7 +303,7 @@ class _ProfileScreen extends State<ProfileScreen> {
                 MaterialPageRoute(builder: (context) => OrdersScreen()),
               );
             },
-          ),
+          ),*/
           _buildMenuItem(
             'Minha Conta',
             Icons.person_outline,
@@ -314,7 +314,6 @@ class _ProfileScreen extends State<ProfileScreen> {
               );
             },
           ),
-          _buildMenuItem('Meu Endereço', Icons.location_on_outlined),
           _buildMenuItem(
             'Tutorial',
             Icons.help_outline,
