@@ -26,9 +26,13 @@ void main() {
       find.byType(TextField).at(3),
       'senha456',
     ); // Senha diferente
-    await tester.enterText(find.byType(TextField).at(4), '01/01/2000');
-    await tester.enterText(find.byType(TextField).at(5), '123.456.789-09');
-    await tester.enterText(find.byType(TextField).at(6), '(11) 99999-9999');
+    await tester.enterText(
+      find.byType(TextField).at(4),
+      'Senha789!',
+    ); // Senha diferente
+    await tester.enterText(find.byType(TextField).at(5), '01/01/2000');
+    await tester.enterText(find.byType(TextField).at(6), '123.456.789-09');
+    await tester.enterText(find.byType(TextField).at(7), '(11) 99999-9999');
 
     await tester.tap(find.text('Criar'));
     await tester.pump();
