@@ -105,20 +105,6 @@ class _HomeScreen extends State<HomeScreen> {
               children: [
                 content(context),
                 const SizedBox(height: 20),
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Categorias",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'sans-serif',
-                      ),
-                    ),
-                  ),
-                ),
                 categories(context),
                 const SizedBox(height: 20),
                 eventsLikedByFriends(context),
@@ -165,34 +151,80 @@ class _HomeScreen extends State<HomeScreen> {
                 );
               },
               child: Container(
-                margin: const EdgeInsets.symmetric(vertical: 10),
+                margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color.fromARGB(255, 249, 115, 22),
-                      spreadRadius: 2,
+                      color: const Color.fromARGB(
+                        255,
+                        249,
+                        115,
+                        22,
+                      ).withOpacity(0.9),
+                      spreadRadius: 1,
                       blurRadius: 5,
                       offset: const Offset(0, 3),
                     ),
                   ],
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
-                    path,
-                    width: MediaQuery.of(context).size.width,
-                    fit: BoxFit.cover,
-                  ),
+                child: Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.asset(
+                        path,
+                        width: double.infinity,
+                        height: 270,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: 80,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.vertical(
+                            bottom: Radius.circular(20),
+                          ),
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.transparent,
+                              Colors.black.withOpacity(0.6),
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Positioned(
+                      bottom: 16,
+                      left: 16,
+                      child: Text(
+                        'Evento XXI',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'sans-serif',
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
           }).toList(),
       options: CarouselOptions(
-        height: 230,
+        height: 280,
         autoPlay: true,
         enlargeCenterPage: true,
-        viewportFraction: 0.9,
+        enlargeStrategy: CenterPageEnlargeStrategy.height,
+        viewportFraction: 0.88,
+        autoPlayCurve: Curves.easeInOut,
       ),
     );
   }
@@ -216,10 +248,10 @@ class _HomeScreen extends State<HomeScreen> {
                 child: Text(
                   i,
                   style: const TextStyle(
-                    fontSize: 22,
-                    color: Colors.black,
+                    fontSize: 20,
+                    color: Color.fromARGB(255, 249, 115, 22),
                     fontFamily: 'sans-serif',
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ),

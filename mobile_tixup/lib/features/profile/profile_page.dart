@@ -149,22 +149,23 @@ class _ProfileScreen extends State<ProfileScreen> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 249, 115, 22),
+                  backgroundColor: Color.fromARGB(255, 248, 247, 245),
+                  foregroundColor: Color.fromARGB(255, 249, 115, 22),
+                  side: BorderSide(
+                    color: Color.fromARGB(255, 249, 115, 22),
+                    width: 2,
+                  ),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 30,
                     vertical: 12,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(25),
                   ),
                 ),
                 child: const Text(
                   'Editar Perfil',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontFamily: 'sans-serif',
-                  ),
+                  style: TextStyle(fontSize: 14, fontFamily: 'sans-serif'),
                 ),
               ),
             ],
