@@ -122,9 +122,15 @@ class _TelaRegistroState extends State<TelaRegistro> {
 
       if (mounted) {
         Provider.of<UserProvider>(
-          context,
-          listen: false,
-        ).setUser(UserModel(email: email));
+      context,
+      listen: false,
+      ).setUser(UserModel(
+      nome: _fullName.text,
+      email: email,
+      telefone: _phoneFormatter.text,
+      endereco: '',
+      imagemPerfil: '',
+      ));
       }
 
       Navigator.pop(context);
@@ -155,23 +161,28 @@ class _TelaRegistroState extends State<TelaRegistro> {
             children: <Widget>[
               const SizedBox(height: 20),
               Align(
-                alignment: Alignment.centerLeft,
-                child: RichText(
-                  text: TextSpan(
-                    style: const TextStyle(
-                      fontSize: 44,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Pacifico',
-                      color: Color.fromARGB(206, 0, 0, 0),
+                    alignment: Alignment.centerLeft,
+                    child: RichText(
+                      text: TextSpan(
+                        style: const TextStyle(
+                          fontSize: 44,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Pacifico',
+                          color: Color.fromARGB(206, 0, 0, 0),
+                        ),
+                        children: [
+                          const TextSpan(text: 'Cadastre-se e '),
+                          const TextSpan(text: 'encontre novas '),
+                          TextSpan(
+                            text: 'experiências!',
+                            style: const TextStyle(
+                              color: Color.fromARGB(255, 249, 115, 22),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    children: [
-                      TextSpan(text: 'Cadastre-se e '),
-                      TextSpan(text: 'encontre novas '),
-                      TextSpan(text: 'experiências!'),
-                    ],
                   ),
-                ),
-              ),
               const SizedBox(height: 40),
               TextField(
                 controller: _fullName,
@@ -179,6 +190,7 @@ class _TelaRegistroState extends State<TelaRegistro> {
                   labelText: 'Nome Completo',
                   labelStyle: const TextStyle(
                     color: Color.fromARGB(206, 0, 0, 0),
+                    fontWeight: FontWeight.bold,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
@@ -214,6 +226,7 @@ class _TelaRegistroState extends State<TelaRegistro> {
                   labelText: 'Email',
                   labelStyle: const TextStyle(
                     color: Color.fromARGB(206, 0, 0, 0),
+                    fontWeight: FontWeight.bold,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
@@ -251,6 +264,7 @@ class _TelaRegistroState extends State<TelaRegistro> {
                   labelText: 'Senha',
                   labelStyle: const TextStyle(
                     color: Color.fromARGB(206, 0, 0, 0),
+                    fontWeight: FontWeight.bold,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
@@ -283,182 +297,190 @@ class _TelaRegistroState extends State<TelaRegistro> {
                 ),
               ),
               const SizedBox(height: 20),
-              TextField(
-                controller: _confirmPasswordController,
-                obscureText: _obscureText,
-                decoration: InputDecoration(
-                  labelText: 'Confirmar Senha',
-                  labelStyle: const TextStyle(
-                    color: Color.fromARGB(206, 0, 0, 0),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: const BorderSide(
+                TextField(
+                  controller: _confirmPasswordController,
+                  obscureText: _obscureText,
+                  decoration: InputDecoration(
+                    labelText: 'Confirmar Senha',
+                    labelStyle: const TextStyle(
                       color: Color.fromARGB(206, 0, 0, 0),
-                      width: 1,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: const BorderSide(
-                      color: Colors.deepOrange,
-                      width: 2,
-                    ),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 9.0,
-                    horizontal: 10.0,
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscureText ? Icons.visibility : Icons.visibility_off,
-                      color: Color.fromARGB(206, 0, 0, 0),
-                    ),
-                    onPressed: _togglePasswordVisibility,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: _birthDateFormatter,
-                inputFormatters: [birthDateFormatter],
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Data de Nascimento',
-                  labelStyle: const TextStyle(
-                    color: Color.fromARGB(206, 0, 0, 0),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: const BorderSide(
-                      color: Color.fromARGB(206, 0, 0, 0),
-                      width: 1,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: const BorderSide(
-                      color: Colors.deepOrange,
-                      width: 2,
-                    ),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 9,
-                    horizontal: 10,
-                  ),
-                  suffixIcon: const Icon(
-                    Icons.cake,
-                    color: Color.fromARGB(206, 0, 0, 0),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: _cpfFormatter,
-                inputFormatters: [cpfFormatter],
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'CPF',
-                  labelStyle: const TextStyle(
-                    color: Color.fromARGB(206, 0, 0, 0),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: const BorderSide(
-                      color: Color.fromARGB(206, 0, 0, 0),
-                      width: 1,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: const BorderSide(
-                      color: Colors.deepOrange,
-                      width: 2,
-                    ),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 9,
-                    horizontal: 10,
-                  ),
-                  suffixIcon: const Icon(
-                    Icons.badge,
-                    color: Color.fromARGB(206, 0, 0, 0),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: _phoneFormatter,
-                inputFormatters: [phoneFormatter],
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Telefone',
-                  labelStyle: const TextStyle(
-                    color: Color.fromARGB(206, 0, 0, 0),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: const BorderSide(
-                      color: Color.fromARGB(206, 0, 0, 0),
-                      width: 1,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: const BorderSide(
-                      color: Colors.deepOrange,
-                      width: 2,
-                    ),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 9,
-                    horizontal: 10,
-                  ),
-                  suffixIcon: const Icon(
-                    Icons.phone,
-                    color: Color.fromARGB(206, 0, 0, 0),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: signUp,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 249, 115, 22),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 13.0,
-                      horizontal: 20.0,
-                    ),
-                    shape: RoundedRectangleBorder(
+                    border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    textStyle: const TextStyle(fontSize: 18),
-                  ),
-                  child: const Text(
-                    'Criar',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                      letterSpacing: 0,
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: const BorderSide(
+                        color: Color.fromARGB(206, 0, 0, 0),
+                        width: 1,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: const BorderSide(
+                        color: Colors.deepOrange,
+                        width: 2,
+                      ),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 9.0,
+                      horizontal: 10.0,
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility : Icons.visibility_off,
+                        color: Color.fromARGB(206, 0, 0, 0),
+                      ),
+                      onPressed: _togglePasswordVisibility,
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: _birthDateFormatter,
+                  inputFormatters: [birthDateFormatter],
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'Data de Nascimento',
+                    labelStyle: const TextStyle(
+                      color: Color.fromARGB(206, 0, 0, 0),
+                      fontWeight: FontWeight.bold,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: const BorderSide(
+                        color: Color.fromARGB(206, 0, 0, 0),
+                        width: 1,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: const BorderSide(
+                        color: Colors.deepOrange,
+                        width: 2,
+                      ),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 9,
+                      horizontal: 10,
+                    ),
+                    suffixIcon: const Icon(
+                      Icons.cake,
+                      color: Color.fromARGB(206, 0, 0, 0),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: _cpfFormatter,
+                  inputFormatters: [cpfFormatter],
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'CPF',
+                    labelStyle: const TextStyle(
+                      color: Color.fromARGB(206, 0, 0, 0),
+                      fontWeight: FontWeight.bold,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: const BorderSide(
+                        color: Color.fromARGB(206, 0, 0, 0),
+                        width: 1,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: const BorderSide(
+                        color: Colors.deepOrange,
+                        width: 2,
+                      ),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 9,
+                      horizontal: 10,
+                    ),
+                    suffixIcon: const Icon(
+                      Icons.badge,
+                      color: Color.fromARGB(206, 0, 0, 0),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: _phoneFormatter,
+                  inputFormatters: [phoneFormatter],
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'Telefone',
+                    labelStyle: const TextStyle(
+                      color: Color.fromARGB(206, 0, 0, 0),
+                      fontWeight: FontWeight.bold,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: const BorderSide(
+                        color: Color.fromARGB(206, 0, 0, 0),
+                        width: 1,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: const BorderSide(
+                        color: Colors.deepOrange,
+                        width: 2,
+                      ),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 9,
+                      horizontal: 10,
+                    ),
+                    suffixIcon: const Icon(
+                      Icons.phone,
+                      color: Color.fromARGB(206, 0, 0, 0),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: signUp,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 249, 115, 22),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 13.0,
+                        horizontal: 20.0,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      textStyle: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    child: const Text(
+                      'Criar',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
             ],
           ),
         ),

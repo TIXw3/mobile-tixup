@@ -90,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           const Text(
                             'Primeira vez?',
                             style: TextStyle(
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
                               fontSize: 16,
                               color: Color.fromARGB(206, 0, 0, 0),
                             ),
@@ -123,6 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           labelText: 'Email',
                           labelStyle: const TextStyle(
                             color: Color.fromARGB(206, 0, 0, 0),
+                            fontWeight: FontWeight.bold,
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30),
@@ -155,6 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           labelText: 'Senha',
                           labelStyle: const TextStyle(
                             color: Color.fromARGB(206, 0, 0, 0),
+                            fontWeight: FontWeight.bold,
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30),

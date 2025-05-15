@@ -68,43 +68,52 @@ class _ProfileScreen extends State<ProfileScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
-    final email = userProvider.user?.email ?? 'email@email.com';
+Widget build(BuildContext context) {
+  final userProvider = Provider.of<UserProvider>(context);
+  final user = userProvider.user;
+  final nome = user?.nome ?? 'Nome';
+  final email = user?.email ?? 'email@email.com';
+  final telefone = user?.telefone ?? 'Sem telefone';
+  final endereco = user?.endereco ?? 'Sem endereço';
+  final imagemPerfil = user?.imagemPerfil ?? '';
 
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 248, 247, 245),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildHeader(email),
-            _buildStatistics(),
-            _buildMainMenu(),
-            _buildSocialLinks(),
-            _buildSupportMenu(),
-            const SizedBox(height: 40),
-          ],
-        ),
+  return Scaffold(
+    backgroundColor: const Color.fromARGB(255, 248, 247, 245),
+    body: SingleChildScrollView(
+      child: Column(
+        children: [
+          _buildHeader(nome, email, telefone, endereco, imagemPerfil),
+          _buildStatistics(),
+          _buildMainMenu(),
+          _buildSocialLinks(),
+          _buildSupportMenu(),
+          const SizedBox(height: 40),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
 
-  Widget _buildHeader(String email) {
+  Widget _buildHeader(
+    String nome,
+    String email,
+    String telefone,
+    String endereco,
+    String foto,
+  ) {
     return Container(
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             radius: 50,
-            backgroundColor: Color.fromARGB(255, 240, 228, 211),
-            backgroundImage: NetworkImage(
-              'https://img.freepik.com/fotos-gratis/jovem-barbudo-com-camisa-listrada_273609-5677.jpg',
-            ),
+            backgroundColor: const Color.fromARGB(255, 240, 228, 211),
+            backgroundImage: NetworkImage(foto),
           ),
           const SizedBox(height: 10),
-          const Text(
-            'Lucas Gabriel',
-            style: TextStyle(
+          Text(
+            nome,
+            style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
               color: Colors.black,
@@ -119,6 +128,28 @@ class _ProfileScreen extends State<ProfileScreen> {
               fontFamily: 'sans-serif',
             ),
           ),
+          if (telefone.isNotEmpty) ...[
+            const SizedBox(height: 5),
+            Text(
+              telefone,
+              style: const TextStyle(
+                color: Colors.black54,
+                fontSize: 15,
+                fontFamily: 'sans-serif',
+              ),
+            ),
+          ],
+          if (endereco.isNotEmpty) ...[
+            const SizedBox(height: 5),
+            Text(
+              endereco,
+              style: const TextStyle(
+                color: Colors.black54,
+                fontSize: 15,
+                fontFamily: 'sans-serif',
+              ),
+            ),
+          ],
           const SizedBox(height: 15),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -149,9 +180,9 @@ class _ProfileScreen extends State<ProfileScreen> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 248, 247, 245),
-                  foregroundColor: Color.fromARGB(255, 249, 115, 22),
-                  side: BorderSide(
+                  backgroundColor: const Color.fromARGB(255, 248, 247, 245),
+                  foregroundColor: const Color.fromARGB(255, 249, 115, 22),
+                  side: const BorderSide(
                     color: Color.fromARGB(255, 249, 115, 22),
                     width: 2,
                   ),
@@ -274,76 +305,45 @@ class _ProfileScreen extends State<ProfileScreen> {
       ),
       child: Column(
         children: [
-          _buildMenuItem(
-            'Meus Ingressos',
-            Icons.confirmation_number_outlined,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MeusIngressos()),
-              );
-            },
-          ),
-          _buildMenuItem(
-            'Carteirinhas',
-            Icons.card_membership_outlined,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => StudentIdScreen()),
-              );
-            },
-          ),
-          /*_buildMenuItem(
-            'Pedidos',
-            Icons.shopping_bag_outlined,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => OrdersScreen()),
-              );
-            },
-          ),*/
-          _buildMenuItem(
-            'Minha Conta',
-            Icons.person_outline,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MeuPerfil()),
-              );
-            },
-          ),
-          _buildMenuItem(
-            'Tutorial',
-            Icons.help_outline,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TelaTutorial()),
-              );
-            },
-          ),
-          _buildMenuItem(
-            'Meus Cartões',
-            Icons.credit_card_outlined,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const PaymentsPage()),
-              );
-            },
-          ),
-          _buildMenuItem(
-            'Vender Ingressos',
-            Icons.sell_outlined,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TelaVenderIngresso()),
-              );
-            },
-          ),
+          _buildMenuItem('Meus Ingressos', Icons.confirmation_number_outlined,
+              onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MeusIngressos()),
+            );
+          }),
+          _buildMenuItem('Carteirinhas', Icons.card_membership_outlined,
+              onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => StudentIdScreen()),
+            );
+          }),
+          _buildMenuItem('Minha Conta', Icons.person_outline, onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MeuPerfil()),
+            );
+          }),
+          _buildMenuItem('Tutorial', Icons.help_outline, onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => TelaTutorial()),
+            );
+          }),
+          _buildMenuItem('Meus Cartões', Icons.credit_card_outlined,
+              onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const PaymentsPage()),
+            );
+          }),
+          _buildMenuItem('Vender Ingressos', Icons.sell_outlined, onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => TelaVenderIngresso()),
+            );
+          }),
         ],
       ),
     );
@@ -361,23 +361,15 @@ class _ProfileScreen extends State<ProfileScreen> {
       ),
       child: Column(
         children: [
-          _buildMenuItem(
-            'Suporte',
-            Icons.headset_mic_outlined,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TelaDeSuporte()),
-              );
-            },
-          ),
+          _buildMenuItem('Suporte', Icons.headset_mic_outlined, onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => TelaDeSuporte()),
+            );
+          }),
           _buildMenuItem('Sair', Icons.exit_to_app_outlined, onTap: logout),
-          _buildMenuItem(
-            'Excluir Conta',
-            Icons.delete_outline,
-            color: Colors.red,
-            onTap: _confirmDeleteAccount,
-          ),
+          _buildMenuItem('Excluir Conta', Icons.delete_outline,
+              color: Colors.red, onTap: _confirmDeleteAccount),
         ],
       ),
     );
@@ -411,30 +403,19 @@ class _ProfileScreen extends State<ProfileScreen> {
   }
 
   Widget _buildSocialLinks() {
-    return Container(
-      margin: const EdgeInsets.all(20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _buildSocialButton(
-            'Instagram',
-            Icons.camera_alt_outlined,
-            'instagram://user?username=tixup_oficial',
-            'https://www.instagram.com/tixup_oficial/',
-          ),
-          const SizedBox(width: 10),
-          _buildSocialButton(
-            'YouTube',
-            Icons.play_arrow_outlined,
-            'vnd.youtube://channel/UCXXXXXXX',
-            'https://www.youtube.com/@tixup',
-          ),
-        ],
+  return Container(
+    margin: const EdgeInsets.all(20),
+    child: Center(
+      child: _buildSocialButton(
+        'Instagram',
+        Icons.camera_alt_outlined,
+        'instagram://user?username=tixup_oficial',
+        'https://www.instagram.com/tixup_oficial/',
       ),
-    );
-  }
-
-  Future<void> _launchURL(String appUrl, String webUrl) async {
+    ),
+  );
+}
+   Future<void> _launchURL(String appUrl, String webUrl) async {
     final Uri appUri = Uri.parse(appUrl);
     final Uri webUri = Uri.parse(webUrl);
 
@@ -446,34 +427,36 @@ class _ProfileScreen extends State<ProfileScreen> {
       }
     } catch (e) {
       await launchUrl(webUri, mode: LaunchMode.platformDefault);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Erro ao abrir $appUrl: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro ao abrir $appUrl: $e')));
     }
   }
 
-  Widget _buildSocialButton(
-    String title,
-    IconData icon,
-    String appUrl,
-    String webUrl,
-  ) {
-    return ElevatedButton.icon(
-      onPressed: () => _launchURL(appUrl, webUrl),
-      icon: Icon(icon, color: Colors.white),
-      label: Text(
-        title,
-        style: const TextStyle(
-          color: Colors.white,
-          fontFamily: 'sans-serif',
-          fontSize: 14,
-        ),
+ Widget _buildSocialButton(
+  String title,
+  IconData icon,
+  String appUrl,
+  String webUrl,
+) {
+  return OutlinedButton.icon(
+    onPressed: () => _launchURL(appUrl, webUrl),
+    icon: Icon(icon, color: const Color.fromARGB(255, 249, 115, 22)),
+    label: Text(
+      title,
+      style: const TextStyle(
+        color: Color.fromARGB(255, 249, 115, 22),
+        fontFamily: 'sans-serif',
+        fontSize: 14,
       ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color.fromARGB(255, 249, 115, 22),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+    ),
+    style: OutlinedButton.styleFrom(
+      backgroundColor: Colors.white,
+      side: const BorderSide(
+        color: Color.fromARGB(255, 249, 115, 22),
+        width: 1.5,
       ),
-    );
-  }
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+    ),
+  );
+ }
 }
