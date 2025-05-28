@@ -1,28 +1,51 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class MeuPerfil extends StatelessWidget {
-  MeuPerfil({Key? key}) : super(key: key);
+class MeuPerfil extends StatefulWidget {
+  const MeuPerfil({super.key});
 
-  final Color laranjaPrincipal = const Color.fromARGB(255, 249, 115, 22);
+  @override
+  State<MeuPerfil> createState() => _MeuPerfilState();
+}
 
-  // Simulação de dados do usuário
-  final Map<String, String> usuario = {
-    'nome': 'Lucas Gabriel',
-    'email': 'email@email.com',
-    'telefone': '(44) 99999-0000',
-    'data': '12/08/2000',
-    'endereco': 'Rua X, Jardim Y, 89898993',
-  };
+class _MeuPerfilState extends State<MeuPerfil> {
+  final Color laranja = const Color.fromARGB(255, 249, 115, 22);
+
+  String nome = '';
+  String email = '';
+  String telefone = '';
+  String endereco = '';
+  String? caminhoImagem;
+
+  @override
+  void initState() {
+    super.initState();
+    carregarDados();
+  }
+
+  Future<void> carregarDados() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      nome = prefs.getString('nome') ?? '';
+      email = prefs.getString('email') ?? '';
+      telefone = prefs.getString('numero') ?? '';
+      endereco = prefs.getString('endereco') ?? '';
+      caminhoImagem = prefs.getString('imagemPerfil');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    File? imageFile = caminhoImagem != null ? File(caminhoImagem!) : null;
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       appBar: AppBar(
-        backgroundColor: laranjaPrincipal,
+        backgroundColor: laranja,
         centerTitle: true,
         title: const Text(
-          'Meu Perfil',
+          'Minha Conta',
           style: TextStyle(
             color: Colors.white,
             fontSize: 20,
@@ -40,12 +63,15 @@ class MeuPerfil extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 40,
-                  backgroundColor: laranjaPrincipal.withOpacity(0.1),
-                  child: Icon(Icons.person, size: 50, color: laranjaPrincipal),
+                  backgroundColor: laranja.withOpacity(0.1),
+                  backgroundImage: imageFile != null ? FileImage(imageFile) : null,
+                  child: imageFile == null
+                      ? Icon(Icons.person, size: 50, color: laranja)
+                      : null,
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  usuario['nome']!,
+                  nome,
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -56,53 +82,51 @@ class MeuPerfil extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 30),
-            _buildInfoRow(Icons.email, 'Email', usuario['email']!),
+            _buildInfoRow(Icons.email, 'E-mail', email),
             const SizedBox(height: 15),
-            _buildInfoRow(Icons.phone, 'Telefone', usuario['telefone']!),
+            _buildInfoRow(Icons.phone, 'Telefone', telefone),
             const SizedBox(height: 15),
-            _buildInfoRow(
-              Icons.calendar_month,
-              'Data de Nascimento',
-              usuario['data']!,
-            ),
+            _buildInfoRow(Icons.house, 'Endereço', endereco),
             const SizedBox(height: 15),
-            _buildInfoRow(Icons.house, 'Endereço', usuario['endereco']!),
-            const SizedBox(height: 15),
-            _buildActionButton(Icons.history, 'Histórico de Compras', () {}),
-            const SizedBox(height: 10),
+            _buildActionButton(Icons.history, 'Histórico de Compras', () {
+              // Implementar funcionalidade aqui
+            }),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value) {
+  Widget _buildInfoRow(IconData icon, String label, String valor) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: laranjaPrincipal),
+        Icon(icon, color: laranja),
         const SizedBox(width: 10),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                fontFamily: 'sans-serif',
-                color: Colors.grey,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'sans-serif',
+                  color: Colors.grey,
+                ),
               ),
-            ),
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'sans-serif',
-                color: Colors.black,
+              Text(
+                valor.isNotEmpty ? valor : '-',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'sans-serif',
+                  color: Colors.black,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
@@ -111,32 +135,30 @@ class MeuPerfil extends StatelessWidget {
   Widget _buildActionButton(
     IconData icon,
     String label,
-    VoidCallback onTap, {
-    bool isDestructive = false,
-  }) {
+    VoidCallback onTap,
+  ) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(10),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: isDestructive ? Colors.red.withOpacity(0.05) : Colors.white,
-          border: Border.all(
-            color: isDestructive ? Colors.red : laranjaPrincipal,
-          ),
+          color: laranja,
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: isDestructive ? Colors.red : laranjaPrincipal),
+            Icon(icon, color: Colors.white),
             const SizedBox(width: 10),
             Text(
               label,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 fontFamily: 'sans-serif',
-                fontWeight: FontWeight.w500,
-                color: isDestructive ? Colors.red : Colors.black,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
           ],

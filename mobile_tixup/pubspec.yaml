@@ -17,6 +17,10 @@ dependencies:
   provider: ^6.1.1
   flip_card: ^0.7.0
   ionicons: ^0.2.2
+  url_launcher: ^6.3.1
+  image_picker: ^0.8.5+3
+  shared_preferences: ^2.2.2
+
 
 dev_dependencies:
   flutter_test:
