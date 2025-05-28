@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:mobile_tixup/features/events/detailedEvent_page.dart';
 
 class TelaPesquisa extends StatefulWidget {
-  const TelaPesquisa({Key? key}) : super(key: key);
+  const TelaPesquisa({super.key});
 
   @override
   State<TelaPesquisa> createState() => _TelaPesquisaState();
@@ -13,8 +13,6 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
 
   final Color laranjaPrincipal = const Color.fromARGB(255, 249, 115, 22);
 
-  final supabase = Supabase.instance.client;
-
   List<Map<String, dynamic>> _todosEventos = [];
   List<Map<String, dynamic>> _eventosFiltrados = [];
   bool _carregando = true;
@@ -22,24 +20,71 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
   @override
   void initState() {
     super.initState();
-    _buscarEventos();
+    _carregarEventosFixos();
     _searchController.addListener(_filtrarEventos);
   }
 
-  Future<void> _buscarEventos() async {
-    try {
-      final List data = await supabase.from('eventos').select();
-      setState(() {
-        _todosEventos = List<Map<String, dynamic>>.from(data);
-        _eventosFiltrados = _todosEventos;
-        _carregando = false;
-      });
-    } catch (e) {
-      print('Erro ao buscar eventos: $e');
-      setState(() {
-        _carregando = false;
-      });
-    }
+  void _carregarEventosFixos() {
+    _todosEventos = [
+      {
+        'nome': 'Festa 1',
+        'data': '30/07',
+        'dj': 'DJ Ensek',
+        'local': 'Rua Pedro Paulo',
+      },
+      {
+        'nome': 'Festa 2',
+        'data': '30/07',
+        'dj': 'DJ Ensek',
+        'local': 'Rua Pedro Paulo',
+      },
+      {
+        'nome': 'Festa 3',
+        'data': '30/07',
+        'dj': 'DJ Ensek',
+        'local': 'Rua Pedro Paulo',
+      },
+      {
+        'nome': 'Festa 4',
+        'data': '20/08',
+        'dj': 'DJ Gabriel',
+        'local': 'Rua Giovanne Leite',
+      },
+      {
+        'nome': 'Festa 5',
+        'data': '20/08',
+        'dj': 'DJ Gabriel',
+        'local': 'Rua Giovanne Leite',
+      },
+      {
+        'nome': 'Festa 6',
+        'data': '20/08',
+        'dj': 'DJ Gabriel',
+        'local': 'Rua Giovanne Leite',
+      },
+      {
+        'nome': 'Festa 7',
+        'data': '10/09',
+        'dj': 'DJ Lucas',
+        'local': 'Rua Thiago Poliseli',
+      },
+      {
+        'nome': 'Festa 8',
+        'data': '10/09',
+        'dj': 'DJ Lucas',
+        'local': 'Rua Thiago Poliseli',
+      },
+      {
+        'nome': 'Festa 9',
+        'data': '10/09',
+        'dj': 'DJ Lucas',
+        'local': 'Rua Thiago Poliseli',
+      },
+    ];
+    setState(() {
+      _eventosFiltrados = _todosEventos;
+      _carregando = false;
+    });
   }
 
   void _filtrarEventos() {
@@ -49,7 +94,12 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
           _todosEventos.where((evento) {
             final nome = (evento['nome'] ?? '').toString().toLowerCase();
             final local = (evento['local'] ?? '').toString().toLowerCase();
-            return nome.contains(query) || local.contains(query);
+            final dj = (evento['dj'] ?? '').toString().toLowerCase();
+            final data = (evento['data'] ?? '').toString().toLowerCase();
+            return nome.contains(query) ||
+                local.contains(query) ||
+                dj.contains(query) ||
+                data.contains(query);
           }).toList();
     });
   }
@@ -61,85 +111,93 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
   }
 
   Widget _buildEventoCard(Map<String, dynamic> evento) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        border: Border.all(color: laranjaPrincipal),
-        borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 80,
-            height: 80,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              border: Border.all(color: laranjaPrincipal, width: 2),
-              borderRadius: BorderRadius.circular(8),
-              color: Colors.white,
-            ),
-            child: Text(
-              'Evento',
-              style: TextStyle(
-                color: laranjaPrincipal,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'sans-serif',
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) => EventScreen(
+                  ticketCounts: {'Pista': 0, 'VIP': 0, 'Camarote': 0},
+                ),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 20),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+        child: Row(
+          children: [
+            Container(
+              width: 220,
+              height: 145,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                border: Border.all(color: laranjaPrincipal, width: 2),
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.white,
+              ),
+              child: Text(
+                'Evento',
+                style: TextStyle(
+                  color: laranjaPrincipal,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'sans-serif',
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 15),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  evento['data'] ?? '',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: laranjaPrincipal,
-                    fontFamily: 'sans-serif',
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  evento['nome'] ?? '',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'sans-serif',
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Row(
-                  children: [
-                    Text(
-                      evento['local'] ?? '',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontFamily: 'sans-serif',
-                      ),
+            const SizedBox(width: 15),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    evento['data'] ?? '',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color.fromARGB(118, 0, 0, 0),
+                      fontFamily: 'sans-serif',
+                      fontWeight: FontWeight.bold,
                     ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    evento['nome'] ?? '',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'sans-serif',
+                      color: laranjaPrincipal,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    evento['local'] ?? '',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black,
+                      fontFamily: 'sans-serif',
+                    ),
+                  ),
+                  if (evento['dj'] != null) ...[
+                    const SizedBox(height: 2),
                     Text(
-                      ' • DJ Ensek',
+                      evento['dj'],
                       style: TextStyle(
                         fontSize: 14,
-                        color: laranjaPrincipal,
+                        color: Colors.black,
                         fontFamily: 'sans-serif',
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -166,38 +224,70 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            TextField(
-              controller: _searchController,
-              style: const TextStyle(
-                fontFamily: 'sans-serif',
-                color: Colors.black,
-              ),
-              decoration: InputDecoration(
-                hintText: 'Buscar eventos...',
-                hintStyle: const TextStyle(
-                  color: Colors.grey,
-                  fontFamily: 'sans-serif',
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _searchController,
+                    style: const TextStyle(
+                      fontFamily: 'sans-serif',
+                      color: Colors.black,
+                      fontSize: 16,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'Busque eventos por nome, DJ ou data...',
+                      hintStyle: const TextStyle(
+                        color: Colors.grey,
+                        fontFamily: 'sans-serif',
+                      ),
+                      prefixIcon: Icon(Icons.search, color: laranjaPrincipal),
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 8,
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: laranjaPrincipal),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: laranjaPrincipal),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: laranjaPrincipal,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                  ),
                 ),
-                prefixIcon: Icon(Icons.search, color: laranjaPrincipal),
-                filled: true,
-                fillColor: Colors.grey[100],
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 14,
+                const SizedBox(width: 10),
+                PopupMenuButton<String>(
+                  icon: Icon(Icons.more_vert, color: laranjaPrincipal),
+                  onSelected: (String result) {
+                    if (result == 'cat1') {
+                      print('Categoria1 selecionado');
+                    } else if (result == 'cat2') {
+                      print('Categoria2 selecionado');
+                    }
+                  },
+                  itemBuilder:
+                      (BuildContext context) => <PopupMenuEntry<String>>[
+                        const PopupMenuItem<String>(
+                          value: 'cat1',
+                          child: Text('Categoria1'),
+                        ),
+                        const PopupMenuItem<String>(
+                          value: 'cat2',
+                          child: Text('Categoria2'),
+                        ),
+                      ],
                 ),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: laranjaPrincipal),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: laranjaPrincipal),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: laranjaPrincipal, width: 2),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
+              ],
             ),
             const SizedBox(height: 30),
             Expanded(

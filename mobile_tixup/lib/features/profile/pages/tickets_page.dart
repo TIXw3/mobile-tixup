@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 
 class MeusIngressos extends StatefulWidget {
-  const MeusIngressos({Key? key}) : super(key: key);
+  const MeusIngressos({super.key});
 
   @override
   State<MeusIngressos> createState() => _MeusIngressosState();
 }
 
 class _MeusIngressosState extends State<MeusIngressos> {
-  // Laranja principal usado na tela anterior
   final Color laranjaPrincipal = const Color.fromARGB(255, 249, 115, 22);
 
-  // Lista fictícia de ingressos
   final List<Map<String, String>> _meusIngressos = [
     {
       'data': '06 de Abr',

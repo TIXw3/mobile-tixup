@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class PaymentsPage extends StatefulWidget {
-  const PaymentsPage({Key? key}) : super(key: key);
+  const PaymentsPage({super.key});
 
   @override
   State<PaymentsPage> createState() => _PaymentsPageState();
@@ -148,8 +148,9 @@ class _PaymentsPageState extends State<PaymentsPage> {
     if (numberController.text.isEmpty ||
         nameController.text.isEmpty ||
         expiryController.text.isEmpty ||
-        cvvController.text.isEmpty)
+        cvvController.text.isEmpty) {
       return;
+    }
 
     setState(() {
       addedCards.add({
@@ -292,33 +293,38 @@ class _PaymentsPageState extends State<PaymentsPage> {
   }
 
   Widget _buildTextField({
-    required IconData icon,
-    required String hintText,
-    required TextEditingController controller,
-    List<TextInputFormatter>? inputFormatters,
-    FocusNode? focusNode,
-  }) {
-    return TextFormField(
-      controller: controller,
-      focusNode: focusNode,
-      inputFormatters: inputFormatters,
-      onChanged: (_) => setState(() {}),
-      decoration: InputDecoration(
-        prefixIcon: Icon(icon),
-        hintText: hintText,
-        filled: true,
-        fillColor: Colors.grey[100],
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 18,
-          horizontal: 16,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
+  required IconData icon,
+  required String hintText,
+  required TextEditingController controller,
+  List<TextInputFormatter>? inputFormatters,
+  FocusNode? focusNode,
+}) {
+  return TextFormField(
+    controller: controller,
+    focusNode: focusNode,
+    inputFormatters: inputFormatters,
+    onChanged: (_) => setState(() {}),
+    decoration: InputDecoration(
+      prefixIcon: Icon(icon),
+      hintText: hintText,
+      filled: true,
+      fillColor: Colors.grey[100],
+      contentPadding: const EdgeInsets.symmetric(
+        vertical: 18,
+        horizontal: 16,
+      ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(
+          color: const Color.fromARGB(255, 249, 115, 22), 
+          width: 2,
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
+
 
   Widget _buildCardFront() {
     final brand = getCardBrand(numberController.text);

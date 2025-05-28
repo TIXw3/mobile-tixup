@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TelaTutorial extends StatelessWidget {
-  TelaTutorial({Key? key}) : super(key: key);
+  const TelaTutorial({super.key});
 
   final Color orange500 = const Color.fromARGB(255, 249, 115, 22);
 
@@ -124,6 +124,8 @@ class TelaTutorial extends StatelessWidget {
           fontFamily: 'sans-serif',
         ),
       ),
+      iconColor: orange500,
+      collapsedIconColor: orange500,
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -137,8 +139,6 @@ class TelaTutorial extends StatelessWidget {
           ),
         ),
       ],
-      iconColor: orange500,
-      collapsedIconColor: orange500,
     );
   }
 }
