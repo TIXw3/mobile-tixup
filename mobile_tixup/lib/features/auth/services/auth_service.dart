@@ -1,40 +1,71 @@
+import 'package:mobile_tixup/models/user_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthService {
-  final SupabaseClient _supabase = Supabase.instance.client;
+  final supabase = Supabase.instance.client;
 
-  //logar email e senha
-  Future<AuthResponse> signInEmailPassword(
-    String email,
-    String password,
-  ) async {
-    return await _supabase.auth.signInWithPassword(
+  Future<String> signUpEmailPassword(String email, String password) async {
+    final response = await supabase.auth.signUp(
       email: email,
       password: password,
     );
+    if (response.user == null) {
+      throw Exception('Erro ao criar usuário');
+    }
+    return response.user!.id;
   }
 
-  //criar conta email e senha
-  Future<AuthResponse> signUpEmailPassword(
-    String email,
-    String password,
-  ) async {
-    return await _supabase.auth.signUp(email: email, password: password);
+  Future<void> addUserToTable({
+    required String id,
+    required String nome,
+    required String email,
+    required String cpf,
+    required String dataNascimento,
+    required String telefone,
+  }) async {
+    final response =
+        await supabase.from('usuarios').insert({
+          'id': id,
+          'nome': nome,
+          'email': email,
+          'cpf': cpf,
+          'datanascimento': dataNascimento,
+          'telefone': telefone,
+          'endereco': '',
+          'imagem_perfil': '',
+        }).select();
+
+    if (response.isEmpty) {
+      throw Exception('Erro ao salvar dados do usuário na tabela');
+    }
   }
 
-  //sair da conta
+  Future<UserModel?> getUserById(String id) async {
+    final response =
+        await supabase.from('usuarios').select().eq('id', id).single();
+
+    if (response == null) return null;
+
+    return UserModel.fromMap(response);
+  }
+
   Future<void> signOut() async {
-    return _supabase.auth.signOut();
+    await supabase.auth.signOut();
+  }
+
+  Future<String?> login(String email, String password) async {
+    final response = await supabase.auth.signInWithPassword(
+      email: email,
+      password: password,
+    );
+    return response.user?.id;
   }
 
   Future<void> resetPassword(String email) async {
-    await _supabase.auth.resetPasswordForEmail(email);
-  }
-
-  //salvar email do usuario
-  String? getCurrentUserEmail() {
-    final session = _supabase.auth.currentSession;
-    final user = session?.user;
-    return user?.email;
+    try {
+      await supabase.auth.resetPasswordForEmail(email);
+    } catch (e) {
+      throw Exception('Erro ao enviar e-mail de recuperação: $e');
+    }
   }
 }

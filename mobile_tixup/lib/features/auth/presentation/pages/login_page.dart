@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mobile_tixup/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:mobile_tixup/features/auth/presentation/pages/register_page.dart';
 import 'package:mobile_tixup/features/auth/services/auth_service.dart';
+import 'package:mobile_tixup/features/home/home_page.dart';
+import 'package:mobile_tixup/models/user_model.dart';
+import 'package:mobile_tixup/models/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,17 +21,63 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _obscureText = true;
 
+  bool _isLoading = false;
+
   void login() async {
-    final email = _emailController.text;
-    final password = _passwordController.text;
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    setState(() {
+      _isLoading = true;
+    });
 
     try {
-      await authService.signInEmailPassword(email, password);
+      final userId = await authService.login(email, password);
+
+      if (userId != null) {
+        final userData = await authService.getUserById(userId);
+
+        if (userData != null) {
+          final user = UserModel(
+            id: userData.id,
+            nome: userData.nome,
+            email: userData.email,
+            telefone: userData.telefone,
+            cpf: userData.cpf,
+            dataNascimento: userData.dataNascimento,
+            endereco: userData.endereco,
+            imagemPerfil: userData.imagemPerfil,
+          );
+
+          if (mounted) {
+            final userProvider = Provider.of<UserProvider>(
+              context,
+              listen: false,
+            );
+            userProvider.setUser(user);
+
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
+            );
+          }
+        } else {
+          throw Exception('Usuário não encontrado na tabela.');
+        }
+      } else {
+        throw Exception('Email ou senha inválidos.');
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text("Error: $e")));
+        ).showSnackBar(SnackBar(content: Text("Erro: $e")));
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
@@ -41,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 248, 247, 245),
+      backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -57,28 +107,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: RichText(
-                          text: TextSpan(
-                            style: const TextStyle(
+                          text: const TextSpan(
+                            style: TextStyle(
                               fontSize: 44,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'Pacifico',
                               color: Color.fromARGB(206, 0, 0, 0),
                             ),
                             children: [
-                              TextSpan(
-                                text: 'Pronto para',
-                                style: TextStyle(letterSpacing: -1),
-                              ),
-                              TextSpan(text: ' '),
-                              TextSpan(
-                                text: 'escolher seu',
-                                style: TextStyle(letterSpacing: -1),
-                              ),
-                              TextSpan(text: ' '),
-                              TextSpan(
-                                text: 'próximo destino?',
-                                style: TextStyle(letterSpacing: -1),
-                              ),
+                              TextSpan(text: 'Pronto para '),
+                              TextSpan(text: 'escolher seu '),
+                              TextSpan(text: 'próximo destino?'),
                             ],
                           ),
                         ),
@@ -184,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               _obscureText
                                   ? Icons.visibility
                                   : Icons.visibility_off,
-                              color: Color.fromARGB(206, 0, 0, 0),
+                              color: const Color.fromARGB(206, 0, 0, 0),
                             ),
                             onPressed: _togglePasswordVisibility,
                           ),
@@ -194,18 +233,31 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: login,
+                          onPressed: _isLoading ? null : login,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromARGB(255, 249, 115, 22),
+                            backgroundColor: const Color.fromARGB(
+                              255,
+                              249,
+                              115,
+                              22,
+                            ),
                             minimumSize: const Size.fromHeight(50),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          child: const Text(
-                            'Entrar',
-                            style: TextStyle(fontSize: 18, color: Colors.white),
-                          ),
+                          child:
+                              _isLoading
+                                  ? const CircularProgressIndicator(
+                                    color: Colors.white,
+                                  )
+                                  : const Text(
+                                    'Entrar',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                         ),
                       ),
                       const SizedBox(height: 20),
