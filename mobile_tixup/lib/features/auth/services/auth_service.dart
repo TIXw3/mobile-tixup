@@ -1,4 +1,5 @@
 import 'package:bcrypt/bcrypt.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 import 'package:mobile_tixup/models/user_model.dart';
@@ -90,7 +91,12 @@ class AuthService {
   }
 
   Future<void> signOut() async {
-    // Não há sessão no Supabase Auth, apenas limpar localmente se necessário
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('userId');
+    } catch (e) {
+      throw Exception('Erro ao limpar dados locais: $e');
+    }
   }
 
   Future<String> initiatePasswordReset(String email) async {

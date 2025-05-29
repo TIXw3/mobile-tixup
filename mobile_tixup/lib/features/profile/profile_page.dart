@@ -27,7 +27,19 @@ class _ProfileScreen extends State<ProfileScreen> {
   final authService = AuthService();
 
   void logout() async {
-    await authService.signOut();
+    try {
+      await authService.signOut();
+      if (mounted) {
+        Provider.of<UserProvider>(context, listen: false).setUser(null);
+        Navigator.pushReplacementNamed(context, '/login');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Erro ao sair: $e')));
+      }
+    }
   }
 
   Future<void> _deleteAccount() async {
