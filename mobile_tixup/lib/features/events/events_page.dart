@@ -130,7 +130,7 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
         child: Row(
           children: [
             Container(
-              width: 220,
+              width: 205,
               height: 145,
               alignment: Alignment.center,
               decoration: BoxDecoration(

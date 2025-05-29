@@ -12,14 +12,10 @@ class FavoriteScreen extends StatelessWidget {
         backgroundColor: const Color.fromARGB(255, 249, 115, 22),
         elevation: 0,
         centerTitle: true,
-        title: const Text(
-          'Favoritos',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'sans-serif',
-          ),
+        title: const Icon(
+          Icons.confirmation_number,
+          color: Colors.white,
+          size: 32,
         ),
       ),
       body: LayoutBuilder(
@@ -34,6 +30,17 @@ class FavoriteScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    const Text(
+                      'Favoritos',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'sans-serif',
+                      ),
+                    ),
+                    const SizedBox(height: 12),
                     const Text(
                       'Suas curtidas irão aparecer aqui!',
                       textAlign: TextAlign.center,
