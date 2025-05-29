@@ -120,12 +120,10 @@ class _TelaRegistroState extends State<TelaRegistro> {
     }
 
     try {
-      final userId = await authService.signUpEmailPassword(email, password);
-
-      await authService.addUserToTable(
-        id: userId,
+      final userId = await authService.signUp(
         nome: nome,
         email: email,
+        password: password,
         cpf: cpf,
         dataNascimento: birthDate,
         telefone: telefone,
@@ -141,7 +139,6 @@ class _TelaRegistroState extends State<TelaRegistro> {
             dataNascimento: birthDate,
             cpf: cpf,
             endereco: '',
-            imagemPerfil: '',
           ),
         );
       }

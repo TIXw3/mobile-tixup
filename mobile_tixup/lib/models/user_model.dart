@@ -6,7 +6,6 @@ class UserModel {
   final String dataNascimento;
   final String cpf;
   final String endereco;
-  final String imagemPerfil;
 
   UserModel({
     required this.id,
@@ -16,7 +15,6 @@ class UserModel {
     required this.dataNascimento,
     required this.cpf,
     required this.endereco,
-    required this.imagemPerfil,
   });
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
@@ -28,9 +26,10 @@ class UserModel {
       dataNascimento: map['datanascimento'] ?? '',
       cpf: map['cpf'] ?? '',
       endereco: map['endereco'] ?? '',
-      imagemPerfil: map['imagem_perfil'] ?? '',
     );
   }
+
+  get imagemPerfil => null;
 
   Map<String, dynamic> toMap() {
     return {
@@ -41,7 +40,6 @@ class UserModel {
       'datanascimento': dataNascimento,
       'cpf': cpf,
       'endereco': endereco,
-      'imagem_perfil': imagemPerfil,
     };
   }
 }

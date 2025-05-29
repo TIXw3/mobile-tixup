@@ -32,37 +32,20 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      final userId = await authService.login(email, password);
+      final user = await authService.login(email, password);
 
-      if (userId != null) {
-        final userData = await authService.getUserById(userId);
-
-        if (userData != null) {
-          final user = UserModel(
-            id: userData.id,
-            nome: userData.nome,
-            email: userData.email,
-            telefone: userData.telefone,
-            cpf: userData.cpf,
-            dataNascimento: userData.dataNascimento,
-            endereco: userData.endereco,
-            imagemPerfil: userData.imagemPerfil,
+      if (user != null) {
+        if (mounted) {
+          final userProvider = Provider.of<UserProvider>(
+            context,
+            listen: false,
           );
+          userProvider.setUser(user);
 
-          if (mounted) {
-            final userProvider = Provider.of<UserProvider>(
-              context,
-              listen: false,
-            );
-            userProvider.setUser(user);
-
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
-            );
-          }
-        } else {
-          throw Exception('Usuário não encontrado na tabela.');
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
         }
       } else {
         throw Exception('Email ou senha inválidos.');
