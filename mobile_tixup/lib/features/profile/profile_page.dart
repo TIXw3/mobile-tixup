@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_tixup/features/auth/presentation/pages/login_page.dart';
 import 'package:mobile_tixup/features/auth/services/auth_service.dart';
 import 'package:mobile_tixup/features/favorites/favorites_page.dart';
 import 'package:mobile_tixup/features/profile/pages/account_page.dart';
@@ -27,7 +28,22 @@ class _ProfileScreen extends State<ProfileScreen> {
   final authService = AuthService();
 
   void logout() async {
-    await authService.signOut();
+    try {
+      await authService.signOut();
+      if (mounted) {
+        Provider.of<UserProvider>(context, listen: false).setUser(null);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Erro ao sair: $e')));
+      }
+    }
   }
 
   Future<void> _deleteAccount() async {
@@ -68,31 +84,31 @@ class _ProfileScreen extends State<ProfileScreen> {
   }
 
   @override
-Widget build(BuildContext context) {
-  final userProvider = Provider.of<UserProvider>(context);
-  final user = userProvider.user;
-  final nome = user?.nome ?? 'Nome';
-  final email = user?.email ?? 'email@email.com';
-  final telefone = user?.telefone ?? 'Sem telefone';
-  final endereco = user?.endereco ?? 'Sem endereço';
-  final imagemPerfil = user?.imagemPerfil ?? '';
+  Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final user = userProvider.user;
+    final nome = user?.nome ?? 'Nome';
+    final email = user?.email ?? 'email@email.com';
+    final telefone = user?.telefone ?? 'Sem telefone';
+    final endereco = user?.endereco ?? 'Sem endereço';
+    final imagemPerfil = user?.imagemPerfil ?? '';
 
-  return Scaffold(
-    backgroundColor: const Color.fromARGB(255, 248, 247, 245),
-    body: SingleChildScrollView(
-      child: Column(
-        children: [
-          _buildHeader(nome, email, telefone, endereco, imagemPerfil),
-          _buildStatistics(),
-          _buildMainMenu(),
-          _buildSocialLinks(),
-          _buildSupportMenu(),
-          const SizedBox(height: 40),
-        ],
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 248, 247, 245),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildHeader(nome, email, telefone, endereco, imagemPerfil),
+            _buildStatistics(),
+            _buildMainMenu(),
+            _buildSocialLinks(),
+            _buildSupportMenu(),
+            const SizedBox(height: 40),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildHeader(
     String nome,
@@ -305,45 +321,66 @@ Widget build(BuildContext context) {
       ),
       child: Column(
         children: [
-          _buildMenuItem('Meus Ingressos', Icons.confirmation_number_outlined,
-              onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MeusIngressos()),
-            );
-          }),
-          _buildMenuItem('Carteirinhas', Icons.card_membership_outlined,
-              onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => StudentIdScreen()),
-            );
-          }),
-          _buildMenuItem('Minha Conta', Icons.person_outline, onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MeuPerfil()),
-            );
-          }),
-          _buildMenuItem('Tutorial', Icons.help_outline, onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => TelaTutorial()),
-            );
-          }),
-          _buildMenuItem('Meus Cartões', Icons.credit_card_outlined,
-              onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const PaymentsPage()),
-            );
-          }),
-          _buildMenuItem('Vender Ingressos', Icons.sell_outlined, onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => TelaVenderIngresso()),
-            );
-          }),
+          _buildMenuItem(
+            'Meus Ingressos',
+            Icons.confirmation_number_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MeusIngressos()),
+              );
+            },
+          ),
+          _buildMenuItem(
+            'Carteirinhas',
+            Icons.card_membership_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => StudentIdScreen()),
+              );
+            },
+          ),
+          _buildMenuItem(
+            'Minha Conta',
+            Icons.person_outline,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MeuPerfil()),
+              );
+            },
+          ),
+          _buildMenuItem(
+            'Tutorial',
+            Icons.help_outline,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TelaTutorial()),
+              );
+            },
+          ),
+          _buildMenuItem(
+            'Meus Cartões',
+            Icons.credit_card_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PaymentsPage()),
+              );
+            },
+          ),
+          _buildMenuItem(
+            'Vender Ingressos',
+            Icons.sell_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TelaVenderIngresso()),
+              );
+            },
+          ),
         ],
       ),
     );
@@ -361,15 +398,23 @@ Widget build(BuildContext context) {
       ),
       child: Column(
         children: [
-          _buildMenuItem('Suporte', Icons.headset_mic_outlined, onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => TelaDeSuporte()),
-            );
-          }),
+          _buildMenuItem(
+            'Suporte',
+            Icons.headset_mic_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TelaDeSuporte()),
+              );
+            },
+          ),
           _buildMenuItem('Sair', Icons.exit_to_app_outlined, onTap: logout),
-          _buildMenuItem('Excluir Conta', Icons.delete_outline,
-              color: Colors.red, onTap: _confirmDeleteAccount),
+          _buildMenuItem(
+            'Excluir Conta',
+            Icons.delete_outline,
+            color: Colors.red,
+            onTap: _confirmDeleteAccount,
+          ),
         ],
       ),
     );
@@ -403,19 +448,20 @@ Widget build(BuildContext context) {
   }
 
   Widget _buildSocialLinks() {
-  return Container(
-    margin: const EdgeInsets.all(20),
-    child: Center(
-      child: _buildSocialButton(
-        'Instagram',
-        Icons.camera_alt_outlined,
-        'instagram://user?username=tixup_oficial',
-        'https://www.instagram.com/tixup_oficial/',
+    return Container(
+      margin: const EdgeInsets.all(20),
+      child: Center(
+        child: _buildSocialButton(
+          'Instagram',
+          Icons.camera_alt_outlined,
+          'instagram://user?username=tixup_oficial',
+          'https://www.instagram.com/tixup_oficial/',
+        ),
       ),
-    ),
-  );
-}
-   Future<void> _launchURL(String appUrl, String webUrl) async {
+    );
+  }
+
+  Future<void> _launchURL(String appUrl, String webUrl) async {
     final Uri appUri = Uri.parse(appUrl);
     final Uri webUri = Uri.parse(webUrl);
 
@@ -427,36 +473,38 @@ Widget build(BuildContext context) {
       }
     } catch (e) {
       await launchUrl(webUri, mode: LaunchMode.platformDefault);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro ao abrir $appUrl: $e')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erro ao abrir $appUrl: $e')));
     }
   }
 
- Widget _buildSocialButton(
-  String title,
-  IconData icon,
-  String appUrl,
-  String webUrl,
-) {
-  return OutlinedButton.icon(
-    onPressed: () => _launchURL(appUrl, webUrl),
-    icon: Icon(icon, color: const Color.fromARGB(255, 249, 115, 22)),
-    label: Text(
-      title,
-      style: const TextStyle(
-        color: Color.fromARGB(255, 249, 115, 22),
-        fontFamily: 'sans-serif',
-        fontSize: 14,
+  Widget _buildSocialButton(
+    String title,
+    IconData icon,
+    String appUrl,
+    String webUrl,
+  ) {
+    return OutlinedButton.icon(
+      onPressed: () => _launchURL(appUrl, webUrl),
+      icon: Icon(icon, color: const Color.fromARGB(255, 249, 115, 22)),
+      label: Text(
+        title,
+        style: const TextStyle(
+          color: Color.fromARGB(255, 249, 115, 22),
+          fontFamily: 'sans-serif',
+          fontSize: 14,
+        ),
       ),
-    ),
-    style: OutlinedButton.styleFrom(
-      backgroundColor: Colors.white,
-      side: const BorderSide(
-        color: Color.fromARGB(255, 249, 115, 22),
-        width: 1.5,
+      style: OutlinedButton.styleFrom(
+        backgroundColor: Colors.white,
+        side: const BorderSide(
+          color: Color.fromARGB(255, 249, 115, 22),
+          width: 1.5,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-    ),
-  );
- }
+    );
+  }
 }

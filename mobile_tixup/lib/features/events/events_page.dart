@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_tixup/features/events/detailedEvent_page.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TelaPesquisa extends StatefulWidget {
   const TelaPesquisa({super.key});
@@ -10,97 +11,78 @@ class TelaPesquisa extends StatefulWidget {
 
 class _TelaPesquisaState extends State<TelaPesquisa> {
   final TextEditingController _searchController = TextEditingController();
-
   final Color laranjaPrincipal = const Color.fromARGB(255, 249, 115, 22);
-
   List<Map<String, dynamic>> _todosEventos = [];
   List<Map<String, dynamic>> _eventosFiltrados = [];
   bool _carregando = true;
+  String? _erroMensagem;
 
   @override
   void initState() {
     super.initState();
-    _carregarEventosFixos();
+    _carregarEventosDoSupabase();
     _searchController.addListener(_filtrarEventos);
   }
 
-  void _carregarEventosFixos() {
-    _todosEventos = [
-      {
-        'nome': 'Festa 1',
-        'data': '30/07',
-        'dj': 'DJ Ensek',
-        'local': 'Rua Pedro Paulo',
-      },
-      {
-        'nome': 'Festa 2',
-        'data': '30/07',
-        'dj': 'DJ Ensek',
-        'local': 'Rua Pedro Paulo',
-      },
-      {
-        'nome': 'Festa 3',
-        'data': '30/07',
-        'dj': 'DJ Ensek',
-        'local': 'Rua Pedro Paulo',
-      },
-      {
-        'nome': 'Festa 4',
-        'data': '20/08',
-        'dj': 'DJ Gabriel',
-        'local': 'Rua Giovanne Leite',
-      },
-      {
-        'nome': 'Festa 5',
-        'data': '20/08',
-        'dj': 'DJ Gabriel',
-        'local': 'Rua Giovanne Leite',
-      },
-      {
-        'nome': 'Festa 6',
-        'data': '20/08',
-        'dj': 'DJ Gabriel',
-        'local': 'Rua Giovanne Leite',
-      },
-      {
-        'nome': 'Festa 7',
-        'data': '10/09',
-        'dj': 'DJ Lucas',
-        'local': 'Rua Thiago Poliseli',
-      },
-      {
-        'nome': 'Festa 8',
-        'data': '10/09',
-        'dj': 'DJ Lucas',
-        'local': 'Rua Thiago Poliseli',
-      },
-      {
-        'nome': 'Festa 9',
-        'data': '10/09',
-        'dj': 'DJ Lucas',
-        'local': 'Rua Thiago Poliseli',
-      },
-    ];
+  Future<void> _carregarEventosDoSupabase() async {
     setState(() {
-      _eventosFiltrados = _todosEventos;
-      _carregando = false;
+      _carregando = true;
+      _erroMensagem = null;
     });
+    try {
+      final data = await Supabase.instance.client
+          .from('eventos')
+          .select()
+          .order('data', ascending: true);
+
+      _todosEventos = data.map((json) {
+        return {
+          'id': json['id'],
+          'nome': json['nome'],
+          'data': json['data'],
+          'local': json['local'],
+          'descricao': json['descricao'],
+          'preco': json['preco'],
+          'imagem': json['imagem'],
+          'categoria': json['categoria'],
+        };
+      }).toList();
+
+      setState(() {
+        _eventosFiltrados = _todosEventos;
+        _carregando = false;
+      });
+    } on PostgrestException catch (e) {
+      setState(() {
+        _erroMensagem = 'Erro ao carregar eventos: ${e.message}';
+        _carregando = false;
+      });
+      print('Erro PostgREST: ${e.message}');
+    } catch (e) {
+      setState(() {
+        _erroMensagem = 'Ocorreu um erro inesperado: $e';
+        _carregando = false;
+      });
+      print('Erro inesperado: $e');
+    }
   }
 
   void _filtrarEventos() {
     final query = _searchController.text.toLowerCase();
     setState(() {
-      _eventosFiltrados =
-          _todosEventos.where((evento) {
-            final nome = (evento['nome'] ?? '').toString().toLowerCase();
-            final local = (evento['local'] ?? '').toString().toLowerCase();
-            final dj = (evento['dj'] ?? '').toString().toLowerCase();
-            final data = (evento['data'] ?? '').toString().toLowerCase();
-            return nome.contains(query) ||
-                local.contains(query) ||
-                dj.contains(query) ||
-                data.contains(query);
-          }).toList();
+      _eventosFiltrados = _todosEventos.where((evento) {
+        final nome = (evento['nome'] ?? '').toString().toLowerCase();
+        final local = (evento['local'] ?? '').toString().toLowerCase();
+        final descricao = (evento['descricao'] ?? '').toString().toLowerCase();
+        final categoria = (evento['categoria'] ?? '').toString().toLowerCase();
+        final data = (evento['data'] ?? '').toString().toLowerCase();
+
+        return nome.contains(query) ||
+            local.contains(query) ||
+            descricao.contains(query) ||
+            categoria.contains(query) ||
+            data.contains(query);
+      }).toList();
     });
   }
 
@@ -116,10 +98,10 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder:
-                (context) => EventScreen(
-                  ticketCounts: {'Pista': 0, 'VIP': 0, 'Camarote': 0},
-                ),
+            builder: (context) => EventScreen(
+              eventoData: evento,
+              initialTicketCounts: {'Pista': 0, 'VIP': 0, 'Camarote': 0},
+            ),
           ),
         );
       },
@@ -130,23 +112,32 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
         child: Row(
           children: [
             Container(
-              width: 220,
+              width: 205,
               height: 145,
-              alignment: Alignment.center,
               decoration: BoxDecoration(
                 border: Border.all(color: laranjaPrincipal, width: 2),
                 borderRadius: BorderRadius.circular(8),
                 color: Colors.white,
+                image: evento['imagem'] != null && evento['imagem'].isNotEmpty
+                    ? DecorationImage(
+                        image: NetworkImage(evento['imagem']),
+                        fit: BoxFit.cover,
+                      )
+                    : null,
               ),
-              child: Text(
-                'Evento',
-                style: TextStyle(
-                  color: laranjaPrincipal,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'sans-serif',
-                ),
-              ),
+              child: evento['imagem'] == null || evento['imagem'].isEmpty
+                  ? Center(
+                      child: Text(
+                        'Evento',
+                        style: TextStyle(
+                          color: laranjaPrincipal,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'sans-serif',
+                        ),
+                      ),
+                    )
+                  : null,
             ),
             const SizedBox(width: 15),
             Expanded(
@@ -181,18 +172,6 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
                       fontFamily: 'sans-serif',
                     ),
                   ),
-                  if (evento['dj'] != null) ...[
-                    const SizedBox(height: 2),
-                    Text(
-                      evento['dj'],
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontFamily: 'sans-serif',
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
                 ],
               ),
             ),
@@ -235,7 +214,7 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
                       fontSize: 16,
                     ),
                     decoration: InputDecoration(
-                      hintText: 'Busque eventos por nome, DJ ou data...',
+                      hintText: 'Busque eventos por nome, local ou data...',
                       hintStyle: const TextStyle(
                         color: Colors.grey,
                         fontFamily: 'sans-serif',
@@ -269,58 +248,104 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
                 PopupMenuButton<String>(
                   icon: Icon(Icons.more_vert, color: laranjaPrincipal),
                   onSelected: (String result) {
-                    if (result == 'cat1') {
-                      print('Categoria1 selecionado');
-                    } else if (result == 'cat2') {
-                      print('Categoria2 selecionado');
-                    }
+                    print('Categoria selecionada: $result');
                   },
-                  itemBuilder:
-                      (BuildContext context) => <PopupMenuEntry<String>>[
-                        const PopupMenuItem<String>(
-                          value: 'cat1',
-                          child: Text('Categoria1'),
-                        ),
-                        const PopupMenuItem<String>(
-                          value: 'cat2',
-                          child: Text('Categoria2'),
-                        ),
-                      ],
+                  itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                    const PopupMenuItem<String>(
+                      value: 'Todos',
+                      child: Text('Todas as Categorias'),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'Show',
+                      child: Text('Show'),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'Festas',
+                      child: Text('Festas'),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'Baladas',
+                      child: Text('Baladas'),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'Boates',
+                      child: Text('Boates'),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'Diversos',
+                      child: Text('Diversos'),
+                    ),
+                  ],
                 ),
               ],
             ),
             const SizedBox(height: 30),
             Expanded(
-              child:
-                  _carregando
-                      ? const Center(child: CircularProgressIndicator())
-                      : _eventosFiltrados.isEmpty
-                      ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.search_off_outlined,
-                            size: 80,
-                            color: laranjaPrincipal,
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            'Nenhum resultado encontrado',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: laranjaPrincipal,
-                              fontFamily: 'sans-serif',
+              child: _carregando
+                  ? const Center(child: CircularProgressIndicator())
+                  : _erroMensagem != null
+                      ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.error_outline,
+                                  size: 80,
+                                  color: Colors.red,
+                                ),
+                                const SizedBox(height: 20),
+                                Text(
+                                  _erroMensagem!,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.red,
+                                    fontFamily: 'sans-serif',
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                ElevatedButton.icon(
+                                  onPressed: _carregarEventosDoSupabase,
+                                  icon: Icon(Icons.refresh),
+                                  label: Text('Tentar Novamente'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: laranjaPrincipal,
+                                    foregroundColor: Colors.white,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      )
-                      : ListView.builder(
-                        itemCount: _eventosFiltrados.length,
-                        itemBuilder: (context, index) {
-                          return _buildEventoCard(_eventosFiltrados[index]);
-                        },
-                      ),
+                        )
+                      : _eventosFiltrados.isEmpty
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.search_off_outlined,
+                                  size: 80,
+                                  color: laranjaPrincipal,
+                                ),
+                                const SizedBox(height: 20),
+                                Text(
+                                  'Nenhum resultado encontrado',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: laranjaPrincipal,
+                                    fontFamily: 'sans-serif',
+                                  ),
+                                ),
+                              ],
+                            )
+                          : ListView.builder(
+                              itemCount: _eventosFiltrados.length,
+                              itemBuilder: (context, index) {
+                                return _buildEventoCard(_eventosFiltrados[index]);
+                              },
+                            ),
             ),
           ],
         ),

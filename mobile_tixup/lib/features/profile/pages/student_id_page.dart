@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class StudentIdScreen extends StatelessWidget {
   final Color backgroundColor = const Color.fromARGB(255, 248, 247, 245);
-  final Color laranjaPrincipal = const Color.fromARGB(255, 249, 115, 22);
+  final Color laranjaPrincipal = const Color(0xFFF97316);
 
   final List<Map<String, String>> carteirinhas = [
     {
@@ -44,17 +44,24 @@ class StudentIdScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: backgroundColor,
+        backgroundColor: laranjaPrincipal,
         elevation: 0,
-        title: Text(
+        centerTitle: true,
+        title: const Text(
           'Minhas Carteirinhas',
           style: TextStyle(
-            color: laranjaPrincipal,
+            color: Colors.white,
             fontWeight: FontWeight.bold,
+            fontFamily: 'sans-serif',
+            fontSize: 20,
           ),
         ),
-        centerTitle: true,
-        iconTheme: IconThemeData(color: laranjaPrincipal),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -126,7 +133,6 @@ class StudentIdScreen extends StatelessWidget {
                   IconButton(
                     icon: Icon(Icons.edit, color: laranjaPrincipal),
                     onPressed: () {
-                      // logica p editar
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Editar ${item['nome']}')),
                       );
@@ -141,7 +147,6 @@ class StudentIdScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: laranjaPrincipal,
         onPressed: () {
-          // tela de cadastrar carteirinha
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Adicionar nova carteirinha')),
           );
