@@ -4,32 +4,37 @@ import 'package:share_plus/share_plus.dart';
 import 'package:mobile_tixup/features/events/InformationPurchase_page.dart';
 
 class EventScreen extends StatefulWidget {
-  const EventScreen({super.key, required Map<String, int> ticketCounts});
+  final Map<String, dynamic> eventoData;
+  final Map<String, int> initialTicketCounts;
+
+  const EventScreen({
+    super.key,
+    required this.eventoData,
+    required this.initialTicketCounts,
+  });
 
   @override
-  State<EventScreen> createState() => _EventScreen();
+  State<EventScreen> createState() => _EventScreenState();
 }
 
-class _EventScreen extends State<EventScreen> {
-  Map<String, int> ticketCounts = {
-    "Meia MASCULINO": 0,
-    "Meia FEMININO": 0,
-    "Inteira MASCULINO": 0,
-    "Inteira FEMININO": 0,
-  };
+class _EventScreenState extends State<EventScreen> {
+  late Map<String, int> ticketCounts;
 
   bool isFavorite = false;
 
   @override
   void initState() {
     super.initState();
+    ticketCounts = Map.from(widget.initialTicketCounts);
+
     _loadFavoriteStatus();
   }
 
   Future<void> _loadFavoriteStatus() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      isFavorite = prefs.getBool('event_favorite') ?? false;
+      isFavorite =
+          prefs.getBool('event_favorite_${widget.eventoData['id']}') ?? false;
     });
   }
 
@@ -37,7 +42,7 @@ class _EventScreen extends State<EventScreen> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       isFavorite = !isFavorite;
-      prefs.setBool('event_favorite', isFavorite);
+      prefs.setBool('event_favorite_${widget.eventoData['id']}', isFavorite);
     });
   }
 
@@ -59,9 +64,10 @@ class _EventScreen extends State<EventScreen> {
     final message = '''
 Confira este evento incrível!
 
-Nome: Nome do evento
-Data: Sáb, Mar 15 • 19:00h
-Local: R. Unicesu, 999 – Jardim Mar, Maringá/PR
+Nome: ${widget.eventoData['nome'] ?? 'Evento'}
+Data: ${widget.eventoData['data'] ?? ''}
+Local: ${widget.eventoData['local'] ?? ''}
+Descrição: ${widget.eventoData['descricao'] ?? ''}
 
 Compre já seu ingresso pelo app Tixup!
 ''';
@@ -70,6 +76,8 @@ Compre já seu ingresso pelo app Tixup!
 
   @override
   Widget build(BuildContext context) {
+    final evento = widget.eventoData;
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       bottomNavigationBar: Padding(
@@ -85,7 +93,9 @@ Compre já seu ingresso pelo app Tixup!
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => InformationPurchasePage()),
+              MaterialPageRoute(
+                builder: (context) => InformationPurchasePage(),
+              ),
             );
           },
           child: const Text(
@@ -110,11 +120,19 @@ Compre já seu ingresso pelo app Tixup!
                           borderRadius: const BorderRadius.only(
                             bottomRight: Radius.circular(20),
                           ),
-                          child: Image.asset(
-                            'lib/assets/images/party1.jpg',
-                            height: 250,
-                            fit: BoxFit.cover,
-                          ),
+                          child:
+                              evento['imagem'] != null &&
+                                      evento['imagem'].isNotEmpty
+                                  ? Image.network(
+                                    evento['imagem'],
+                                    height: 250,
+                                    fit: BoxFit.cover,
+                                  )
+                                  : Image.asset(
+                                    'lib/assets/images/party6.jpg',
+                                    height: 250,
+                                    fit: BoxFit.cover,
+                                  ),
                         ),
                       ),
                     ],
@@ -141,6 +159,17 @@ Compre já seu ingresso pelo app Tixup!
                       ),
                     ),
                   ),
+                  Positioned(
+                    top: 15,
+                    left: 15,
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      iconSize: 28,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -149,13 +178,13 @@ Compre já seu ingresso pelo app Tixup!
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Nome do evento',
+                  Text(
+                    evento['nome'] ?? 'Nome do evento',
                     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Sáb, Mar 15 • 19:00h\nR. Unicesu, 999 – Jardim Mar, Maringá/PR – 87727-878',
+                    '${evento['data'] ?? ''} • ${evento['local'] ?? ''}',
                     style: TextStyle(fontSize: 14, color: Colors.grey[800]),
                   ),
                   const SizedBox(height: 44),
@@ -165,7 +194,7 @@ Compre já seu ingresso pelo app Tixup!
                   ),
                   const SizedBox(height: 6),
                   sectionText(
-                    'Proibido entrada de menores de 18 anos.\nAbertura dos portões às 20h\n\nObrigatório a apresentação de documento com foto na entrada (não aceitamos e-documento).\n\nEsse evento poderá ser gravado e compartilhado nas redes sociais, ao adquirir o ingresso você concorda com o uso da sua imagem gratuitamente.',
+                    evento['descricao'] ?? 'Sem descrição disponível.',
                   ),
                   const SizedBox(height: 44),
                   const Text(
@@ -201,7 +230,10 @@ Compre já seu ingresso pelo app Tixup!
       margin: const EdgeInsets.symmetric(vertical: 6),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
-        side: const BorderSide(color: Color.fromARGB(255, 249, 115, 22), width: 0.5),
+        side: const BorderSide(
+          color: Color.fromARGB(255, 249, 115, 22),
+          width: 0.5,
+        ),
       ),
       elevation: 2,
       color: const Color.fromARGB(255, 255, 255, 255),
@@ -214,7 +246,10 @@ Compre já seu ingresso pelo app Tixup!
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(type, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text(
+                    type,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 4),
                   const Text('R\$50,00'),
                   const Text(

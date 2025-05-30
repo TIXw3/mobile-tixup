@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_tixup/features/auth/presentation/pages/login_page.dart';
 import 'package:mobile_tixup/features/auth/services/auth_service.dart';
 import 'package:mobile_tixup/features/favorites/favorites_page.dart';
 import 'package:mobile_tixup/features/profile/pages/account_page.dart';
@@ -31,7 +32,10 @@ class _ProfileScreen extends State<ProfileScreen> {
       await authService.signOut();
       if (mounted) {
         Provider.of<UserProvider>(context, listen: false).setUser(null);
-        Navigator.pushReplacementNamed(context, '/login');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
       }
     } catch (e) {
       if (mounted) {
