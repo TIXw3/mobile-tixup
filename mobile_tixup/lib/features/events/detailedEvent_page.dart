@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:mobile_tixup/features/events/InformationPurchase_page.dart';
+import 'package:mobile_tixup/features/auth/services/favorites_service.dart';
 import 'dart:convert';
 
 class EventScreen extends StatefulWidget {
@@ -30,18 +31,27 @@ class _EventScreenState extends State<EventScreen> {
   }
 
   Future<void> _loadFavoriteStatus() async {
-    final prefs = await SharedPreferences.getInstance();
+    final eventId = widget.eventoData['id']?.toString() ?? 'unknown';
+    print('Loading favorite status for eventId: $eventId');
+    final favoriteStatus = await FavoritesService.isFavorite(eventId);
     setState(() {
-      isFavorite = prefs.getBool('event_favorite_${widget.eventoData['id']}') ?? false;
+      isFavorite = favoriteStatus;
+      print('isFavorite loaded: $isFavorite');
     });
   }
 
   Future<void> _toggleFavorite() async {
-    final prefs = await SharedPreferences.getInstance();
+    final eventId = widget.eventoData['id']?.toString() ?? 'unknown';
+    print('Toggling favorite for eventId: $eventId');
     setState(() {
       isFavorite = !isFavorite;
-      prefs.setBool('event_favorite_${widget.eventoData['id']}', isFavorite);
+      print('isFavorite set to: $isFavorite');
     });
+    if (isFavorite) {
+      await FavoritesService.addToFavorites(widget.eventoData);
+    } else {
+      await FavoritesService.removeFromFavorites(eventId);
+    }
   }
 
   void increment(String type) {
