@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:mobile_tixup/features/events/InformationPurchase_page.dart';
+import 'dart:convert';
 
 class EventScreen extends StatefulWidget {
   final Map<String, dynamic> eventoData;
@@ -19,22 +20,19 @@ class EventScreen extends StatefulWidget {
 
 class _EventScreenState extends State<EventScreen> {
   late Map<String, int> ticketCounts;
-
   bool isFavorite = false;
 
   @override
   void initState() {
     super.initState();
     ticketCounts = Map.from(widget.initialTicketCounts);
-
     _loadFavoriteStatus();
   }
 
   Future<void> _loadFavoriteStatus() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      isFavorite =
-          prefs.getBool('event_favorite_${widget.eventoData['id']}') ?? false;
+      isFavorite = prefs.getBool('event_favorite_${widget.eventoData['id']}') ?? false;
     });
   }
 
@@ -74,6 +72,16 @@ Compre já seu ingresso pelo app Tixup!
     Share.share(message);
   }
 
+  bool hasSelectedTickets() {
+    return ticketCounts.values.any((count) => count > 0);
+  }
+
+  Future<void> _savePurchaseData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('purchase_eventoData', jsonEncode(widget.eventoData));
+    await prefs.setString('purchase_ticketCounts', jsonEncode(ticketCounts));
+  }
+
   @override
   Widget build(BuildContext context) {
     final evento = widget.eventoData;
@@ -90,14 +98,17 @@ Compre já seu ingresso pelo app Tixup!
               borderRadius: BorderRadius.circular(10),
             ),
           ),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => InformationPurchasePage(),
-              ),
-            );
-          },
+          onPressed: hasSelectedTickets() && evento != null && ticketCounts.isNotEmpty
+              ? () async {
+                  await _savePurchaseData();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => InformationPurchasePage(),
+                    ),
+                  );
+                }
+              : null,
           child: const Text(
             'Finalizar compra!',
             style: TextStyle(color: Colors.white, fontSize: 18),
@@ -120,19 +131,17 @@ Compre já seu ingresso pelo app Tixup!
                           borderRadius: const BorderRadius.only(
                             bottomRight: Radius.circular(20),
                           ),
-                          child:
-                              evento['imagem'] != null &&
-                                      evento['imagem'].isNotEmpty
-                                  ? Image.network(
-                                    evento['imagem'],
-                                    height: 250,
-                                    fit: BoxFit.cover,
-                                  )
-                                  : Image.asset(
-                                    'lib/assets/images/party6.jpg',
-                                    height: 250,
-                                    fit: BoxFit.cover,
-                                  ),
+                          child: evento['imagem'] != null && evento['imagem'].isNotEmpty
+                              ? Image.network(
+                                  evento['imagem'],
+                                  height: 250,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.asset(
+                                  'lib/assets/images/party6.jpg',
+                                  height: 250,
+                                  fit: BoxFit.cover,
+                                ),
                         ),
                       ),
                     ],
@@ -180,7 +189,7 @@ Compre já seu ingresso pelo app Tixup!
                 children: [
                   Text(
                     evento['nome'] ?? 'Nome do evento',
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -226,6 +235,13 @@ Compre já seu ingresso pelo app Tixup!
   }
 
   Widget ticketTile(String type) {
+    final Map<String, double> ticketPrices = {
+      'Pista': 55.0,
+      'VIP': 85.0,
+      'Camarote': 100.0,
+    };
+    final double price = ticketPrices[type] ?? 55.0;
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 6),
       shape: RoundedRectangleBorder(
@@ -251,11 +267,7 @@ Compre já seu ingresso pelo app Tixup!
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 4),
-                  const Text('R\$50,00'),
-                  const Text(
-                    '+ taxa de serviço de R\$5,00',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
+                  Text('R\$${price.toStringAsFixed(2).replaceAll('.', ',')}'),
                 ],
               ),
             ),

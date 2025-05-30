@@ -11,13 +11,12 @@ class TelaPesquisa extends StatefulWidget {
 
 class _TelaPesquisaState extends State<TelaPesquisa> {
   final TextEditingController _searchController = TextEditingController();
-
   final Color laranjaPrincipal = const Color.fromARGB(255, 249, 115, 22);
-
   List<Map<String, dynamic>> _todosEventos = [];
   List<Map<String, dynamic>> _eventosFiltrados = [];
   bool _carregando = true;
   String? _erroMensagem;
+
   @override
   void initState() {
     super.initState();
@@ -36,19 +35,18 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
           .select()
           .order('data', ascending: true);
 
-      _todosEventos =
-          data.map((json) {
-            return {
-              'id': json['id'],
-              'nome': json['nome'],
-              'data': json['data'],
-              'local': json['local'],
-              'descricao': json['descricao'],
-              'preco': json['preco'],
-              'imagem': json['imagem'],
-              'categoria': json['categoria'],
-            };
-          }).toList();
+      _todosEventos = data.map((json) {
+        return {
+          'id': json['id'],
+          'nome': json['nome'],
+          'data': json['data'],
+          'local': json['local'],
+          'descricao': json['descricao'],
+          'preco': json['preco'],
+          'imagem': json['imagem'],
+          'categoria': json['categoria'],
+        };
+      }).toList();
 
       setState(() {
         _eventosFiltrados = _todosEventos;
@@ -72,22 +70,19 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
   void _filtrarEventos() {
     final query = _searchController.text.toLowerCase();
     setState(() {
-      _eventosFiltrados =
-          _todosEventos.where((evento) {
-            final nome = (evento['nome'] ?? '').toString().toLowerCase();
-            final local = (evento['local'] ?? '').toString().toLowerCase();
-            final descricao =
-                (evento['descricao'] ?? '').toString().toLowerCase();
-            final categoria =
-                (evento['categoria'] ?? '').toString().toLowerCase();
-            final data = (evento['data'] ?? '').toString().toLowerCase();
+      _eventosFiltrados = _todosEventos.where((evento) {
+        final nome = (evento['nome'] ?? '').toString().toLowerCase();
+        final local = (evento['local'] ?? '').toString().toLowerCase();
+        final descricao = (evento['descricao'] ?? '').toString().toLowerCase();
+        final categoria = (evento['categoria'] ?? '').toString().toLowerCase();
+        final data = (evento['data'] ?? '').toString().toLowerCase();
 
-            return nome.contains(query) ||
-                local.contains(query) ||
-                descricao.contains(query) ||
-                categoria.contains(query) ||
-                data.contains(query);
-          }).toList();
+        return nome.contains(query) ||
+            local.contains(query) ||
+            descricao.contains(query) ||
+            categoria.contains(query) ||
+            data.contains(query);
+      }).toList();
     });
   }
 
@@ -103,11 +98,10 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder:
-                (context) => EventScreen(
-                  eventoData: evento,
-                  initialTicketCounts: {'Pista': 0, 'VIP': 0, 'Camarote': 0},
-                ),
+            builder: (context) => EventScreen(
+              eventoData: evento,
+              initialTicketCounts: {'Pista': 0, 'VIP': 0, 'Camarote': 0},
+            ),
           ),
         );
       },
@@ -124,28 +118,26 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
                 border: Border.all(color: laranjaPrincipal, width: 2),
                 borderRadius: BorderRadius.circular(8),
                 color: Colors.white,
-                image:
-                    evento['imagem'] != null && evento['imagem'].isNotEmpty
-                        ? DecorationImage(
-                          image: NetworkImage(evento['imagem']),
-                          fit: BoxFit.cover,
-                        )
-                        : null,
-              ),
-              child:
-                  evento['imagem'] == null || evento['imagem'].isEmpty
-                      ? Center(
-                        child: Text(
-                          'Evento',
-                          style: TextStyle(
-                            color: laranjaPrincipal,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'sans-serif',
-                          ),
-                        ),
+                image: evento['imagem'] != null && evento['imagem'].isNotEmpty
+                    ? DecorationImage(
+                        image: NetworkImage(evento['imagem']),
+                        fit: BoxFit.cover,
                       )
-                      : null,
+                    : null,
+              ),
+              child: evento['imagem'] == null || evento['imagem'].isEmpty
+                  ? Center(
+                      child: Text(
+                        'Evento',
+                        style: TextStyle(
+                          color: laranjaPrincipal,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'sans-serif',
+                        ),
+                      ),
+                    )
+                  : null,
             ),
             const SizedBox(width: 15),
             Expanded(
@@ -258,104 +250,102 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
                   onSelected: (String result) {
                     print('Categoria selecionada: $result');
                   },
-                  itemBuilder:
-                      (BuildContext context) => <PopupMenuEntry<String>>[
-                        const PopupMenuItem<String>(
-                          value: 'Todos',
-                          child: Text('Todas as Categorias'),
-                        ),
-                        const PopupMenuItem<String>(
-                          value: 'Show',
-                          child: Text('Show'),
-                        ),
-                        const PopupMenuItem<String>(
-                          value: 'Festas',
-                          child: Text('Festas'),
-                        ),
-                        const PopupMenuItem<String>(
-                          value: 'Baladas',
-                          child: Text('Baladas'),
-                        ),
-                        const PopupMenuItem<String>(
-                          value: 'Boates',
-                          child: Text('Boates'),
-                        ),
-                        const PopupMenuItem<String>(
-                          value: 'Diversos',
-                          child: Text('Diversos'),
-                        ),
-                      ],
+                  itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                    const PopupMenuItem<String>(
+                      value: 'Todos',
+                      child: Text('Todas as Categorias'),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'Show',
+                      child: Text('Show'),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'Festas',
+                      child: Text('Festas'),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'Baladas',
+                      child: Text('Baladas'),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'Boates',
+                      child: Text('Boates'),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'Diversos',
+                      child: Text('Diversos'),
+                    ),
+                  ],
                 ),
               ],
             ),
             const SizedBox(height: 30),
             Expanded(
-              child:
-                  _carregando
-                      ? const Center(child: CircularProgressIndicator())
-                      : _erroMensagem != null
+              child: _carregando
+                  ? const Center(child: CircularProgressIndicator())
+                  : _erroMensagem != null
                       ? Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.error_outline,
-                                size: 80,
-                                color: Colors.red,
-                              ),
-                              const SizedBox(height: 20),
-                              Text(
-                                _erroMensagem!,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 16,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.error_outline,
+                                  size: 80,
                                   color: Colors.red,
-                                  fontFamily: 'sans-serif',
                                 ),
-                              ),
-                              const SizedBox(height: 20),
-                              ElevatedButton.icon(
-                                onPressed: _carregarEventosDoSupabase,
-                                icon: Icon(Icons.refresh),
-                                label: Text('Tentar Novamente'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: laranjaPrincipal,
-                                  foregroundColor: Colors.white,
+                                const SizedBox(height: 20),
+                                Text(
+                                  _erroMensagem!,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.red,
+                                    fontFamily: 'sans-serif',
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                      : _eventosFiltrados.isEmpty
-                      ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.search_off_outlined,
-                            size: 80,
-                            color: laranjaPrincipal,
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            'Nenhum resultado encontrado',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: laranjaPrincipal,
-                              fontFamily: 'sans-serif',
+                                const SizedBox(height: 20),
+                                ElevatedButton.icon(
+                                  onPressed: _carregarEventosDoSupabase,
+                                  icon: Icon(Icons.refresh),
+                                  label: Text('Tentar Novamente'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: laranjaPrincipal,
+                                    foregroundColor: Colors.white,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      )
-                      : ListView.builder(
-                        itemCount: _eventosFiltrados.length,
-                        itemBuilder: (context, index) {
-                          return _buildEventoCard(_eventosFiltrados[index]);
-                        },
-                      ),
+                        )
+                      : _eventosFiltrados.isEmpty
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.search_off_outlined,
+                                  size: 80,
+                                  color: laranjaPrincipal,
+                                ),
+                                const SizedBox(height: 20),
+                                Text(
+                                  'Nenhum resultado encontrado',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: laranjaPrincipal,
+                                    fontFamily: 'sans-serif',
+                                  ),
+                                ),
+                              ],
+                            )
+                          : ListView.builder(
+                              itemCount: _eventosFiltrados.length,
+                              itemBuilder: (context, index) {
+                                return _buildEventoCard(_eventosFiltrados[index]);
+                              },
+                            ),
             ),
           ],
         ),
