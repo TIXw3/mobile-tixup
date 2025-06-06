@@ -52,7 +52,7 @@ class HomeViewModel extends ChangeNotifier {
         recommendedEvents = List.from(allEvents);
       isLoading = false;
       notifyListeners();
-    } on PostgrestException catch (e) {
+    } on PostgrestException {
       errorMessage = 'Erro ao carregar eventos: {e.message}';
       isLoading = false;
       notifyListeners();
