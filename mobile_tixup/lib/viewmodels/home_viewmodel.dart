@@ -24,18 +24,19 @@ class HomeViewModel extends ChangeNotifier {
           .from('eventos')
           .select()
           .order('data', ascending: true);
-      allEvents = response.map<Map<String, dynamic>>((json) {
-        return {
-          'id': json['id'],
-          'nome': json['nome'],
-          'data': json['data'],
-          'local': json['local'],
-          'descricao': json['descricao'],
-          'preco': json['preco'],
-          'imagem': json['imagem'],
-          'categoria': json['categoria'],
-        };
-      }).toList();
+      allEvents =
+          response.map<Map<String, dynamic>>((json) {
+            return {
+              'id': json['id'],
+              'nome': json['nome'],
+              'data': json['data'],
+              'local': json['local'],
+              'descricao': json['descricao'],
+              'preco': json['preco'],
+              'imagem': json['imagem'],
+              'categoria': json['categoria'],
+            };
+          }).toList();
       highlightedEvents = List.from(allEvents);
       friendsLikedEvents = List.from(
         allEvents.where((event) => event['categoria'] == 'Festas').toList(),
@@ -43,9 +44,12 @@ class HomeViewModel extends ChangeNotifier {
       recommendedEvents = List.from(
         allEvents.where((event) => event['categoria'] == 'Shows').toList(),
       );
-      if (highlightedEvents.isEmpty && allEvents.isNotEmpty) highlightedEvents = List.from(allEvents);
-      if (friendsLikedEvents.isEmpty && allEvents.isNotEmpty) friendsLikedEvents = List.from(allEvents);
-      if (recommendedEvents.isEmpty && allEvents.isNotEmpty) recommendedEvents = List.from(allEvents);
+      if (highlightedEvents.isEmpty && allEvents.isNotEmpty)
+        highlightedEvents = List.from(allEvents);
+      if (friendsLikedEvents.isEmpty && allEvents.isNotEmpty)
+        friendsLikedEvents = List.from(allEvents);
+      if (recommendedEvents.isEmpty && allEvents.isNotEmpty)
+        recommendedEvents = List.from(allEvents);
       isLoading = false;
       notifyListeners();
     } on PostgrestException catch (e) {
@@ -58,4 +62,4 @@ class HomeViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
-} 
+}
