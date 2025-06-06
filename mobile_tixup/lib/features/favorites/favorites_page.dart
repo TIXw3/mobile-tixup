@@ -2,52 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:mobile_tixup/features/events/events_page.dart';
 import 'package:mobile_tixup/features/auth/services/favorites_service.dart';
 import 'package:mobile_tixup/features/events/detailedEvent_page.dart';
+import 'package:provider/provider.dart';
+import 'package:mobile_tixup/viewmodels/favorites_viewmodel.dart';
 
-class FavoriteScreen extends StatefulWidget {
+class FavoriteScreen extends StatelessWidget {
   const FavoriteScreen({super.key});
 
   @override
-  State<FavoriteScreen> createState() => _FavoriteScreenState();
-}
-
-class _FavoriteScreenState extends State<FavoriteScreen> {
-  List<Map<String, dynamic>> favoriteEvents = [];
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadFavorites();
-  }
-
-  Future<void> _loadFavorites() async {
-    setState(() {
-      isLoading = true;
-    });
-    
-    List<Map<String, dynamic>> favorites = await FavoritesService.getFavorites();
-    
-    setState(() {
-      favoriteEvents = favorites;
-      isLoading = false;
-    });
-  }
-
-  Future<void> _removeFromFavorites(String eventoId) async {
-    await FavoritesService.removeFromFavorites(eventoId);
-    await _loadFavorites();
-    
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Evento removido dos favoritos!'),
-        backgroundColor: Colors.grey[600],
-        duration: const Duration(seconds: 2),
-      ),
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => FavoritesViewModel(),
+      child: const _FavoriteScreenBody(),
     );
   }
+}
+
+class _FavoriteScreenBody extends StatelessWidget {
+  const _FavoriteScreenBody();
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<FavoritesViewModel>(context);
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       appBar: AppBar(
@@ -60,19 +35,19 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
           size: 32,
         ),
       ),
-      body: isLoading
+      body: viewModel.isLoading
           ? const Center(
               child: CircularProgressIndicator(
                 color: Color.fromARGB(255, 249, 115, 22),
               ),
             )
-          : favoriteEvents.isEmpty
-              ? _buildEmptyState()
-              : _buildFavoritesList(),
+          : viewModel.favoriteEvents.isEmpty
+              ? _buildEmptyState(context)
+              : _buildFavoritesList(context, viewModel),
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
@@ -183,7 +158,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     );
   }
 
-  Widget _buildFavoritesList() {
+  Widget _buildFavoritesList(BuildContext context, FavoritesViewModel viewModel) {
     return Column(
       children: [
         Padding(
@@ -201,7 +176,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 ),
               ),
               Text(
-                '${favoriteEvents.length} evento${favoriteEvents.length != 1 ? 's' : ''}',
+                '${viewModel.favoriteEvents.length} evento${viewModel.favoriteEvents.length != 1 ? 's' : ''}',
                 style: const TextStyle(
                   fontSize: 16,
                   color: Color.fromARGB(255, 249, 115, 22),
@@ -215,13 +190,13 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         Expanded(
           child: RefreshIndicator(
             color: const Color.fromARGB(255, 249, 115, 22),
-            onRefresh: _loadFavorites,
+            onRefresh: viewModel.loadFavorites,
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: favoriteEvents.length,
+              itemCount: viewModel.favoriteEvents.length,
               itemBuilder: (context, index) {
-                final evento = favoriteEvents[index];
-                return _buildEventCard(evento);
+                final evento = viewModel.favoriteEvents[index];
+                return _buildEventCard(context, evento, viewModel);
               },
             ),
           ),
@@ -230,7 +205,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     );
   }
 
-  Widget _buildEventCard(Map<String, dynamic> evento) {
+  Widget _buildEventCard(BuildContext context, Map<String, dynamic> evento, FavoritesViewModel viewModel) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(
@@ -249,7 +224,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
               ),
             ),
           );
-          _loadFavorites();
+          viewModel.loadFavorites();
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -279,7 +254,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   top: 12,
                   right: 12,
                   child: IconButton(
-                    onPressed: () => _removeFromFavorites(evento['id'].toString()),
+                    onPressed: () => viewModel.removeFromFavorites(evento['id'].toString(), context),
                     icon: const Icon(
                       Icons.favorite,
                       color: Colors.red,

@@ -4,8 +4,10 @@ import 'package:share_plus/share_plus.dart';
 import 'package:mobile_tixup/features/events/InformationPurchase_page.dart';
 import 'package:mobile_tixup/features/auth/services/favorites_service.dart';
 import 'dart:convert';
+import 'package:provider/provider.dart';
+import 'package:mobile_tixup/viewmodels/event_detail_viewmodel.dart';
 
-class EventScreen extends StatefulWidget {
+class EventScreen extends StatelessWidget {
   final Map<String, dynamic> eventoData;
   final Map<String, int> initialTicketCounts;
 
@@ -16,86 +18,21 @@ class EventScreen extends StatefulWidget {
   });
 
   @override
-  State<EventScreen> createState() => _EventScreenState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => EventDetailViewModel(eventoData: eventoData, initialTicketCounts: initialTicketCounts),
+      child: const _EventScreenBody(),
+    );
+  }
 }
 
-class _EventScreenState extends State<EventScreen> {
-  late Map<String, int> ticketCounts;
-  bool isFavorite = false;
-
-  @override
-  void initState() {
-    super.initState();
-    ticketCounts = Map.from(widget.initialTicketCounts);
-    _loadFavoriteStatus();
-  }
-
-  Future<void> _loadFavoriteStatus() async {
-    final eventId = widget.eventoData['id']?.toString() ?? 'unknown';
-    print('Loading favorite status for eventId: $eventId');
-    final favoriteStatus = await FavoritesService.isFavorite(eventId);
-    setState(() {
-      isFavorite = favoriteStatus;
-      print('isFavorite loaded: $isFavorite');
-    });
-  }
-
-  Future<void> _toggleFavorite() async {
-    final eventId = widget.eventoData['id']?.toString() ?? 'unknown';
-    print('Toggling favorite for eventId: $eventId');
-    setState(() {
-      isFavorite = !isFavorite;
-      print('isFavorite set to: $isFavorite');
-    });
-    if (isFavorite) {
-      await FavoritesService.addToFavorites(widget.eventoData);
-    } else {
-      await FavoritesService.removeFromFavorites(eventId);
-    }
-  }
-
-  void increment(String type) {
-    setState(() {
-      ticketCounts[type] = (ticketCounts[type] ?? 0) + 1;
-    });
-  }
-
-  void decrement(String type) {
-    setState(() {
-      if ((ticketCounts[type] ?? 0) > 0) {
-        ticketCounts[type] = ticketCounts[type]! - 1;
-      }
-    });
-  }
-
-  void shareEvent() {
-    final message = '''
-Confira este evento incrível!
-
-Nome: ${widget.eventoData['nome'] ?? 'Evento'}
-Data: ${widget.eventoData['data'] ?? ''}
-Local: ${widget.eventoData['local'] ?? ''}
-Descrição: ${widget.eventoData['descricao'] ?? ''}
-
-Compre já seu ingresso pelo app Tixup!
-''';
-    Share.share(message);
-  }
-
-  bool hasSelectedTickets() {
-    return ticketCounts.values.any((count) => count > 0);
-  }
-
-  Future<void> _savePurchaseData() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('purchase_eventoData', jsonEncode(widget.eventoData));
-    await prefs.setString('purchase_ticketCounts', jsonEncode(ticketCounts));
-  }
+class _EventScreenBody extends StatelessWidget {
+  const _EventScreenBody();
 
   @override
   Widget build(BuildContext context) {
-    final evento = widget.eventoData;
-
+    final viewModel = Provider.of<EventDetailViewModel>(context);
+    final evento = viewModel.eventoData;
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       bottomNavigationBar: Padding(
@@ -108,9 +45,9 @@ Compre já seu ingresso pelo app Tixup!
               borderRadius: BorderRadius.circular(10),
             ),
           ),
-          onPressed: hasSelectedTickets() && evento != null && ticketCounts.isNotEmpty
+          onPressed: viewModel.hasSelectedTickets() && evento != null && viewModel.ticketCounts.isNotEmpty
               ? () async {
-                  await _savePurchaseData();
+                  await viewModel.savePurchaseData();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -160,7 +97,7 @@ Compre já seu ingresso pelo app Tixup!
                     top: 15,
                     right: 60,
                     child: IconButton(
-                      onPressed: shareEvent,
+                      onPressed: viewModel.shareEvent,
                       icon: const Icon(Icons.share_outlined),
                       iconSize: 28,
                       color: Colors.white,
@@ -170,10 +107,10 @@ Compre já seu ingresso pelo app Tixup!
                     top: 15,
                     right: 15,
                     child: IconButton(
-                      onPressed: _toggleFavorite,
+                      onPressed: viewModel.toggleFavorite,
                       icon: Icon(
-                        isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: isFavorite ? Colors.red : Colors.white,
+                        viewModel.isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: viewModel.isFavorite ? Colors.red : Colors.white,
                         size: 28,
                       ),
                     ),
@@ -212,9 +149,7 @@ Compre já seu ingresso pelo app Tixup!
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 6),
-                  sectionText(
-                    evento['descricao'] ?? 'Sem descrição disponível.',
-                  ),
+                  sectionText(evento['descricao'] ?? 'Sem descrição disponível.'),
                   const SizedBox(height: 44),
                   const Text(
                     'Políticas de cancelamento',
@@ -229,7 +164,7 @@ Compre já seu ingresso pelo app Tixup!
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
-                  ...ticketCounts.keys.map((type) => ticketTile(type)),
+                  ...viewModel.ticketCounts.keys.map((type) => ticketTile(type, viewModel)),
                   const SizedBox(height: 40),
                 ],
               ),
@@ -244,7 +179,7 @@ Compre já seu ingresso pelo app Tixup!
     return Text(text, style: const TextStyle(fontSize: 14));
   }
 
-  Widget ticketTile(String type) {
+  Widget ticketTile(String type, EventDetailViewModel viewModel) {
     final Map<String, double> ticketPrices = {
       'Pista': 55.0,
       'VIP': 85.0,
@@ -284,12 +219,12 @@ Compre já seu ingresso pelo app Tixup!
             Row(
               children: [
                 IconButton(
-                  onPressed: () => decrement(type),
+                  onPressed: () => viewModel.decrement(type),
                   icon: const Icon(Icons.remove_circle_outline),
                 ),
-                Text('${ticketCounts[type]}'),
+                Text('${viewModel.ticketCounts[type]}'),
                 IconButton(
-                  onPressed: () => increment(type),
+                  onPressed: () => viewModel.increment(type),
                   icon: const Icon(Icons.add_circle_outline),
                 ),
               ],

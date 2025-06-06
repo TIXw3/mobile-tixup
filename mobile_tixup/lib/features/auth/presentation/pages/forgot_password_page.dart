@@ -1,99 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_tixup/features/auth/services/auth_service.dart';
+import 'package:provider/provider.dart';
+import 'package:mobile_tixup/viewmodels/forgot_password_viewmodel.dart';
 
-class ForgotPasswordScreen extends StatefulWidget {
+class ForgotPasswordScreen extends StatelessWidget {
   const ForgotPasswordScreen({super.key});
 
   @override
-  _ForgotPasswordState createState() => _ForgotPasswordState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => ForgotPasswordViewModel(),
+      child: const _ForgotPasswordBody(),
+    );
+  }
 }
 
-class _ForgotPasswordState extends State<ForgotPasswordScreen> {
-  final authService = AuthService();
-  final _emailController = TextEditingController();
-  final _tokenController = TextEditingController();
-  final _newPasswordController = TextEditingController();
-  bool _isTokenSent = false;
-  bool _isLoading = false;
-
-  Future<void> _initiateResetPassword() async {
-    final email = _emailController.text.trim();
-
-    if (email.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Preencha o campo de email.")),
-      );
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final token = await authService.initiatePasswordReset(email);
-
-      // enviar o token por emaial via edge function
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            "Token de recuperação gerado: $token. Use-o para redefinir sua senha.",
-          ),
-        ),
-      );
-
-      setState(() {
-        _isTokenSent = true;
-      });
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Erro: ${e.toString()}")));
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _resetPassword() async {
-    final token = _tokenController.text.trim();
-    final newPassword = _newPasswordController.text.trim();
-
-    if (token.isEmpty || newPassword.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Preencha todos os campos.")),
-      );
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      await authService.resetPassword(token, newPassword);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Senha redefinida com sucesso! Faça login."),
-        ),
-      );
-
-      Navigator.pop(context);
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Erro: ${e.toString()}")));
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
+class _ForgotPasswordBody extends StatelessWidget {
+  const _ForgotPasswordBody();
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<ForgotPasswordViewModel>(context);
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 248, 247, 245),
       body: SafeArea(
@@ -139,7 +66,7 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
                       ),
                       const SizedBox(height: 20),
                       TextField(
-                        controller: _emailController,
+                        controller: viewModel.emailController,
                         decoration: InputDecoration(
                           labelText: 'Email',
                           labelStyle: const TextStyle(
@@ -170,10 +97,10 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
                         ),
                         keyboardType: TextInputType.emailAddress,
                       ),
-                      if (_isTokenSent) ...[
+                      if (viewModel.isTokenSent) ...[
                         const SizedBox(height: 20),
                         TextField(
-                          controller: _tokenController,
+                          controller: viewModel.tokenController,
                           decoration: InputDecoration(
                             labelText: 'Token de Recuperação',
                             labelStyle: const TextStyle(
@@ -205,7 +132,7 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
                         ),
                         const SizedBox(height: 20),
                         TextField(
-                          controller: _newPasswordController,
+                          controller: viewModel.newPasswordController,
                           obscureText: true,
                           decoration: InputDecoration(
                             labelText: 'Nova Senha',
@@ -241,12 +168,40 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed:
-                              _isLoading
-                                  ? null
-                                  : (_isTokenSent
-                                      ? _resetPassword
-                                      : _initiateResetPassword),
+                          onPressed: viewModel.isLoading
+                              ? null
+                              : () async {
+                                  try {
+                                    if (viewModel.isTokenSent) {
+                                      await viewModel.resetPassword(context);
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                            content: Text("Senha redefinida com sucesso! Faça login."),
+                                          ),
+                                        );
+                                        Navigator.pop(context);
+                                      }
+                                    } else {
+                                      final token = await viewModel.initiateResetPassword(context);
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              "Token de recuperação gerado: $token. Use-o para redefinir sua senha.",
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  } catch (e) {
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text("Erro: ${e.toString()}")),
+                                      );
+                                    }
+                                  }
+                                },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
                               255,
@@ -263,19 +218,18 @@ class _ForgotPasswordState extends State<ForgotPasswordScreen> {
                             ),
                             textStyle: const TextStyle(fontSize: 18),
                           ),
-                          child:
-                              _isLoading
-                                  ? const CircularProgressIndicator(
+                          child: viewModel.isLoading
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : Text(
+                                  viewModel.isTokenSent ? 'Redefinir Senha' : 'Enviar',
+                                  style: const TextStyle(
+                                    fontSize: 18,
                                     color: Colors.white,
-                                  )
-                                  : Text(
-                                    _isTokenSent ? 'Redefinir Senha' : 'Enviar',
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                      letterSpacing: 0,
-                                    ),
+                                    letterSpacing: 0,
                                   ),
+                                ),
                         ),
                       ),
                     ],

@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:mobile_tixup/viewmodels/tutorial_viewmodel.dart';
 
 class TelaTutorial extends StatelessWidget {
   const TelaTutorial({super.key});
 
-  final Color orange500 = const Color.fromARGB(255, 249, 115, 22);
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => TutorialViewModel(),
+      child: const _TelaTutorialBody(),
+    );
+  }
+}
+
+class _TelaTutorialBody extends StatelessWidget {
+  const _TelaTutorialBody();
 
   @override
   Widget build(BuildContext context) {
+    final Color orange500 = const Color.fromARGB(255, 249, 115, 22);
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       appBar: AppBar(
@@ -26,46 +39,52 @@ class TelaTutorial extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
         children: [
-          _buildHeader('Como usar o app'),
+          _buildHeader('Como usar o app', orange500),
           const SizedBox(height: 20),
           _buildStep(
             Icons.confirmation_number_outlined,
             'Comprar Ingressos',
             'Navegue até a aba de pesquisa, escolha um evento e clique em "Comprar Ingresso".',
+            orange500,
           ),
           const SizedBox(height: 25),
           _buildStep(
             Icons.favorite_border,
             'Favoritar Eventos',
             'Use o coração para salvar eventos que você gostou. Eles aparecem na aba "Favoritos".',
+            orange500,
           ),
           const SizedBox(height: 25),
           _buildStep(
             Icons.account_balance_wallet_outlined,
             'Consultar seu saldo',
             'Vá até a aba "Saldo" no seu perfil e veja todo o seu histórico.',
+            orange500,
           ),
           const SizedBox(height: 40),
-          _buildHeader('Perguntas Frequentes'),
+          _buildHeader('Perguntas Frequentes', orange500),
           const SizedBox(height: 20),
           _buildFAQ(
             'Onde encontro meus ingressos?',
             'Você pode acessá-los na opção "Meus Ingressos" dentro do seu perfil.',
+            orange500,
           ),
           _buildFAQ(
             'Posso cancelar uma compra?',
             'Depende do organizador. Verifique os termos do evento antes da compra.',
+            orange500,
           ),
           _buildFAQ(
             'Como adiciono uma forma de pagamento?',
             'No menu do perfil, selecione "Meus Cartões" e adicione seus dados.',
+            orange500,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildHeader(String title) {
+  Widget _buildHeader(String title, Color orange500) {
     return Text(
       title,
       style: TextStyle(
@@ -77,7 +96,7 @@ class TelaTutorial extends StatelessWidget {
     );
   }
 
-  Widget _buildStep(IconData icon, String title, String description) {
+  Widget _buildStep(IconData icon, String title, String description, Color orange500) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       decoration: BoxDecoration(
@@ -127,7 +146,7 @@ class TelaTutorial extends StatelessWidget {
     );
   }
 
-  Widget _buildFAQ(String question, String answer) {
+  Widget _buildFAQ(String question, String answer, Color orange500) {
     return ExpansionTile(
       title: Text(
         question,

@@ -4,163 +4,26 @@ import 'package:mobile_tixup/features/auth/services/auth_service.dart';
 import 'package:provider/provider.dart';
 import '../../../../models/user_model.dart';
 import '../../../../models/user_provider.dart';
+import 'package:mobile_tixup/viewmodels/register_viewmodel.dart';
 
-class TelaRegistro extends StatefulWidget {
+class TelaRegistro extends StatelessWidget {
   const TelaRegistro({super.key});
 
   @override
-  _TelaRegistroState createState() => _TelaRegistroState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => RegisterViewModel(),
+      child: const _TelaRegistroBody(),
+    );
+  }
 }
 
-class _TelaRegistroState extends State<TelaRegistro> {
-  final authService = AuthService();
-
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-  final _fullName = TextEditingController();
-  final _birthDateFormatter = TextEditingController();
-  final birthDateFormatter = MaskTextInputFormatter(
-    mask: '##/##/####',
-    filter: {"#": RegExp(r'[0-9]')},
-  );
-  final _cpfFormatter = TextEditingController();
-  final cpfFormatter = MaskTextInputFormatter(
-    mask: '###.###.###-##',
-    filter: {"#": RegExp(r'[0-9]')},
-  );
-  final _phoneFormatter = TextEditingController();
-  final phoneFormatter = MaskTextInputFormatter(
-    mask: '(##) #####-####',
-    filter: {"#": RegExp(r'[0-9]')},
-  );
-
-  bool _obscureText = true;
-
-  bool verifyCPF(String cpf) {
-    cpf = cpf.replaceAll(RegExp(r'[^0-9]'), '');
-    if (cpf.length != 11 || cpf.split('').every((e) => e == cpf[0])) {
-      return false;
-    }
-
-    int soma1 = 0;
-    for (int i = 0; i < 9; i++) {
-      soma1 += int.parse(cpf[i]) * (10 - i);
-    }
-    int dv1 = 11 - (soma1 % 11);
-    if (dv1 == 10 || dv1 == 11) dv1 = 0;
-
-    int soma2 = 0;
-    for (int i = 0; i < 9; i++) {
-      soma2 += int.parse(cpf[i]) * (11 - i);
-    }
-    soma2 += dv1 * 2;
-    int dv2 = 11 - (soma2 % 11);
-    if (dv2 == 10 || dv2 == 11) dv2 = 0;
-
-    return cpf[9] == dv1.toString() && cpf[10] == dv2.toString();
-  }
-
-  bool isValidDate(String date) {
-    final parts = date.split('/');
-    if (parts.length != 3) return false;
-
-    final day = int.tryParse(parts[0]);
-    final month = int.tryParse(parts[1]);
-    final year = int.tryParse(parts[2]);
-
-    if (day == null || month == null || year == null) return false;
-
-    if (year < 1900 || month < 1 || month > 12) return false;
-
-    return true;
-  }
-
-  void signUp() async {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
-    final confirmPassword = _confirmPasswordController.text.trim();
-    final cpf = _cpfFormatter.text.trim();
-    final birthDate = _birthDateFormatter.text.trim();
-    final nome = _fullName.text.trim();
-    final telefone = _phoneFormatter.text.trim();
-
-    if (nome.isEmpty ||
-        email.isEmpty ||
-        password.isEmpty ||
-        confirmPassword.isEmpty ||
-        birthDate.isEmpty ||
-        cpf.isEmpty ||
-        telefone.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Preencha todos os campos")));
-      return;
-    }
-
-    if (password != confirmPassword) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("As senhas não coincidem")));
-      return;
-    }
-
-    if (!verifyCPF(cpf)) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("CPF inválido")));
-      return;
-    }
-
-    if (!isValidDate(birthDate)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Data de nascimento inválida")),
-      );
-      return;
-    }
-
-    try {
-      final userId = await authService.signUp(
-        nome: nome,
-        email: email,
-        password: password,
-        cpf: cpf,
-        dataNascimento: birthDate,
-        telefone: telefone,
-      );
-
-      if (mounted) {
-        Provider.of<UserProvider>(context, listen: false).setUser(
-          UserModel(
-            id: userId,
-            nome: nome,
-            email: email,
-            telefone: telefone,
-            dataNascimento: birthDate,
-            cpf: cpf,
-            endereco: '',
-          ),
-        );
-      }
-
-      Navigator.pop(context);
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao criar conta: ${e.toString()}')),
-        );
-      }
-    }
-  }
-
-  void _togglePasswordVisibility() {
-    setState(() {
-      _obscureText = !_obscureText;
-    });
-  }
+class _TelaRegistroBody extends StatelessWidget {
+  const _TelaRegistroBody();
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<RegisterViewModel>(context);
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       body: SafeArea(
@@ -195,7 +58,7 @@ class _TelaRegistroState extends State<TelaRegistro> {
               ),
               const SizedBox(height: 40),
               TextField(
-                controller: _fullName,
+                controller: viewModel.fullNameController,
                 decoration: InputDecoration(
                   labelText: 'Nome Completo',
                   labelStyle: const TextStyle(
@@ -231,7 +94,7 @@ class _TelaRegistroState extends State<TelaRegistro> {
               ),
               const SizedBox(height: 20),
               TextField(
-                controller: _emailController,
+                controller: viewModel.emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
                   labelStyle: const TextStyle(
@@ -268,8 +131,8 @@ class _TelaRegistroState extends State<TelaRegistro> {
               ),
               const SizedBox(height: 20),
               TextField(
-                controller: _passwordController,
-                obscureText: _obscureText,
+                controller: viewModel.passwordController,
+                obscureText: viewModel.obscureText,
                 decoration: InputDecoration(
                   labelText: 'Senha',
                   labelStyle: const TextStyle(
@@ -299,17 +162,17 @@ class _TelaRegistroState extends State<TelaRegistro> {
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscureText ? Icons.visibility : Icons.visibility_off,
+                      viewModel.obscureText ? Icons.visibility : Icons.visibility_off,
                       color: Color.fromARGB(206, 0, 0, 0),
                     ),
-                    onPressed: _togglePasswordVisibility,
+                    onPressed: viewModel.togglePasswordVisibility,
                   ),
                 ),
               ),
               const SizedBox(height: 20),
               TextField(
-                controller: _confirmPasswordController,
-                obscureText: _obscureText,
+                controller: viewModel.confirmPasswordController,
+                obscureText: viewModel.obscureText,
                 decoration: InputDecoration(
                   labelText: 'Confirmar Senha',
                   labelStyle: const TextStyle(
@@ -339,17 +202,17 @@ class _TelaRegistroState extends State<TelaRegistro> {
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscureText ? Icons.visibility : Icons.visibility_off,
+                      viewModel.obscureText ? Icons.visibility : Icons.visibility_off,
                       color: Color.fromARGB(206, 0, 0, 0),
                     ),
-                    onPressed: _togglePasswordVisibility,
+                    onPressed: viewModel.togglePasswordVisibility,
                   ),
                 ),
               ),
               const SizedBox(height: 20),
               TextField(
-                controller: _birthDateFormatter,
-                inputFormatters: [birthDateFormatter],
+                controller: viewModel.birthDateController,
+                inputFormatters: [viewModel.birthDateFormatter],
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: 'Data de Nascimento',
@@ -386,8 +249,8 @@ class _TelaRegistroState extends State<TelaRegistro> {
               ),
               const SizedBox(height: 20),
               TextField(
-                controller: _cpfFormatter,
-                inputFormatters: [cpfFormatter],
+                controller: viewModel.cpfController,
+                inputFormatters: [viewModel.cpfFormatter],
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: 'CPF',
@@ -424,8 +287,8 @@ class _TelaRegistroState extends State<TelaRegistro> {
               ),
               const SizedBox(height: 20),
               TextField(
-                controller: _phoneFormatter,
-                inputFormatters: [phoneFormatter],
+                controller: viewModel.phoneController,
+                inputFormatters: [viewModel.phoneFormatter],
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: 'Telefone',
@@ -464,7 +327,22 @@ class _TelaRegistroState extends State<TelaRegistro> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: signUp,
+                  onPressed: viewModel.isLoading
+                      ? null
+                      : () async {
+                          try {
+                            final user = await viewModel.signUp(context);
+                            if (user != null && context.mounted) {
+                              Navigator.pop(context);
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Erro ao criar conta: ${e.toString()}')),
+                              );
+                            }
+                          }
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 249, 115, 22),
                     padding: const EdgeInsets.symmetric(
@@ -479,15 +357,17 @@ class _TelaRegistroState extends State<TelaRegistro> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  child: const Text(
-                    'Criar',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0,
-                    ),
-                  ),
+                  child: viewModel.isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          'Criar',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0,
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(height: 20),

@@ -6,169 +6,28 @@ import 'package:mobile_tixup/features/events/events_page.dart';
 import 'package:mobile_tixup/features/profile/profile_page.dart';
 import 'package:mobile_tixup/features/shop/shop_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:mobile_tixup/viewmodels/home_viewmodel.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class AnimatedEventButton extends StatefulWidget {
-  const AnimatedEventButton({super.key});
-
-  @override
-  State<AnimatedEventButton> createState() => _AnimatedEventButtonState();
-}
-
-class _AnimatedEventButtonState extends State<AnimatedEventButton> {
-  bool isAnimating = false;
-  double arrowPosition = 0;
-
-  void _onPressed(BuildContext context) async {
-    setState(() {
-      isAnimating = true;
-      arrowPosition = 250;
-    });
-
-    await Future.delayed(const Duration(milliseconds: 330));
-
-    if (!mounted) return;
-
-    await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const TelaPesquisa()),
-    );
-
-    if (mounted) {
-      setState(() {
-        isAnimating = false;
-        arrowPosition = 0;
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 300,
-      height: 55,
-      child: Stack(
-        children: [
-          ElevatedButton(
-            onPressed: isAnimating ? null : () => _onPressed(context),
-            style: ElevatedButton.styleFrom(
-              elevation: 4,
-              backgroundColor: const Color(0xFFF97316),
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              textStyle: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 1.2,
-              ),
-              shadowColor: const Color(0xFFFFA260),
-            ),
-            child: const Center(child: Text('Ver eventos')),
-          ),
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 350),
-            left: arrowPosition,
-            top: 15,
-            child: AnimatedOpacity(
-              duration: const Duration(milliseconds: 180),
-              opacity: isAnimating ? 1 : 0,
-              child: const Icon(
-                Icons.arrow_forward,
-                color: Colors.white,
-                size: 24,
-              ),
-            ),
-          ),
-        ],
-      ),
+    return ChangeNotifierProvider(
+      create: (_) => HomeViewModel(),
+      child: const _HomeScreenBody(),
     );
   }
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  List<Map<String, dynamic>> _allEvents = [];
-  List<Map<String, dynamic>> _highlightedEvents = [];
-  List<Map<String, dynamic>> _friendsLikedEvents = [];
-  List<Map<String, dynamic>> _recommendedEvents = [];
-  bool _isLoading = true;
-  String? _errorMessage;
-
-  final Color laranjaPrincipal = const Color.fromARGB(255, 249, 115, 22);
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchEvents();
-  }
-
-  Future<void> _fetchEvents() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-    try {
-      final response = await Supabase.instance.client
-          .from('eventos')
-          .select()
-          .order('data', ascending: true);
-      _allEvents =
-          response.map((json) {
-            return {
-              'id': json['id'],
-              'nome': json['nome'],
-              'data': json['data'],
-              'local': json['local'],
-              'descricao': json['descricao'],
-              'preco': json['preco'],
-              'imagem': json['imagem'],
-              'categoria': json['categoria'],
-            };
-          }).toList();
-
-      setState(() {
-        _highlightedEvents = List.from(_allEvents);
-        _friendsLikedEvents = List.from(
-          _allEvents.where((event) => event['categoria'] == 'Festas').toList(),
-        );
-        _recommendedEvents = List.from(
-          _allEvents.where((event) => event['categoria'] == 'Shows').toList(),
-        );
-
-        if (_highlightedEvents.isEmpty && _allEvents.isNotEmpty)
-          _highlightedEvents = List.from(_allEvents);
-        if (_friendsLikedEvents.isEmpty && _allEvents.isNotEmpty)
-          _friendsLikedEvents = List.from(_allEvents);
-        if (_recommendedEvents.isEmpty && _allEvents.isNotEmpty)
-          _recommendedEvents = List.from(_allEvents);
-
-        _isLoading = false;
-      });
-    } on PostgrestException catch (e) {
-      setState(() {
-        _errorMessage = 'Erro ao carregar eventos: ${e.message}';
-        _isLoading = false;
-      });
-      print('Erro PostgREST no HomeScreen: ${e.message}');
-    } catch (e) {
-      setState(() {
-        _errorMessage = 'Ocorreu um erro inesperado: $e';
-        _isLoading = false;
-      });
-      print('Erro inesperado no HomeScreen: $e');
-    }
-  }
+class _HomeScreenBody extends StatelessWidget {
+  const _HomeScreenBody();
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<HomeViewModel>(context);
+    final laranjaPrincipal = viewModel.laranjaPrincipal;
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       body: CustomScrollView(
@@ -272,73 +131,72 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           SliverToBoxAdapter(
-            child:
-                _isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : _errorMessage != null
+            child: viewModel.isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : viewModel.errorMessage != null
                     ? Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.error_outline,
-                              size: 80,
-                              color: Colors.red,
-                            ),
-                            const SizedBox(height: 20),
-                            Text(
-                              _errorMessage!,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 16,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.error_outline,
+                                size: 80,
                                 color: Colors.red,
-                                fontFamily: 'sans-serif',
                               ),
-                            ),
-                            const SizedBox(height: 20),
-                            ElevatedButton.icon(
-                              onPressed: _fetchEvents,
-                              icon: Icon(Icons.refresh),
-                              label: Text('Tentar Novamente'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: laranjaPrincipal,
-                                foregroundColor: Colors.white,
+                              const SizedBox(height: 20),
+                              Text(
+                                viewModel.errorMessage!,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.red,
+                                  fontFamily: 'sans-serif',
+                                ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 20),
+                              ElevatedButton.icon(
+                                onPressed: viewModel.fetchEvents,
+                                icon: Icon(Icons.refresh),
+                                label: Text('Tentar Novamente'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: laranjaPrincipal,
+                                  foregroundColor: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    )
+                      )
                     : Column(
-                      children: [
-                        content(context),
-                        const SizedBox(height: 20),
-                        categories(context),
-                        const SizedBox(height: 20),
-                        eventsLikedByFriends(context),
-                        const SizedBox(height: 20),
-                        recommendedEventsCarousel(context),
-                        const SizedBox(height: 20),
-                        goToEventsPage(context),
-                        const SizedBox(height: 20),
-                      ],
-                    ),
+                        children: [
+                          _content(context, viewModel),
+                          const SizedBox(height: 20),
+                          categories(context, laranjaPrincipal),
+                          const SizedBox(height: 20),
+                          _eventsLikedByFriends(context, viewModel, laranjaPrincipal),
+                          const SizedBox(height: 20),
+                          _recommendedEventsCarousel(context, viewModel, laranjaPrincipal),
+                          const SizedBox(height: 20),
+                          goToEventsPage(context),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
           ),
         ],
       ),
     );
   }
 
-  Widget content(BuildContext context) {
-    if (_highlightedEvents.isEmpty) {
+  Widget _content(BuildContext context, HomeViewModel viewModel) {
+    if (viewModel.highlightedEvents.isEmpty) {
       return const SizedBox.shrink();
     }
 
     return CarouselSlider(
       items:
-          _highlightedEvents.map((evento) {
+          viewModel.highlightedEvents.map((evento) {
             return GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -363,7 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: laranjaPrincipal.withOpacity(0.9),
+                      color: viewModel.laranjaPrincipal.withOpacity(0.9),
                       spreadRadius: 1,
                       blurRadius: 5,
                       offset: const Offset(0, 3),
@@ -453,7 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget categories(BuildContext context) {
+  Widget categories(BuildContext context, Color laranjaPrincipal) {
     return CarouselSlider(
       items:
           [
@@ -494,8 +352,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget eventsLikedByFriends(BuildContext context) {
-    if (_friendsLikedEvents.isEmpty) {
+  Widget _eventsLikedByFriends(BuildContext context, HomeViewModel viewModel, Color laranjaPrincipal) {
+    if (viewModel.friendsLikedEvents.isEmpty) {
       return const SizedBox.shrink();
     }
 
@@ -516,7 +374,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         CarouselSlider(
           items:
-              _friendsLikedEvents.map((evento) {
+              viewModel.friendsLikedEvents.map((evento) {
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -620,8 +478,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget recommendedEventsCarousel(BuildContext context) {
-    if (_recommendedEvents.isEmpty) {
+  Widget _recommendedEventsCarousel(BuildContext context, HomeViewModel viewModel, Color laranjaPrincipal) {
+    if (viewModel.recommendedEvents.isEmpty) {
       return const SizedBox.shrink();
     }
 
@@ -642,7 +500,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         CarouselSlider(
           items:
-              _recommendedEvents.map((evento) {
+              viewModel.recommendedEvents.map((evento) {
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -748,5 +606,85 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget goToEventsPage(BuildContext context) {
     return const AnimatedEventButton();
+  }
+}
+
+class AnimatedEventButton extends StatefulWidget {
+  const AnimatedEventButton({super.key});
+
+  @override
+  State<AnimatedEventButton> createState() => _AnimatedEventButtonState();
+}
+
+class _AnimatedEventButtonState extends State<AnimatedEventButton> {
+  bool isAnimating = false;
+  double arrowPosition = 0;
+
+  void _onPressed(BuildContext context) async {
+    setState(() {
+      isAnimating = true;
+      arrowPosition = 250;
+    });
+
+    await Future.delayed(const Duration(milliseconds: 330));
+
+    if (!mounted) return;
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const TelaPesquisa()),
+    );
+
+    if (mounted) {
+      setState(() {
+        isAnimating = false;
+        arrowPosition = 0;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 300,
+      height: 55,
+      child: Stack(
+        children: [
+          ElevatedButton(
+            onPressed: isAnimating ? null : () => _onPressed(context),
+            style: ElevatedButton.styleFrom(
+              elevation: 4,
+              backgroundColor: const Color(0xFFF97316),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              textStyle: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 1.2,
+              ),
+              shadowColor: const Color(0xFFFFA260),
+            ),
+            child: const Center(child: Text('Ver eventos')),
+          ),
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 350),
+            left: arrowPosition,
+            top: 15,
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 180),
+              opacity: isAnimating ? 1 : 0,
+              child: const Icon(
+                Icons.arrow_forward,
+                color: Colors.white,
+                size: 24,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
