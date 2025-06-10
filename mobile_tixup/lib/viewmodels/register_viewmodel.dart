@@ -52,11 +52,23 @@ class RegisterViewModel extends ChangeNotifier {
   bool isValidDate(String date) {
     final parts = date.split('/');
     if (parts.length != 3) return false;
+    
     final day = int.tryParse(parts[0]);
     final month = int.tryParse(parts[1]);
     final year = int.tryParse(parts[2]);
+    
     if (day == null || month == null || year == null) return false;
     if (year < 1900 || month < 1 || month > 12) return false;
+    
+    // Check if the day is valid for the given month
+    final daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    if (month == 2 && year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) {
+      // February in leap year
+      if (day < 1 || day > 29) return false;
+    } else {
+      if (day < 1 || day > daysInMonth[month - 1]) return false;
+    }
+    
     return true;
   }
 
@@ -81,10 +93,14 @@ class RegisterViewModel extends ChangeNotifier {
         throw Exception('CPF inválido');
       }
       if (!isValidDate(birthDate)) {
-        throw Exception('Data de nascimento inválida');
+        throw Exception('Data de nascimento inválida. Use o formato DD/MM/AAAA');
       }
+      final formattedName = nome.split(' ').map((word) => 
+        word.isEmpty ? '' : word[0].toUpperCase() + word.substring(1).toLowerCase()
+      ).join(' ');
+
       final userId = await authService.signUp(
-        nome: nome,
+        nome: formattedName,
         email: email,
         password: password,
         cpf: cpf,
@@ -93,7 +109,7 @@ class RegisterViewModel extends ChangeNotifier {
       );
       final user = UserModel(
         id: userId,
-        nome: nome,
+        nome: formattedName,
         email: email,
         telefone: telefone,
         dataNascimento: birthDate,

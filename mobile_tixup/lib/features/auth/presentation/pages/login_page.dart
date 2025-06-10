@@ -7,6 +7,7 @@ import 'package:mobile_tixup/models/user_model.dart';
 import 'package:mobile_tixup/models/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile_tixup/viewmodels/login_viewmodel.dart';
+import 'package:mobile_tixup/features/auth/services/auth_gate.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -178,7 +179,7 @@ class _LoginScreenBody extends StatelessWidget {
                                       Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => const HomeScreen(),
+                                          builder: (context) => const AuthGate(),
                                         ),
                                       );
                                     }

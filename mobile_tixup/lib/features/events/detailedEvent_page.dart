@@ -140,7 +140,7 @@ class _EventScreenBody extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '${evento['data'] ?? ''} • ${evento['local'] ?? ''}',
+                    '${_formatDate(evento['data'] ?? '')} • ${evento['local'] ?? ''}',
                     style: TextStyle(fontSize: 14, color: Colors.grey[800]),
                   ),
                   const SizedBox(height: 44),
@@ -233,5 +233,17 @@ class _EventScreenBody extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _formatDate(String date) {
+    try {
+      final parts = date.split('-');
+      if (parts.length == 3) {
+        return '${parts[2]}/${parts[1]}/${parts[0]}';
+      }
+      return date;
+    } catch (e) {
+      return date;
+    }
   }
 }

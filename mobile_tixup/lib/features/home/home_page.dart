@@ -8,6 +8,7 @@ import 'package:mobile_tixup/features/shop/shop_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile_tixup/viewmodels/home_viewmodel.dart';
+import 'package:mobile_tixup/models/user_provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -93,7 +94,7 @@ class _HomeScreenBody extends StatelessWidget {
                         ),
                         const SizedBox(width: 12),
                         Text(
-                          'Salve, nome!',
+                          'Salve, ${Provider.of<UserProvider>(context).user?.nome.split(' ').first ?? 'nome'}!',
                           style: TextStyle(
                             fontFamily: 'sans-serif',
                             fontSize: textSize,
@@ -131,58 +132,67 @@ class _HomeScreenBody extends StatelessWidget {
             ],
           ),
           SliverToBoxAdapter(
-            child: viewModel.isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : viewModel.errorMessage != null
+            child:
+                viewModel.isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : viewModel.errorMessage != null
                     ? Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.error_outline,
-                                size: 80,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.error_outline,
+                              size: 80,
+                              color: Colors.red,
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                              viewModel.errorMessage!,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 16,
                                 color: Colors.red,
+                                fontFamily: 'sans-serif',
                               ),
-                              const SizedBox(height: 20),
-                              Text(
-                                viewModel.errorMessage!,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.red,
-                                  fontFamily: 'sans-serif',
-                                ),
+                            ),
+                            const SizedBox(height: 20),
+                            ElevatedButton.icon(
+                              onPressed: viewModel.fetchEvents,
+                              icon: Icon(Icons.refresh),
+                              label: Text('Tentar Novamente'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: laranjaPrincipal,
+                                foregroundColor: Colors.white,
                               ),
-                              const SizedBox(height: 20),
-                              ElevatedButton.icon(
-                                onPressed: viewModel.fetchEvents,
-                                icon: Icon(Icons.refresh),
-                                label: Text('Tentar Novamente'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: laranjaPrincipal,
-                                  foregroundColor: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      )
-                    : Column(
-                        children: [
-                          _content(context, viewModel),
-                          const SizedBox(height: 20),
-                          categories(context, laranjaPrincipal),
-                          const SizedBox(height: 20),
-                          _eventsLikedByFriends(context, viewModel, laranjaPrincipal),
-                          const SizedBox(height: 20),
-                          _recommendedEventsCarousel(context, viewModel, laranjaPrincipal),
-                          const SizedBox(height: 20),
-                          goToEventsPage(context),
-                          const SizedBox(height: 20),
-                        ],
                       ),
+                    )
+                    : Column(
+                      children: [
+                        _content(context, viewModel),
+                        const SizedBox(height: 20),
+                        categories(context, laranjaPrincipal),
+                        const SizedBox(height: 20),
+                        _eventsLikedByFriends(
+                          context,
+                          viewModel,
+                          laranjaPrincipal,
+                        ),
+                        const SizedBox(height: 20),
+                        _recommendedEventsCarousel(
+                          context,
+                          viewModel,
+                          laranjaPrincipal,
+                        ),
+                        const SizedBox(height: 20),
+                        goToEventsPage(context),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
           ),
         ],
       ),
@@ -285,11 +295,20 @@ class _HomeScreenBody extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            evento['data'] ?? '',
+                            evento['data'] != null
+                                ? _formatDate(evento['data'])
+                                : '',
                             style: const TextStyle(
-                              color: Colors.white70,
+                              color: Colors.white,
                               fontSize: 14,
                               fontFamily: 'sans-serif',
+                              shadows: [
+                                Shadow(
+                                  color: Colors.deepOrange,
+                                  blurRadius: 10,
+                                  offset: Offset(0, 0),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -352,7 +371,11 @@ class _HomeScreenBody extends StatelessWidget {
     );
   }
 
-  Widget _eventsLikedByFriends(BuildContext context, HomeViewModel viewModel, Color laranjaPrincipal) {
+  Widget _eventsLikedByFriends(
+    BuildContext context,
+    HomeViewModel viewModel,
+    Color laranjaPrincipal,
+  ) {
     if (viewModel.friendsLikedEvents.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -441,7 +464,7 @@ class _HomeScreenBody extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                '${evento['data'] ?? ''} - ${evento['local'] ?? ''}',
+                                '${_formatDate(evento['data'] ?? '')} - ${evento['local'] ?? ''}',
                                 style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
@@ -478,7 +501,11 @@ class _HomeScreenBody extends StatelessWidget {
     );
   }
 
-  Widget _recommendedEventsCarousel(BuildContext context, HomeViewModel viewModel, Color laranjaPrincipal) {
+  Widget _recommendedEventsCarousel(
+    BuildContext context,
+    HomeViewModel viewModel,
+    Color laranjaPrincipal,
+  ) {
     if (viewModel.recommendedEvents.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -567,7 +594,7 @@ class _HomeScreenBody extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                '${evento['data'] ?? ''} - ${evento['local'] ?? ''}',
+                                '${_formatDate(evento['data'] ?? '')} - ${evento['local'] ?? ''}',
                                 style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
@@ -606,6 +633,18 @@ class _HomeScreenBody extends StatelessWidget {
 
   Widget goToEventsPage(BuildContext context) {
     return const AnimatedEventButton();
+  }
+
+  String _formatDate(String date) {
+    try {
+      final parts = date.split('-');
+      if (parts.length == 3) {
+        return '${parts[2]}/${parts[1]}/${parts[0]}';
+      }
+      return date;
+    } catch (e) {
+      return date;
+    }
   }
 }
 

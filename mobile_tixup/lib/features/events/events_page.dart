@@ -247,7 +247,7 @@ class _TelaPesquisaBody extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    evento['data'] ?? '',
+                    evento['data'] != null ? _formatDate(evento['data']) : '',
                     style: TextStyle(
                       fontSize: 14,
                       color: Color.fromARGB(118, 0, 0, 0),
@@ -281,5 +281,17 @@ class _TelaPesquisaBody extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _formatDate(String date) {
+    try {
+      final parts = date.split('-');
+      if (parts.length == 3) {
+        return '${parts[2]}/${parts[1]}/${parts[0]}';
+      }
+      return date;
+    } catch (e) {
+      return date;
+    }
   }
 }

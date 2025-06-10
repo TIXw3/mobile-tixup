@@ -162,7 +162,9 @@ class _TelaRegistroBody extends StatelessWidget {
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      viewModel.obscureText ? Icons.visibility : Icons.visibility_off,
+                      viewModel.obscureText
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                       color: Color.fromARGB(206, 0, 0, 0),
                     ),
                     onPressed: viewModel.togglePasswordVisibility,
@@ -202,7 +204,9 @@ class _TelaRegistroBody extends StatelessWidget {
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      viewModel.obscureText ? Icons.visibility : Icons.visibility_off,
+                      viewModel.obscureText
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                       color: Color.fromARGB(206, 0, 0, 0),
                     ),
                     onPressed: viewModel.togglePasswordVisibility,
@@ -327,22 +331,27 @@ class _TelaRegistroBody extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: viewModel.isLoading
-                      ? null
-                      : () async {
-                          try {
-                            final user = await viewModel.signUp(context);
-                            if (user != null && context.mounted) {
-                              Navigator.pop(context);
+                  onPressed:
+                      viewModel.isLoading
+                          ? null
+                          : () async {
+                            try {
+                              final user = await viewModel.signUp(context);
+                              if (user != null && context.mounted) {
+                                Navigator.pop(context);
+                              }
+                            } catch (e) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Erro ao criar conta: ${e.toString()}',
+                                    ),
+                                  ),
+                                );
+                              }
                             }
-                          } catch (e) {
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Erro ao criar conta: ${e.toString()}')),
-                              );
-                            }
-                          }
-                        },
+                          },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 249, 115, 22),
                     padding: const EdgeInsets.symmetric(
@@ -357,17 +366,18 @@ class _TelaRegistroBody extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  child: viewModel.isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text(
-                          'Criar',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0,
+                  child:
+                      viewModel.isLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text(
+                            'Criar',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0,
+                            ),
                           ),
-                        ),
                 ),
               ),
               const SizedBox(height: 20),
