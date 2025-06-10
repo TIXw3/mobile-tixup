@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_tixup/features/auth/presentation/pages/login_page.dart';
 import 'package:mobile_tixup/features/auth/services/auth_service.dart';
 import 'package:mobile_tixup/features/favorites/favorites_page.dart';
 import 'package:mobile_tixup/features/profile/pages/account_page.dart';
@@ -15,31 +16,24 @@ import 'package:mobile_tixup/features/profile/pages/editprofile_page.dart';
 import '../../../../models/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:mobile_tixup/viewmodels/profile_viewmodel.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreen();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => ProfileViewModel(),
+      child: const _ProfileScreenBody(),
+    );
+  }
 }
 
-class _ProfileScreen extends State<ProfileScreen> {
-  final authService = AuthService();
+class _ProfileScreenBody extends StatelessWidget {
+  const _ProfileScreenBody();
 
-  void logout() async {
-    await authService.signOut();
-  }
-
-  Future<void> _deleteAccount() async {
-    // Aqui você pode adicionar lógica de exclusão no backend
-    // Por enquanto, ele só faz logout como exemplo
-    await authService.signOut();
-    if (mounted) {
-      Navigator.of(context).pop(); // Fecha o diálogo
-    }
-  }
-
-  void _confirmDeleteAccount() {
+  void _confirmDeleteAccount(BuildContext context, ProfileViewModel viewModel) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -58,7 +52,7 @@ class _ProfileScreen extends State<ProfileScreen> {
             TextButton(
               child: const Text('Excluir', style: TextStyle(color: Colors.red)),
               onPressed: () async {
-                await _deleteAccount();
+                await viewModel.deleteAccount(context);
               },
             ),
           ],
@@ -68,33 +62,35 @@ class _ProfileScreen extends State<ProfileScreen> {
   }
 
   @override
-Widget build(BuildContext context) {
-  final userProvider = Provider.of<UserProvider>(context);
-  final user = userProvider.user;
-  final nome = user?.nome ?? 'Nome';
-  final email = user?.email ?? 'email@email.com';
-  final telefone = user?.telefone ?? 'Sem telefone';
-  final endereco = user?.endereco ?? 'Sem endereço';
-  final imagemPerfil = user?.imagemPerfil ?? '';
+  Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final viewModel = Provider.of<ProfileViewModel>(context);
+    final user = userProvider.user;
+    final nome = user?.nome ?? 'Nome';
+    final email = user?.email ?? 'email@email.com';
+    final telefone = user?.telefone ?? 'Sem telefone';
+    final endereco = user?.endereco ?? 'Sem endereço';
+    final imagemPerfil = user?.imagemPerfil ?? '';
 
-  return Scaffold(
-    backgroundColor: const Color.fromARGB(255, 248, 247, 245),
-    body: SingleChildScrollView(
-      child: Column(
-        children: [
-          _buildHeader(nome, email, telefone, endereco, imagemPerfil),
-          _buildStatistics(),
-          _buildMainMenu(),
-          _buildSocialLinks(),
-          _buildSupportMenu(),
-          const SizedBox(height: 40),
-        ],
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 248, 247, 245),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildHeader(context, nome, email, telefone, endereco, imagemPerfil),
+            _buildStatistics(context),
+            _buildMainMenu(context),
+            _buildSocialLinks(context),
+            _buildSupportMenu(context, viewModel),
+            const SizedBox(height: 40),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildHeader(
+    BuildContext context,
     String nome,
     String email,
     String telefone,
@@ -206,7 +202,7 @@ Widget build(BuildContext context) {
     );
   }
 
-  Widget _buildStatistics() {
+  Widget _buildStatistics(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
@@ -296,7 +292,7 @@ Widget build(BuildContext context) {
     );
   }
 
-  Widget _buildMainMenu() {
+  Widget _buildMainMenu(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       decoration: BoxDecoration(
@@ -305,51 +301,72 @@ Widget build(BuildContext context) {
       ),
       child: Column(
         children: [
-          _buildMenuItem('Meus Ingressos', Icons.confirmation_number_outlined,
-              onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MeusIngressos()),
-            );
-          }),
-          _buildMenuItem('Carteirinhas', Icons.card_membership_outlined,
-              onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => StudentIdScreen()),
-            );
-          }),
-          _buildMenuItem('Minha Conta', Icons.person_outline, onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MeuPerfil()),
-            );
-          }),
-          _buildMenuItem('Tutorial', Icons.help_outline, onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => TelaTutorial()),
-            );
-          }),
-          _buildMenuItem('Meus Cartões', Icons.credit_card_outlined,
-              onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const PaymentsPage()),
-            );
-          }),
-          _buildMenuItem('Vender Ingressos', Icons.sell_outlined, onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => TelaVenderIngresso()),
-            );
-          }),
+          _buildMenuItem(
+            'Meus Ingressos',
+            Icons.confirmation_number_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MeusIngressos()),
+              );
+            },
+          ),
+          _buildMenuItem(
+            'Carteirinhas',
+            Icons.card_membership_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => StudentIdScreen()),
+              );
+            },
+          ),
+          _buildMenuItem(
+            'Minha Conta',
+            Icons.person_outline,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MeuPerfil()),
+              );
+            },
+          ),
+          _buildMenuItem(
+            'Tutorial',
+            Icons.help_outline,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TelaTutorial()),
+              );
+            },
+          ),
+          _buildMenuItem(
+            'Meus Cartões',
+            Icons.credit_card_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PaymentsPage()),
+              );
+            },
+          ),
+          _buildMenuItem(
+            'Vender Ingressos',
+            Icons.sell_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TelaVenderIngresso()),
+              );
+            },
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildSupportMenu() {
+  Widget _buildSupportMenu(BuildContext context, ProfileViewModel viewModel) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 18),
       decoration: BoxDecoration(
@@ -361,15 +378,23 @@ Widget build(BuildContext context) {
       ),
       child: Column(
         children: [
-          _buildMenuItem('Suporte', Icons.headset_mic_outlined, onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => TelaDeSuporte()),
-            );
-          }),
-          _buildMenuItem('Sair', Icons.exit_to_app_outlined, onTap: logout),
-          _buildMenuItem('Excluir Conta', Icons.delete_outline,
-              color: Colors.red, onTap: _confirmDeleteAccount),
+          _buildMenuItem(
+            'Suporte',
+            Icons.headset_mic_outlined,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TelaDeSuporte()),
+              );
+            },
+          ),
+          _buildMenuItem('Sair', Icons.exit_to_app_outlined, onTap: () => viewModel.logout(context)),
+          _buildMenuItem(
+            'Excluir Conta',
+            Icons.delete_outline,
+            color: Colors.red,
+            onTap: () => _confirmDeleteAccount(context, viewModel),
+          ),
         ],
       ),
     );
@@ -402,20 +427,22 @@ Widget build(BuildContext context) {
     );
   }
 
-  Widget _buildSocialLinks() {
-  return Container(
-    margin: const EdgeInsets.all(20),
-    child: Center(
-      child: _buildSocialButton(
-        'Instagram',
-        Icons.camera_alt_outlined,
-        'instagram://user?username=tixup_oficial',
-        'https://www.instagram.com/tixup_oficial/',
+  Widget _buildSocialLinks(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(20),
+      child: Center(
+        child: _buildSocialButton(
+          context,
+          'Instagram',
+          Icons.camera_alt_outlined,
+          'instagram://user?username=tixup_oficial',
+          'https://www.instagram.com/tixup_oficial/',
+        ),
       ),
-    ),
-  );
-}
-   Future<void> _launchURL(String appUrl, String webUrl) async {
+    );
+  }
+
+  Future<void> _launchURL(BuildContext context, String appUrl, String webUrl) async {
     final Uri appUri = Uri.parse(appUrl);
     final Uri webUri = Uri.parse(webUrl);
 
@@ -427,36 +454,39 @@ Widget build(BuildContext context) {
       }
     } catch (e) {
       await launchUrl(webUri, mode: LaunchMode.platformDefault);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro ao abrir $appUrl: $e')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erro ao abrir $appUrl: $e')));
     }
   }
 
- Widget _buildSocialButton(
-  String title,
-  IconData icon,
-  String appUrl,
-  String webUrl,
-) {
-  return OutlinedButton.icon(
-    onPressed: () => _launchURL(appUrl, webUrl),
-    icon: Icon(icon, color: const Color.fromARGB(255, 249, 115, 22)),
-    label: Text(
-      title,
-      style: const TextStyle(
-        color: Color.fromARGB(255, 249, 115, 22),
-        fontFamily: 'sans-serif',
-        fontSize: 14,
+  Widget _buildSocialButton(
+    BuildContext context,
+    String title,
+    IconData icon,
+    String appUrl,
+    String webUrl,
+  ) {
+    return OutlinedButton.icon(
+      onPressed: () => _launchURL(context, appUrl, webUrl),
+      icon: Icon(icon, color: const Color.fromARGB(255, 249, 115, 22)),
+      label: Text(
+        title,
+        style: const TextStyle(
+          color: Color.fromARGB(255, 249, 115, 22),
+          fontFamily: 'sans-serif',
+          fontSize: 14,
+        ),
       ),
-    ),
-    style: OutlinedButton.styleFrom(
-      backgroundColor: Colors.white,
-      side: const BorderSide(
-        color: Color.fromARGB(255, 249, 115, 22),
-        width: 1.5,
+      style: OutlinedButton.styleFrom(
+        backgroundColor: Colors.white,
+        side: const BorderSide(
+          color: Color.fromARGB(255, 249, 115, 22),
+          width: 1.5,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-    ),
-  );
- }
+    );
+  }
 }

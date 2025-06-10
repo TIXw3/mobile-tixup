@@ -1,209 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_tixup/features/events/detailedEvent_page.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:mobile_tixup/viewmodels/events_viewmodel.dart';
 
-class TelaPesquisa extends StatefulWidget {
+class TelaPesquisa extends StatelessWidget {
   const TelaPesquisa({super.key});
 
   @override
-  State<TelaPesquisa> createState() => _TelaPesquisaState();
-}
-
-class _TelaPesquisaState extends State<TelaPesquisa> {
-  final TextEditingController _searchController = TextEditingController();
-
-  final Color laranjaPrincipal = const Color.fromARGB(255, 249, 115, 22);
-
-  List<Map<String, dynamic>> _todosEventos = [];
-  List<Map<String, dynamic>> _eventosFiltrados = [];
-  bool _carregando = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _carregarEventosFixos();
-    _searchController.addListener(_filtrarEventos);
-  }
-
-  void _carregarEventosFixos() {
-    _todosEventos = [
-      {
-        'nome': 'Festa 1',
-        'data': '30/07',
-        'dj': 'DJ Ensek',
-        'local': 'Rua Pedro Paulo',
-      },
-      {
-        'nome': 'Festa 2',
-        'data': '30/07',
-        'dj': 'DJ Ensek',
-        'local': 'Rua Pedro Paulo',
-      },
-      {
-        'nome': 'Festa 3',
-        'data': '30/07',
-        'dj': 'DJ Ensek',
-        'local': 'Rua Pedro Paulo',
-      },
-      {
-        'nome': 'Festa 4',
-        'data': '20/08',
-        'dj': 'DJ Gabriel',
-        'local': 'Rua Giovanne Leite',
-      },
-      {
-        'nome': 'Festa 5',
-        'data': '20/08',
-        'dj': 'DJ Gabriel',
-        'local': 'Rua Giovanne Leite',
-      },
-      {
-        'nome': 'Festa 6',
-        'data': '20/08',
-        'dj': 'DJ Gabriel',
-        'local': 'Rua Giovanne Leite',
-      },
-      {
-        'nome': 'Festa 7',
-        'data': '10/09',
-        'dj': 'DJ Lucas',
-        'local': 'Rua Thiago Poliseli',
-      },
-      {
-        'nome': 'Festa 8',
-        'data': '10/09',
-        'dj': 'DJ Lucas',
-        'local': 'Rua Thiago Poliseli',
-      },
-      {
-        'nome': 'Festa 9',
-        'data': '10/09',
-        'dj': 'DJ Lucas',
-        'local': 'Rua Thiago Poliseli',
-      },
-    ];
-    setState(() {
-      _eventosFiltrados = _todosEventos;
-      _carregando = false;
-    });
-  }
-
-  void _filtrarEventos() {
-    final query = _searchController.text.toLowerCase();
-    setState(() {
-      _eventosFiltrados =
-          _todosEventos.where((evento) {
-            final nome = (evento['nome'] ?? '').toString().toLowerCase();
-            final local = (evento['local'] ?? '').toString().toLowerCase();
-            final dj = (evento['dj'] ?? '').toString().toLowerCase();
-            final data = (evento['data'] ?? '').toString().toLowerCase();
-            return nome.contains(query) ||
-                local.contains(query) ||
-                dj.contains(query) ||
-                data.contains(query);
-          }).toList();
-    });
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  Widget _buildEventoCard(Map<String, dynamic> evento) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) => EventScreen(
-                  ticketCounts: {'Pista': 0, 'VIP': 0, 'Camarote': 0},
-                ),
-          ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 20),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
-        child: Row(
-          children: [
-            Container(
-              width: 220,
-              height: 145,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                border: Border.all(color: laranjaPrincipal, width: 2),
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.white,
-              ),
-              child: Text(
-                'Evento',
-                style: TextStyle(
-                  color: laranjaPrincipal,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'sans-serif',
-                ),
-              ),
-            ),
-            const SizedBox(width: 15),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    evento['data'] ?? '',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Color.fromARGB(118, 0, 0, 0),
-                      fontFamily: 'sans-serif',
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    evento['nome'] ?? '',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'sans-serif',
-                      color: laranjaPrincipal,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    evento['local'] ?? '',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.black,
-                      fontFamily: 'sans-serif',
-                    ),
-                  ),
-                  if (evento['dj'] != null) ...[
-                    const SizedBox(height: 2),
-                    Text(
-                      evento['dj'],
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontFamily: 'sans-serif',
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => EventsViewModel(),
+      child: const _TelaPesquisaBody(),
     );
   }
+}
+
+class _TelaPesquisaBody extends StatelessWidget {
+  const _TelaPesquisaBody();
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<EventsViewModel>(context);
+    final laranjaPrincipal = const Color.fromARGB(255, 249, 115, 22);
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       appBar: AppBar(
@@ -228,14 +47,14 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
               children: [
                 Expanded(
                   child: TextField(
-                    controller: _searchController,
+                    controller: viewModel.searchController,
                     style: const TextStyle(
                       fontFamily: 'sans-serif',
                       color: Colors.black,
                       fontSize: 16,
                     ),
                     decoration: InputDecoration(
-                      hintText: 'Busque eventos por nome, DJ ou data...',
+                      hintText: 'Busque eventos por nome, local ou data...',
                       hintStyle: const TextStyle(
                         color: Colors.grey,
                         fontFamily: 'sans-serif',
@@ -269,62 +88,210 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
                 PopupMenuButton<String>(
                   icon: Icon(Icons.more_vert, color: laranjaPrincipal),
                   onSelected: (String result) {
-                    if (result == 'cat1') {
-                      print('Categoria1 selecionado');
-                    } else if (result == 'cat2') {
-                      print('Categoria2 selecionado');
-                    }
+                    // TODO: Implement category filter in ViewModel if needed
                   },
-                  itemBuilder:
-                      (BuildContext context) => <PopupMenuEntry<String>>[
-                        const PopupMenuItem<String>(
-                          value: 'cat1',
-                          child: Text('Categoria1'),
-                        ),
-                        const PopupMenuItem<String>(
-                          value: 'cat2',
-                          child: Text('Categoria2'),
-                        ),
-                      ],
+                  itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                    const PopupMenuItem<String>(
+                      value: 'Todos',
+                      child: Text('Todas as Categorias'),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'Show',
+                      child: Text('Show'),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'Festas',
+                      child: Text('Festas'),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'Baladas',
+                      child: Text('Baladas'),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'Boates',
+                      child: Text('Boates'),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'Diversos',
+                      child: Text('Diversos'),
+                    ),
+                  ],
                 ),
               ],
             ),
             const SizedBox(height: 30),
             Expanded(
-              child:
-                  _carregando
-                      ? const Center(child: CircularProgressIndicator())
-                      : _eventosFiltrados.isEmpty
-                      ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.search_off_outlined,
-                            size: 80,
-                            color: laranjaPrincipal,
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            'Nenhum resultado encontrado',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: laranjaPrincipal,
-                              fontFamily: 'sans-serif',
+              child: viewModel.isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : viewModel.errorMessage != null
+                      ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.error_outline,
+                                  size: 80,
+                                  color: Colors.red,
+                                ),
+                                const SizedBox(height: 20),
+                                Text(
+                                  viewModel.errorMessage!,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.red,
+                                    fontFamily: 'sans-serif',
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                ElevatedButton.icon(
+                                  onPressed: viewModel.fetchEvents,
+                                  icon: Icon(Icons.refresh),
+                                  label: Text('Tentar Novamente'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: laranjaPrincipal,
+                                    foregroundColor: Colors.white,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      )
-                      : ListView.builder(
-                        itemCount: _eventosFiltrados.length,
-                        itemBuilder: (context, index) {
-                          return _buildEventoCard(_eventosFiltrados[index]);
-                        },
-                      ),
+                        )
+                      : viewModel.filteredEvents.isEmpty
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.search_off_outlined,
+                                  size: 80,
+                                  color: laranjaPrincipal,
+                                ),
+                                const SizedBox(height: 20),
+                                Text(
+                                  'Nenhum resultado encontrado',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: laranjaPrincipal,
+                                    fontFamily: 'sans-serif',
+                                  ),
+                                ),
+                              ],
+                            )
+                          : ListView.builder(
+                              itemCount: viewModel.filteredEvents.length,
+                              itemBuilder: (context, index) {
+                                return _buildEventoCard(viewModel.filteredEvents[index], context);
+                              },
+                            ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildEventoCard(Map<String, dynamic> evento, BuildContext context) {
+    final laranjaPrincipal = const Color.fromARGB(255, 249, 115, 22);
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EventScreen(
+              eventoData: evento,
+              initialTicketCounts: {'Pista': 0, 'VIP': 0, 'Camarote': 0},
+            ),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 20),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+        child: Row(
+          children: [
+            Container(
+              width: 205,
+              height: 145,
+              decoration: BoxDecoration(
+                border: Border.all(color: laranjaPrincipal, width: 2),
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.white,
+                image: evento['imagem'] != null && evento['imagem'].isNotEmpty
+                    ? DecorationImage(
+                        image: NetworkImage(evento['imagem']),
+                        fit: BoxFit.cover,
+                      )
+                    : null,
+              ),
+              child: evento['imagem'] == null || evento['imagem'].isEmpty
+                  ? Center(
+                      child: Text(
+                        'Evento',
+                        style: TextStyle(
+                          color: laranjaPrincipal,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'sans-serif',
+                        ),
+                      ),
+                    )
+                  : null,
+            ),
+            const SizedBox(width: 15),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    evento['data'] != null ? _formatDate(evento['data']) : '',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color.fromARGB(118, 0, 0, 0),
+                      fontFamily: 'sans-serif',
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    evento['nome'] ?? '',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'sans-serif',
+                      color: laranjaPrincipal,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    evento['local'] ?? '',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black,
+                      fontFamily: 'sans-serif',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _formatDate(String date) {
+    try {
+      final parts = date.split('-');
+      if (parts.length == 3) {
+        return '${parts[2]}/${parts[1]}/${parts[0]}';
+      }
+      return date;
+    } catch (e) {
+      return date;
+    }
   }
 }

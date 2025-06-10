@@ -1,67 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:mobile_tixup/viewmodels/student_id_viewmodel.dart';
 
 class StudentIdScreen extends StatelessWidget {
   final Color backgroundColor = const Color.fromARGB(255, 248, 247, 245);
-  final Color laranjaPrincipal = const Color.fromARGB(255, 249, 115, 22);
+  final Color laranjaPrincipal = const Color(0xFFF97316);
 
-  final List<Map<String, String>> carteirinhas = [
-    {
-      'nome': 'Lucas B Ovo',
-      'tipo': 'Estudante',
-      'validade': 'Validade: 12/2025',
-      'instituicao': 'Unicesumar',
-    },
-    {
-      'nome': 'Lucas Bovo',
-      'tipo': 'Estudante',
-      'validade': 'Validade: 08/2025',
-      'instituicao': 'Santa Cruz',
-    },
-    {
-      'nome': 'Lucas de Freitas',
-      'tipo': 'Convidade',
-      'validade': 'Validade: 03/2026',
-      'instituicao': 'ExpoInga',
-    },
-    {
-      'nome': 'Lucas B Ovo',
-      'tipo': 'Estudante',
-      'validade': 'Validade: 12/2025',
-      'instituicao': 'Unicesumar',
-    },
-    {
-      'nome': 'Lucas Bovo',
-      'tipo': 'Estudante',
-      'validade': 'Validade: 08/2025',
-      'instituicao': 'Santa Cruz',
-    },
-  ];
-
-  StudentIdScreen({super.key});
+  const StudentIdScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => StudentIdViewModel(),
+      child: const _StudentIdBody(),
+    );
+  }
+}
+
+class _StudentIdBody extends StatelessWidget {
+  const _StudentIdBody();
+
+  @override
+  Widget build(BuildContext context) {
+    final viewModel = Provider.of<StudentIdViewModel>(context);
+    final Color backgroundColor = const Color.fromARGB(255, 248, 247, 245);
+    final Color laranjaPrincipal = const Color(0xFFF97316);
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: backgroundColor,
+        backgroundColor: laranjaPrincipal,
         elevation: 0,
-        title: Text(
+        centerTitle: true,
+        title: const Text(
           'Minhas Carteirinhas',
           style: TextStyle(
-            color: laranjaPrincipal,
+            color: Colors.white,
             fontWeight: FontWeight.bold,
+            fontFamily: 'sans-serif',
+            fontSize: 20,
           ),
         ),
-        centerTitle: true,
-        iconTheme: IconThemeData(color: laranjaPrincipal),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView.builder(
-          itemCount: carteirinhas.length,
+          itemCount: viewModel.carteirinhas.length,
           itemBuilder: (context, index) {
-            final item = carteirinhas[index];
+            final item = viewModel.carteirinhas[index];
             return Container(
               margin: const EdgeInsets.only(bottom: 20),
               padding: const EdgeInsets.all(16),
@@ -126,7 +117,7 @@ class StudentIdScreen extends StatelessWidget {
                   IconButton(
                     icon: Icon(Icons.edit, color: laranjaPrincipal),
                     onPressed: () {
-                      // logica p editar
+                      // Implementar edição usando viewModel.editarCarteirinha
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Editar ${item['nome']}')),
                       );
@@ -141,7 +132,7 @@ class StudentIdScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: laranjaPrincipal,
         onPressed: () {
-          // tela de cadastrar carteirinha
+          // Implementar adição usando viewModel.adicionarCarteirinha
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Adicionar nova carteirinha')),
           );

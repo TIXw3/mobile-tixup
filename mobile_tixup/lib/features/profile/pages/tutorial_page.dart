@@ -1,57 +1,90 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:mobile_tixup/viewmodels/tutorial_viewmodel.dart';
 
 class TelaTutorial extends StatelessWidget {
   const TelaTutorial({super.key});
 
-  final Color orange500 = const Color.fromARGB(255, 249, 115, 22);
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => TutorialViewModel(),
+      child: const _TelaTutorialBody(),
+    );
+  }
+}
+
+class _TelaTutorialBody extends StatelessWidget {
+  const _TelaTutorialBody();
 
   @override
   Widget build(BuildContext context) {
+    final Color orange500 = const Color.fromARGB(255, 249, 115, 22);
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 248, 247, 245),
+      backgroundColor: const Color.fromARGB(255, 248, 247, 245),
+      appBar: AppBar(
+        backgroundColor: orange500,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
+          'Tutorial',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'sans-serif',
+          ),
+        ),
+        centerTitle: true,
+      ),
       body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
         children: [
-          _buildHeader('Como usar o app'),
-          SizedBox(height: 20),
+          _buildHeader('Como usar o app', orange500),
+          const SizedBox(height: 20),
           _buildStep(
             Icons.confirmation_number_outlined,
             'Comprar Ingressos',
             'Navegue até a aba de pesquisa, escolha um evento e clique em "Comprar Ingresso".',
+            orange500,
           ),
-          SizedBox(height: 25),
+          const SizedBox(height: 25),
           _buildStep(
             Icons.favorite_border,
             'Favoritar Eventos',
             'Use o coração para salvar eventos que você gostou. Eles aparecem na aba "Favoritos".',
+            orange500,
           ),
-          SizedBox(height: 25),
+          const SizedBox(height: 25),
           _buildStep(
             Icons.account_balance_wallet_outlined,
             'Consultar seu saldo',
             'Vá até a aba "Saldo" no seu perfil e veja todo o seu histórico.',
+            orange500,
           ),
-          SizedBox(height: 40),
-          _buildHeader('Perguntas Frequentes'),
-          SizedBox(height: 20),
+          const SizedBox(height: 40),
+          _buildHeader('Perguntas Frequentes', orange500),
+          const SizedBox(height: 20),
           _buildFAQ(
             'Onde encontro meus ingressos?',
             'Você pode acessá-los na opção "Meus Ingressos" dentro do seu perfil.',
+            orange500,
           ),
           _buildFAQ(
             'Posso cancelar uma compra?',
             'Depende do organizador. Verifique os termos do evento antes da compra.',
+            orange500,
           ),
           _buildFAQ(
             'Como adiciono uma forma de pagamento?',
             'No menu do perfil, selecione "Meus Cartões" e adicione seus dados.',
+            orange500,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildHeader(String title) {
+  Widget _buildHeader(String title, Color orange500) {
     return Text(
       title,
       style: TextStyle(
@@ -63,9 +96,9 @@ class TelaTutorial extends StatelessWidget {
     );
   }
 
-  Widget _buildStep(IconData icon, String title, String description) {
+  Widget _buildStep(IconData icon, String title, String description, Color orange500) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       decoration: BoxDecoration(
         color: Colors.orange[50],
         borderRadius: BorderRadius.circular(10),
@@ -74,7 +107,7 @@ class TelaTutorial extends StatelessWidget {
             color: Colors.black.withOpacity(0.1),
             spreadRadius: 1,
             blurRadius: 4,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -82,7 +115,7 @@ class TelaTutorial extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, size: 36, color: orange500),
-          SizedBox(width: 15),
+          const SizedBox(width: 15),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,10 +129,10 @@ class TelaTutorial extends StatelessWidget {
                     fontFamily: 'sans-serif',
                   ),
                 ),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 Text(
                   description,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 15,
                     color: Colors.black87,
                     fontFamily: 'sans-serif',
@@ -113,11 +146,11 @@ class TelaTutorial extends StatelessWidget {
     );
   }
 
-  Widget _buildFAQ(String question, String answer) {
+  Widget _buildFAQ(String question, String answer, Color orange500) {
     return ExpansionTile(
       title: Text(
         question,
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.w600,
           fontSize: 16,
@@ -128,10 +161,10 @@ class TelaTutorial extends StatelessWidget {
       collapsedIconColor: orange500,
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: Text(
             answer,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black87,
               fontSize: 14,
               fontFamily: 'sans-serif',

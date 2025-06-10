@@ -1,59 +1,62 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_tixup/features/events/InformationPurchase_page.dart'; 
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:mobile_tixup/features/events/InformationPurchase_page.dart';
+import 'package:mobile_tixup/features/auth/services/favorites_service.dart';
+import 'dart:convert';
+import 'package:provider/provider.dart';
+import 'package:mobile_tixup/viewmodels/event_detail_viewmodel.dart';
 
-class EventScreen extends StatefulWidget {
-  const EventScreen({super.key, required Map<String, int> ticketCounts});
+class EventScreen extends StatelessWidget {
+  final Map<String, dynamic> eventoData;
+  final Map<String, int> initialTicketCounts;
 
-  @override
-  State<EventScreen> createState() => _EventScreen();
-}
-
-class _EventScreen extends State<EventScreen> {
-  // Quantidade de ingressos por tipo
-  Map<String, int> ticketCounts = {
-    "Meia MASCULINO": 0,
-    "Meia FEMININO": 0,
-    "Inteira MASCULINO": 0,
-    "Inteira FEMININO": 0,
-  };
-
-  void increment(String type) {
-    setState(() {
-      ticketCounts[type] = (ticketCounts[type] ?? 0) + 1;
-    });
-  }
-
-  void decrement(String type) {
-    setState(() {
-      if ((ticketCounts[type] ?? 0) > 0) {
-        ticketCounts[type] = ticketCounts[type]! - 1;
-      }
-    });
-  }
+  const EventScreen({
+    super.key,
+    required this.eventoData,
+    required this.initialTicketCounts,
+  });
 
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => EventDetailViewModel(eventoData: eventoData, initialTicketCounts: initialTicketCounts),
+      child: const _EventScreenBody(),
+    );
+  }
+}
+
+class _EventScreenBody extends StatelessWidget {
+  const _EventScreenBody();
+
+  @override
+  Widget build(BuildContext context) {
+    final viewModel = Provider.of<EventDetailViewModel>(context);
+    final evento = viewModel.eventoData;
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 248, 247, 245),
+      backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Color.fromARGB(255, 249, 115, 22), // Laranja
+            backgroundColor: const Color.fromARGB(255, 249, 115, 22),
             padding: const EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
           ),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => InformationPurchasePage(), 
-              ),
-            );
-          },
-          child: Text(
+          onPressed: viewModel.hasSelectedTickets() && evento != null && viewModel.ticketCounts.isNotEmpty
+              ? () async {
+                  await viewModel.savePurchaseData();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => InformationPurchasePage(),
+                    ),
+                  );
+                }
+              : null,
+          child: const Text(
             'Finalizar compra!',
             style: TextStyle(color: Colors.white, fontSize: 18),
           ),
@@ -75,79 +78,94 @@ class _EventScreen extends State<EventScreen> {
                           borderRadius: const BorderRadius.only(
                             bottomRight: Radius.circular(20),
                           ),
-                          child: Image.asset(
-                            'lib/assets/images/party1.jpg',
-                            height: 250,
-                            fit: BoxFit.cover,
-                          ),
+                          child: evento['imagem'] != null && evento['imagem'].isNotEmpty
+                              ? Image.network(
+                                  evento['imagem'],
+                                  height: 250,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.asset(
+                                  'lib/assets/images/party6.jpg',
+                                  height: 250,
+                                  fit: BoxFit.cover,
+                                ),
                         ),
                       ),
                     ],
                   ),
                   Positioned(
                     top: 15,
-                    right: 15,
+                    right: 60,
                     child: IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.bookmark_border),
+                      onPressed: viewModel.shareEvent,
+                      icon: const Icon(Icons.share_outlined),
                       iconSize: 28,
                       color: Colors.white,
                     ),
                   ),
                   Positioned(
                     top: 15,
-                    right: 60,
+                    right: 15,
                     child: IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.share_outlined),
+                      onPressed: viewModel.toggleFavorite,
+                      icon: Icon(
+                        viewModel.isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: viewModel.isFavorite ? Colors.red : Colors.white,
+                        size: 28,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 15,
+                    left: 15,
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
                       iconSize: 28,
-                      color: Colors.white,
                     ),
                   ),
                 ],
               ),
             ),
-
-            // Detalhes do evento
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Nome do evento',
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                    evento['nome'] ?? 'Nome do evento',
+                    style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
-                    'Sáb, Mar 15 • 19:00h\nR. Unicesu, 999 – Jardim Mar, Maringá/PR – 87727-878',
+                    '${_formatDate(evento['data'] ?? '')} • ${evento['local'] ?? ''}',
                     style: TextStyle(fontSize: 14, color: Colors.grey[800]),
                   ),
-                  SizedBox(height: 44),
-                  Text(
+                  const SizedBox(height: 44),
+                  const Text(
                     'Descrição',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 6),
-                  sectionText(
-                    'Proibido entrada de menores de 18 anos.\nAbertura dos portões às 20h\n\nObrigatório a apresentação de documento com foto na entrada (não aceitamos e-documento).\n\nEsse evento poderá ser gravado e compartilhado nas redes sociais, ao adquirir o ingresso você concorda com o uso da sua imagem gratuitamente.',
-                  ),
-                  SizedBox(height: 44),
-                  Text(
+                  const SizedBox(height: 6),
+                  sectionText(evento['descricao'] ?? 'Sem descrição disponível.'),
+                  const SizedBox(height: 44),
+                  const Text(
                     'Políticas de cancelamento',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   sectionText(
                     'A solicitação de cancelamento pode ser feita em até 7 dias corridos após a compra, desde que seja feita antes de 48 horas do início do evento.',
                   ),
-                  SizedBox(height: 44),
-                  Text(
+                  const SizedBox(height: 44),
+                  const Text(
                     'Ingressos',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 10),
-                  ...ticketCounts.keys.map((type) => ticketTile(type)),
-                  SizedBox(height: 40), 
+                  const SizedBox(height: 10),
+                  ...viewModel.ticketCounts.keys.map((type) => ticketTile(type, viewModel)),
+                  const SizedBox(height: 40),
                 ],
               ),
             ),
@@ -158,15 +176,25 @@ class _EventScreen extends State<EventScreen> {
   }
 
   Widget sectionText(String text) {
-    return Text(text, style: TextStyle(fontSize: 14));
+    return Text(text, style: const TextStyle(fontSize: 14));
   }
 
-  Widget ticketTile(String type) {
+  Widget ticketTile(String type, EventDetailViewModel viewModel) {
+    final Map<String, double> ticketPrices = {
+      'Pista': 55.0,
+      'VIP': 85.0,
+      'Camarote': 100.0,
+    };
+    final double price = ticketPrices[type] ?? 55.0;
+
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 6),
+      margin: const EdgeInsets.symmetric(vertical: 6),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
-        side: BorderSide(color: Color.fromARGB(255, 249, 115, 22), width: 0.5),
+        side: const BorderSide(
+          color: Color.fromARGB(255, 249, 115, 22),
+          width: 0.5,
+        ),
       ),
       elevation: 2,
       color: const Color.fromARGB(255, 255, 255, 255),
@@ -179,26 +207,25 @@ class _EventScreen extends State<EventScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(type, style: TextStyle(fontWeight: FontWeight.bold)),
-                  SizedBox(height: 4),
-                  Text('R\$50,00'),
                   Text(
-                    '+ taxa de serviço de R\$5,00',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                    type,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
+                  const SizedBox(height: 4),
+                  Text('R\$${price.toStringAsFixed(2).replaceAll('.', ',')}'),
                 ],
               ),
             ),
             Row(
               children: [
                 IconButton(
-                  onPressed: () => decrement(type),
-                  icon: Icon(Icons.remove_circle_outline),
+                  onPressed: () => viewModel.decrement(type),
+                  icon: const Icon(Icons.remove_circle_outline),
                 ),
-                Text('${ticketCounts[type]}'),
+                Text('${viewModel.ticketCounts[type]}'),
                 IconButton(
-                  onPressed: () => increment(type),
-                  icon: Icon(Icons.add_circle_outline),
+                  onPressed: () => viewModel.increment(type),
+                  icon: const Icon(Icons.add_circle_outline),
                 ),
               ],
             ),
@@ -206,5 +233,17 @@ class _EventScreen extends State<EventScreen> {
         ),
       ),
     );
+  }
+
+  String _formatDate(String date) {
+    try {
+      final parts = date.split('-');
+      if (parts.length == 3) {
+        return '${parts[2]}/${parts[1]}/${parts[0]}';
+      }
+      return date;
+    } catch (e) {
+      return date;
+    }
   }
 }
