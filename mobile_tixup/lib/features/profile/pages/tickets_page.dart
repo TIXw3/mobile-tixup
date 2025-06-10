@@ -1,55 +1,72 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:mobile_tixup/viewmodels/tickets_viewmodel.dart';
 
-class MeusIngressos extends StatefulWidget {
+class MeusIngressos extends StatelessWidget {
   const MeusIngressos({super.key});
 
   @override
-  State<MeusIngressos> createState() => _MeusIngressosState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => TicketsViewModel(),
+      child: const _MeusIngressosBody(),
+    );
+  }
 }
 
-class _MeusIngressosState extends State<MeusIngressos> {
-  final Color laranjaPrincipal = const Color.fromARGB(255, 249, 115, 22);
+class _MeusIngressosBody extends StatelessWidget {
+  const _MeusIngressosBody();
 
-  final List<Map<String, String>> _meusIngressos = [
-    {
-      'data': '06 de Abr',
-      'evento': 'FILIN',
-      'local': 'Maringá/PR',
-      'qrcode': '1234567890',
-    },
-    {
-      'data': '12 de Abr',
-      'evento': 'FOLKS',
-      'local': 'Maringá/PR',
-      'qrcode': '0987654321',
-    },
-    {
-      'data': '15 de Abr',
-      'evento': 'NEW YORK',
-      'local': 'Maringá/PR',
-      'qrcode': '0987654321',
-    },
-    {
-      'data': '18 de Out',
-      'evento': 'FILIN',
-      'local': 'Maringá/PR',
-      'qrcode': '0987654321',
-    },
-    {
-      'data': '12 de Jan',
-      'evento': 'ExpoInga',
-      'local': 'Maringá/PR',
-      'qrcode': '0987654321',
-    },
-    {
-      'data': '2 de Jul',
-      'evento': 'BUTIQUIM',
-      'local': 'Maringá/PR',
-      'qrcode': '0987654321',
-    },
-  ];
+  @override
+  Widget build(BuildContext context) {
+    final viewModel = Provider.of<TicketsViewModel>(context);
+    final Color laranjaPrincipal = const Color.fromARGB(255, 249, 115, 22);
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 248, 247, 245),
+      appBar: AppBar(
+        backgroundColor: laranjaPrincipal,
+        centerTitle: true,
+        title: const Text(
+          'Meus Ingressos',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontFamily: 'sans-serif',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: viewModel.meusIngressos.isEmpty
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.event_busy, size: 80, color: laranjaPrincipal),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Você ainda não comprou nenhum ingresso',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: laranjaPrincipal,
+                      fontFamily: 'sans-serif',
+                    ),
+                  ),
+                ],
+              )
+            : ListView.builder(
+                itemCount: viewModel.meusIngressos.length,
+                itemBuilder: (context, index) {
+                  return _buildIngressoCard(viewModel.meusIngressos[index], laranjaPrincipal);
+                },
+              ),
+      ),
+    );
+  }
 
-  Widget _buildIngressoCard(Map<String, String> ingresso) {
+  Widget _buildIngressoCard(Map<String, String> ingresso, Color laranjaPrincipal) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       padding: const EdgeInsets.all(12),
@@ -108,54 +125,6 @@ class _MeusIngressosState extends State<MeusIngressos> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 248, 247, 245),
-      appBar: AppBar(
-        backgroundColor: laranjaPrincipal,
-        centerTitle: true,
-        title: const Text(
-          'Meus Ingressos',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontFamily: 'sans-serif',
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child:
-            _meusIngressos.isEmpty
-                ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.event_busy, size: 80, color: laranjaPrincipal),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Você ainda não comprou nenhum ingresso',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: laranjaPrincipal,
-                        fontFamily: 'sans-serif',
-                      ),
-                    ),
-                  ],
-                )
-                : ListView.builder(
-                  itemCount: _meusIngressos.length,
-                  itemBuilder: (context, index) {
-                    return _buildIngressoCard(_meusIngressos[index]);
-                  },
-                ),
       ),
     );
   }

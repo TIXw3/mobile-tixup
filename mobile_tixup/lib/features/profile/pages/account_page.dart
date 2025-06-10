@@ -1,44 +1,29 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:mobile_tixup/viewmodels/account_viewmodel.dart';
 
-class MeuPerfil extends StatefulWidget {
+class MeuPerfil extends StatelessWidget {
   const MeuPerfil({super.key});
 
   @override
-  State<MeuPerfil> createState() => _MeuPerfilState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => AccountViewModel(),
+      child: const _MeuPerfilBody(),
+    );
+  }
 }
 
-class _MeuPerfilState extends State<MeuPerfil> {
-  final Color laranja = const Color.fromARGB(255, 249, 115, 22);
-
-  String nome = '';
-  String email = '';
-  String telefone = '';
-  String endereco = '';
-  String? caminhoImagem;
-
-  @override
-  void initState() {
-    super.initState();
-    carregarDados();
-  }
-
-  Future<void> carregarDados() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      nome = prefs.getString('nome') ?? '';
-      email = prefs.getString('email') ?? '';
-      telefone = prefs.getString('numero') ?? '';
-      endereco = prefs.getString('endereco') ?? '';
-      caminhoImagem = prefs.getString('imagemPerfil');
-    });
-  }
+class _MeuPerfilBody extends StatelessWidget {
+  const _MeuPerfilBody();
 
   @override
   Widget build(BuildContext context) {
-    File? imageFile = caminhoImagem != null ? File(caminhoImagem!) : null;
-
+    final viewModel = Provider.of<AccountViewModel>(context);
+    final Color laranja = const Color.fromARGB(255, 249, 115, 22);
+    File? imageFile = viewModel.imageFile;
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       appBar: AppBar(
@@ -71,7 +56,7 @@ class _MeuPerfilState extends State<MeuPerfil> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  nome,
+                  viewModel.nome,
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -82,22 +67,22 @@ class _MeuPerfilState extends State<MeuPerfil> {
               ],
             ),
             const SizedBox(height: 30),
-            _buildInfoRow(Icons.email, 'E-mail', email),
+            _buildInfoRow(Icons.email, 'E-mail', viewModel.email, laranja),
             const SizedBox(height: 15),
-            _buildInfoRow(Icons.phone, 'Telefone', telefone),
+            _buildInfoRow(Icons.phone, 'Telefone', viewModel.telefone, laranja),
             const SizedBox(height: 15),
-            _buildInfoRow(Icons.house, 'Endereço', endereco),
+            _buildInfoRow(Icons.house, 'Endereço', viewModel.endereco, laranja),
             const SizedBox(height: 15),
             _buildActionButton(Icons.history, 'Histórico de Compras', () {
               // Implementar funcionalidade aqui
-            }),
+            }, laranja),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String valor) {
+  Widget _buildInfoRow(IconData icon, String label, String valor, Color laranja) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -136,6 +121,7 @@ class _MeuPerfilState extends State<MeuPerfil> {
     IconData icon,
     String label,
     VoidCallback onTap,
+    Color laranja,
   ) {
     return InkWell(
       onTap: onTap,

@@ -19,12 +19,18 @@ class _NavigationMenuState extends State<NavigationMenu> {
   final Color laranjaPrincipal = const Color.fromARGB(255, 249, 115, 22);
 
   final List<Widget> _screens = [
-    HomeScreen(),
-    TelaPesquisa(),
-    ShopScreen(),
-    FavoriteScreen(),
-    ProfileScreen(),
+    const HomeScreen(),
+    const TelaPesquisa(),
+    const ShopScreen(),
+    const FavoriteScreen(),
+    const ProfileScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = 0;
+  }
 
   void _onItemTapped(int index) {
     setState(() {

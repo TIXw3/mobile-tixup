@@ -1,44 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:mobile_tixup/viewmodels/following_viewmodel.dart';
 
-class SeguindoPage extends StatefulWidget {
+class SeguindoPage extends StatelessWidget {
   const SeguindoPage({super.key});
 
   @override
-  State<SeguindoPage> createState() => _SeguindoPageState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => FollowingViewModel(),
+      child: const _SeguindoPageBody(),
+    );
+  }
 }
 
-class _SeguindoPageState extends State<SeguindoPage> {
-  final Color orange500 = const Color.fromARGB(255, 249, 115, 22);
-
-  String selectedOrder = 'A-Z';
-
-  final List<Map<String, String>> organizadores = [
-    {'nome': 'BUTIQUIM', 'descricao': 'É o Butica da galera!'},
-    {'nome': 'FILIN', 'descricao': 'Única e Surpreendente!'},
-  ];
-
-  List<Map<String, String>> getOrganizadoresOrdenados() {
-    List<Map<String, String>> sorted = List.from(organizadores);
-    switch (selectedOrder) {
-      case 'A-Z':
-        sorted.sort((a, b) => a['nome']!.compareTo(b['nome']!));
-        break;
-      case 'Z-A':
-        sorted.sort((a, b) => b['nome']!.compareTo(a['nome']!));
-        break;
-      case 'Mais Recentes':
-        sorted = sorted.reversed.toList();
-        break;
-      case 'Mais Antigos':
-        break;
-    }
-    return sorted;
-  }
+class _SeguindoPageBody extends StatelessWidget {
+  const _SeguindoPageBody();
 
   @override
   Widget build(BuildContext context) {
-    final organizadoresOrdenados = getOrganizadoresOrdenados();
-
+    final viewModel = Provider.of<FollowingViewModel>(context);
+    final Color orange500 = const Color.fromARGB(255, 249, 115, 22);
+    final organizadoresOrdenados = viewModel.organizadoresOrdenados;
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       appBar: AppBar(
@@ -94,7 +77,7 @@ class _SeguindoPageState extends State<SeguindoPage> {
                   ),
                   const SizedBox(height: 10),
                   DropdownButton<String>(
-                    value: selectedOrder,
+                    value: viewModel.selectedOrder,
                     items: <String>[
                       'A-Z',
                       'Z-A',
@@ -113,9 +96,9 @@ class _SeguindoPageState extends State<SeguindoPage> {
                       );
                     }).toList(),
                     onChanged: (newValue) {
-                      setState(() {
-                        selectedOrder = newValue!;
-                      });
+                      if (newValue != null) {
+                        viewModel.setOrder(newValue);
+                      }
                     },
                     style: const TextStyle(
                       color: Colors.black,

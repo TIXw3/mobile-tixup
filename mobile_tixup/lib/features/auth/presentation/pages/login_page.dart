@@ -6,73 +6,27 @@ import 'package:mobile_tixup/features/home/home_page.dart';
 import 'package:mobile_tixup/models/user_model.dart';
 import 'package:mobile_tixup/models/user_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:mobile_tixup/viewmodels/login_viewmodel.dart';
+import 'package:mobile_tixup/features/auth/services/auth_gate.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => LoginViewModel(),
+      child: const _LoginScreenBody(),
+    );
+  }
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final authService = AuthService();
-
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _obscureText = true;
-
-  bool _isLoading = false;
-
-  void login() async {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final user = await authService.login(email, password);
-
-      if (user != null) {
-        if (mounted) {
-          final userProvider = Provider.of<UserProvider>(
-            context,
-            listen: false,
-          );
-          userProvider.setUser(user);
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
-          );
-        }
-      } else {
-        throw Exception('Email ou senha inválidos.');
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("Erro: $e")));
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  void _togglePasswordVisibility() {
-    setState(() {
-      _obscureText = !_obscureText;
-    });
-  }
+class _LoginScreenBody extends StatelessWidget {
+  const _LoginScreenBody();
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<LoginViewModel>(context);
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       body: SafeArea(
@@ -140,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 20),
                       TextField(
-                        controller: _emailController,
+                        controller: viewModel.emailController,
                         decoration: InputDecoration(
                           labelText: 'Email',
                           labelStyle: const TextStyle(
@@ -172,8 +126,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 20),
                       TextField(
-                        controller: _passwordController,
-                        obscureText: _obscureText,
+                        controller: viewModel.passwordController,
+                        obscureText: viewModel.obscureText,
                         decoration: InputDecoration(
                           labelText: 'Senha',
                           labelStyle: const TextStyle(
@@ -203,12 +157,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _obscureText
+                              viewModel.obscureText
                                   ? Icons.visibility
                                   : Icons.visibility_off,
                               color: const Color.fromARGB(206, 0, 0, 0),
                             ),
-                            onPressed: _togglePasswordVisibility,
+                            onPressed: viewModel.togglePasswordVisibility,
                           ),
                         ),
                       ),
@@ -216,7 +170,27 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: _isLoading ? null : login,
+                          onPressed: viewModel.isLoading
+                              ? null
+                              : () async {
+                                  try {
+                                    final user = await viewModel.login(context);
+                                    if (user != null && context.mounted) {
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => const AuthGate(),
+                                        ),
+                                      );
+                                    }
+                                  } catch (e) {
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text("Erro: $e")),
+                                      );
+                                    }
+                                  }
+                                },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
                               255,
@@ -229,18 +203,17 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          child:
-                              _isLoading
-                                  ? const CircularProgressIndicator(
+                          child: viewModel.isLoading
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : const Text(
+                                  'Entrar',
+                                  style: TextStyle(
+                                    fontSize: 18,
                                     color: Colors.white,
-                                  )
-                                  : const Text(
-                                    'Entrar',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                    ),
                                   ),
+                                ),
                         ),
                       ),
                       const SizedBox(height: 20),

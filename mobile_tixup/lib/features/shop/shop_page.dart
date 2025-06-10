@@ -1,56 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_tixup/features/events/events_page.dart';
 import 'package:mobile_tixup/features/auth/services/cart_service.dart';
+import 'package:provider/provider.dart';
+import 'package:mobile_tixup/viewmodels/shop_viewmodel.dart';
 
-class ShopScreen extends StatefulWidget {
+class ShopScreen extends StatelessWidget {
   const ShopScreen({super.key});
 
   @override
-  State<ShopScreen> createState() => _ShopScreen();
-}
-
-class _ShopScreen extends State<ShopScreen> {
-  List<Map<String, dynamic>> cartItems = [];
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadCartItems();
-  }
-
-  Future<void> _loadCartItems() async {
-    setState(() {
-      isLoading = true;
-    });
-    
-    List<Map<String, dynamic>> items = await CartService.getCartItems();
-    
-    setState(() {
-      cartItems = items;
-      isLoading = false;
-    });
-  }
-
-  Future<void> _removeFromCart(String ticketId) async {
-    await CartService.removeFromCart(ticketId);
-    await _loadCartItems();
-    
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Ingresso removido do carrinho!'),
-        backgroundColor: Colors.grey,
-        duration: Duration(seconds: 2),
-      ),
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => ShopViewModel(),
+      child: const _ShopScreenBody(),
     );
   }
+}
 
-  String formatPrice(double price) {
-    return 'R\$ ${price.toStringAsFixed(2).replaceAll('.', ',')}';
-  }
+class _ShopScreenBody extends StatelessWidget {
+  const _ShopScreenBody();
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<ShopViewModel>(context);
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       appBar: AppBar(
@@ -61,7 +32,7 @@ class _ShopScreen extends State<ShopScreen> {
           size: 32,
           color: Colors.white,
         ),
-        actions: cartItems.isNotEmpty
+        actions: viewModel.cartItems.isNotEmpty
             ? [
                 IconButton(
                   icon: const Icon(Icons.delete_outline, color: Colors.white),
@@ -78,9 +49,7 @@ class _ShopScreen extends State<ShopScreen> {
                           ),
                           TextButton(
                             onPressed: () async {
-                              await CartService.clearCart();
-                              await _loadCartItems();
-                              if (mounted) Navigator.pop(context);
+                              await viewModel.clearCart(context);
                             },
                             child: const Text('Confirmar'),
                           ),
@@ -92,19 +61,19 @@ class _ShopScreen extends State<ShopScreen> {
               ]
             : null,
       ),
-      body: isLoading
+      body: viewModel.isLoading
           ? const Center(
               child: CircularProgressIndicator(
                 color: Color.fromARGB(255, 249, 115, 22),
               ),
             )
-          : cartItems.isEmpty
-              ? _buildEmptyCart()
-              : _buildCartList(),
+          : viewModel.cartItems.isEmpty
+              ? _buildEmptyCart(context)
+              : _buildCartList(context, viewModel),
     );
   }
 
-  Widget _buildEmptyCart() {
+  Widget _buildEmptyCart(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
@@ -206,9 +175,9 @@ class _ShopScreen extends State<ShopScreen> {
     );
   }
 
-  Widget _buildCartList() {
+  Widget _buildCartList(BuildContext context, ShopViewModel viewModel) {
     double totalCartValue = 0;
-    for (var item in cartItems) {
+    for (var item in viewModel.cartItems) {
       totalCartValue += (item['totalPrice'] as num).toDouble();
     }
 
@@ -229,7 +198,7 @@ class _ShopScreen extends State<ShopScreen> {
                 ),
               ),
               Text(
-                '${cartItems.length} ${cartItems.length == 1 ? 'item' : 'itens'}',
+                '${viewModel.cartItems.length} ${viewModel.cartItems.length == 1 ? 'item' : 'itens'}',
                 style: const TextStyle(
                   fontSize: 16,
                   color: Color.fromARGB(255, 249, 115, 22),
@@ -243,18 +212,20 @@ class _ShopScreen extends State<ShopScreen> {
         Expanded(
           child: RefreshIndicator(
             color: const Color.fromARGB(255, 249, 115, 22),
-            onRefresh: _loadCartItems,
+            onRefresh: () async {
+              await viewModel.loadCartItems();
+            },
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: cartItems.length,
+              itemCount: viewModel.cartItems.length,
               itemBuilder: (context, index) {
-                final ticket = cartItems[index];
-                return _buildTicketCard(ticket);
+                final ticket = viewModel.cartItems[index];
+                return _buildTicketCard(context, ticket, viewModel);
               },
             ),
           ),
         ),
-        if (cartItems.isNotEmpty)
+        if (viewModel.cartItems.isNotEmpty)
           Container(
             padding: const EdgeInsets.all(16),
             decoration: const BoxDecoration(
@@ -281,7 +252,7 @@ class _ShopScreen extends State<ShopScreen> {
                       ),
                     ),
                     Text(
-                      formatPrice(totalCartValue),
+                      viewModel.formatPrice(totalCartValue),
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -304,9 +275,7 @@ class _ShopScreen extends State<ShopScreen> {
                           actions: [
                             TextButton(
                               onPressed: () async {
-                                await CartService.clearCart();
-                                await _loadCartItems();
-                                if (mounted) Navigator.pop(context);
+                                await viewModel.clearCart(context);
                               },
                               child: const Text('OK'),
                             ),
@@ -338,7 +307,7 @@ class _ShopScreen extends State<ShopScreen> {
     );
   }
 
-  Widget _buildTicketCard(Map<String, dynamic> ticket) {
+  Widget _buildTicketCard(BuildContext context, Map<String, dynamic> ticket, ShopViewModel viewModel) {
     int totalTickets = 0;
     Map<String, dynamic> ticketCounts = Map<String, dynamic>.from(ticket['ticketCounts']);
     ticketCounts.forEach((type, count) {
@@ -378,7 +347,7 @@ class _ShopScreen extends State<ShopScreen> {
                 top: 8,
                 right: 8,
                 child: IconButton(
-                  onPressed: () => _removeFromCart(ticket['id']),
+                  onPressed: () => viewModel.removeFromCart(ticket['id'], context),
                   icon: const Icon(Icons.delete, color: Colors.white),
                   style: IconButton.styleFrom(
                     backgroundColor: Colors.black54,
@@ -460,7 +429,7 @@ class _ShopScreen extends State<ShopScreen> {
                                 style: const TextStyle(fontSize: 14),
                               ),
                               Text(
-                                formatPrice(entry.value * 55.0),
+                                viewModel.formatPrice(entry.value * 55.0),
                                 style: const TextStyle(fontSize: 14),
                               ),
                             ],
@@ -500,7 +469,7 @@ class _ShopScreen extends State<ShopScreen> {
                       ),
                     ),
                     Text(
-                      formatPrice((ticket['totalPrice'] as num).toDouble()),
+                      viewModel.formatPrice((ticket['totalPrice'] as num).toDouble()),
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,

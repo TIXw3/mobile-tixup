@@ -9,12 +9,16 @@ class AuthGate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserProvider>(context).user;
-
-    if (user != null) {
-      return const NavigationMenu();
-    } else {
-      return const LoginScreen();
-    }
+    return Consumer<UserProvider>(
+      builder: (context, userProvider, _) {
+        final user = userProvider.user;
+        
+        if (user != null) {
+          return const NavigationMenu();
+        } else {
+          return const LoginScreen();
+        }
+      },
+    );
   }
 }

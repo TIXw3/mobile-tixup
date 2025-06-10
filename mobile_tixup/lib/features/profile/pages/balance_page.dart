@@ -1,16 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:mobile_tixup/viewmodels/balance_viewmodel.dart';
 
 class SaldoPage extends StatelessWidget {
   const SaldoPage({super.key});
 
-  final Color orange500 = const Color.fromARGB(255, 249, 115, 22);
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => BalanceViewModel(),
+      child: const _SaldoPageBody(),
+    );
+  }
+}
+
+class _SaldoPageBody extends StatelessWidget {
+  const _SaldoPageBody();
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<BalanceViewModel>(context);
+    final Color orange500 = const Color.fromARGB(255, 249, 115, 22);
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 249, 115, 22),
+        backgroundColor: orange500,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -59,7 +73,7 @@ class SaldoPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color.fromARGB(255, 249, 115, 22), width: 1.5),
+                  border: Border.all(color: orange500, width: 1.5),
                 ),
                 child: Column(
                   children: [

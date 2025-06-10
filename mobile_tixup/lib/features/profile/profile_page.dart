@@ -16,46 +16,24 @@ import 'package:mobile_tixup/features/profile/pages/editprofile_page.dart';
 import '../../../../models/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:mobile_tixup/viewmodels/profile_viewmodel.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreen();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => ProfileViewModel(),
+      child: const _ProfileScreenBody(),
+    );
+  }
 }
 
-class _ProfileScreen extends State<ProfileScreen> {
-  final authService = AuthService();
+class _ProfileScreenBody extends StatelessWidget {
+  const _ProfileScreenBody();
 
-  void logout() async {
-    try {
-      await authService.signOut();
-      if (mounted) {
-        Provider.of<UserProvider>(context, listen: false).setUser(null);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Erro ao sair: $e')));
-      }
-    }
-  }
-
-  Future<void> _deleteAccount() async {
-    // Aqui você pode adicionar lógica de exclusão no backend
-    // Por enquanto, ele só faz logout como exemplo
-    await authService.signOut();
-    if (mounted) {
-      Navigator.of(context).pop(); // Fecha o diálogo
-    }
-  }
-
-  void _confirmDeleteAccount() {
+  void _confirmDeleteAccount(BuildContext context, ProfileViewModel viewModel) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -74,7 +52,7 @@ class _ProfileScreen extends State<ProfileScreen> {
             TextButton(
               child: const Text('Excluir', style: TextStyle(color: Colors.red)),
               onPressed: () async {
-                await _deleteAccount();
+                await viewModel.deleteAccount(context);
               },
             ),
           ],
@@ -86,6 +64,7 @@ class _ProfileScreen extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
+    final viewModel = Provider.of<ProfileViewModel>(context);
     final user = userProvider.user;
     final nome = user?.nome ?? 'Nome';
     final email = user?.email ?? 'email@email.com';
@@ -98,11 +77,11 @@ class _ProfileScreen extends State<ProfileScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _buildHeader(nome, email, telefone, endereco, imagemPerfil),
-            _buildStatistics(),
-            _buildMainMenu(),
-            _buildSocialLinks(),
-            _buildSupportMenu(),
+            _buildHeader(context, nome, email, telefone, endereco, imagemPerfil),
+            _buildStatistics(context),
+            _buildMainMenu(context),
+            _buildSocialLinks(context),
+            _buildSupportMenu(context, viewModel),
             const SizedBox(height: 40),
           ],
         ),
@@ -111,6 +90,7 @@ class _ProfileScreen extends State<ProfileScreen> {
   }
 
   Widget _buildHeader(
+    BuildContext context,
     String nome,
     String email,
     String telefone,
@@ -222,7 +202,7 @@ class _ProfileScreen extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildStatistics() {
+  Widget _buildStatistics(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
@@ -312,7 +292,7 @@ class _ProfileScreen extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildMainMenu() {
+  Widget _buildMainMenu(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       decoration: BoxDecoration(
@@ -386,7 +366,7 @@ class _ProfileScreen extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildSupportMenu() {
+  Widget _buildSupportMenu(BuildContext context, ProfileViewModel viewModel) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 18),
       decoration: BoxDecoration(
@@ -408,12 +388,12 @@ class _ProfileScreen extends State<ProfileScreen> {
               );
             },
           ),
-          _buildMenuItem('Sair', Icons.exit_to_app_outlined, onTap: logout),
+          _buildMenuItem('Sair', Icons.exit_to_app_outlined, onTap: () => viewModel.logout(context)),
           _buildMenuItem(
             'Excluir Conta',
             Icons.delete_outline,
             color: Colors.red,
-            onTap: _confirmDeleteAccount,
+            onTap: () => _confirmDeleteAccount(context, viewModel),
           ),
         ],
       ),
@@ -447,11 +427,12 @@ class _ProfileScreen extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildSocialLinks() {
+  Widget _buildSocialLinks(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(20),
       child: Center(
         child: _buildSocialButton(
+          context,
           'Instagram',
           Icons.camera_alt_outlined,
           'instagram://user?username=tixup_oficial',
@@ -461,7 +442,7 @@ class _ProfileScreen extends State<ProfileScreen> {
     );
   }
 
-  Future<void> _launchURL(String appUrl, String webUrl) async {
+  Future<void> _launchURL(BuildContext context, String appUrl, String webUrl) async {
     final Uri appUri = Uri.parse(appUrl);
     final Uri webUri = Uri.parse(webUrl);
 
@@ -480,13 +461,14 @@ class _ProfileScreen extends State<ProfileScreen> {
   }
 
   Widget _buildSocialButton(
+    BuildContext context,
     String title,
     IconData icon,
     String appUrl,
     String webUrl,
   ) {
     return OutlinedButton.icon(
-      onPressed: () => _launchURL(appUrl, webUrl),
+      onPressed: () => _launchURL(context, appUrl, webUrl),
       icon: Icon(icon, color: const Color.fromARGB(255, 249, 115, 22)),
       label: Text(
         title,

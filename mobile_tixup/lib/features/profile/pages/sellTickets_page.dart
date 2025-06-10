@@ -1,45 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:mobile_tixup/viewmodels/sell_tickets_viewmodel.dart';
 
-class TelaVenderIngresso extends StatefulWidget {
+class TelaVenderIngresso extends StatelessWidget {
   const TelaVenderIngresso({super.key});
 
   @override
-  State<TelaVenderIngresso> createState() => _TelaVenderIngressoState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => SellTicketsViewModel(),
+      child: const _TelaVenderIngressoBody(),
+    );
+  }
 }
 
-class _TelaVenderIngressoState extends State<TelaVenderIngresso> {
-  final Color laranjaPrincipal = const Color.fromARGB(255, 249, 115, 22);
-  final _formKey = GlobalKey<FormState>();
-
-  final TextEditingController _eventoController = TextEditingController();
-  final TextEditingController _dataController = TextEditingController();
-  final TextEditingController _localController = TextEditingController();
-  final TextEditingController _tipoIngressoController = TextEditingController();
-  final TextEditingController _precoController = TextEditingController();
-
-  @override
-  void dispose() {
-    _eventoController.dispose();
-    _dataController.dispose();
-    _localController.dispose();
-    _tipoIngressoController.dispose();
-    _precoController.dispose();
-    super.dispose();
-  }
-
-  void _venderIngresso() {
-    if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Ingresso publicado com sucesso!'),
-          backgroundColor: laranjaPrincipal,
-        ),
-      );
-    }
-  }
+class _TelaVenderIngressoBody extends StatelessWidget {
+  const _TelaVenderIngressoBody();
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<SellTicketsViewModel>(context);
+    final Color laranjaPrincipal = const Color.fromARGB(255, 249, 115, 22);
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       appBar: AppBar(
@@ -72,38 +53,40 @@ class _TelaVenderIngressoState extends State<TelaVenderIngresso> {
             ),
             const SizedBox(height: 20),
             Form(
-              key: _formKey,
+              key: viewModel.formKey,
               child: Column(
                 children: [
                   _buildCardInput(
                     icon: Icons.event,
-                    controller: _eventoController,
+                    controller: viewModel.eventoController,
                     label: 'Nome do Evento',
                   ),
                   _buildCardInput(
                     icon: Icons.date_range,
-                    controller: _dataController,
+                    controller: viewModel.dataController,
                     label: 'Data do Evento (ex: 24/04/2025)',
                   ),
                   _buildCardInput(
                     icon: Icons.location_on,
-                    controller: _localController,
+                    controller: viewModel.localController,
                     label: 'Local do Evento',
                   ),
                   _buildCardInput(
                     icon: Icons.confirmation_number_outlined,
-                    controller: _tipoIngressoController,
+                    controller: viewModel.tipoIngressoController,
                     label: 'Tipo de Ingresso (ex: VIP, Pista)',
                   ),
                   _buildCardInput(
                     icon: Icons.attach_money,
-                    controller: _precoController,
+                    controller: viewModel.precoController,
                     label: 'Preço (R\$)',
                     isNumber: true,
                   ),
                   const SizedBox(height: 30),
                   ElevatedButton.icon(
-                    onPressed: _venderIngresso,
+                    onPressed: () {
+                      viewModel.venderIngresso(context);
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: laranjaPrincipal,
                       padding: const EdgeInsets.symmetric(
@@ -141,6 +124,7 @@ class _TelaVenderIngressoState extends State<TelaVenderIngresso> {
     required String label,
     bool isNumber = false,
   }) {
+    final Color laranjaPrincipal = const Color.fromARGB(255, 249, 115, 22);
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(

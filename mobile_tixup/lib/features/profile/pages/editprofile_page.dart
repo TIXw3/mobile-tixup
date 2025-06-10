@@ -2,88 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
+import 'package:provider/provider.dart';
+import 'package:mobile_tixup/viewmodels/edit_profile_viewmodel.dart';
 
-class EditProfilePage extends StatefulWidget {
+class EditProfilePage extends StatelessWidget {
   const EditProfilePage({super.key});
 
   @override
-  State<EditProfilePage> createState() => _EditProfilePageState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => EditProfileViewModel(),
+      child: const _EditProfileBody(),
+    );
+  }
 }
 
-class _EditProfilePageState extends State<EditProfilePage> {
-  final _formKey = GlobalKey<FormState>();
-  File? _profileImage;
-
-  String nome = '';
-  String email = '';
-  String numero = '';
-  String endereco = '';
-  final ImagePicker _picker = ImagePicker();
-
-  @override
-  void initState() {
-    super.initState();
-    _carregarDadosPerfil();
-  }
-
-  Future<void> _carregarDadosPerfil() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      nome = prefs.getString('nome') ?? 'Lucas Gabriel';
-      email = prefs.getString('email') ?? 'email@email.com';
-      numero = prefs.getString('numero') ?? '(44) 99999-0000';
-      endereco = prefs.getString('endereco') ?? 'Rua X, Jardim Y, 89898993';
-      final caminhoImagem = prefs.getString('imagemPerfil');
-      if (caminhoImagem != null) {
-        _profileImage = File(caminhoImagem);
-      }
-    });
-  }
-
-  Future<void> _salvarDadosPerfil() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('nome', nome);
-    await prefs.setString('email', email);
-    await prefs.setString('numero', numero);
-    await prefs.setString('endereco', endereco);
-    if (_profileImage != null) {
-      await prefs.setString('imagemPerfil', _profileImage!.path);
-    }
-  }
-
-  Future<void> _selecionarImagem() async {
-    final pickedFile = await showDialog<XFile?>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Escolha uma opção'),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              final image = await _picker.pickImage(source: ImageSource.gallery);
-              Navigator.pop(context, image);
-            },
-            child: const Text('Galeria'),
-          ),
-          TextButton(
-            onPressed: () async {
-              final image = await _picker.pickImage(source: ImageSource.camera);
-              Navigator.pop(context, image);
-            },
-            child: const Text('Câmera'),
-          ),
-        ],
-      ),
-    );
-
-    if (pickedFile != null) {
-      setState(() {
-        _profileImage = File(pickedFile.path);
-      });
-    }
-  }
+class _EditProfileBody extends StatelessWidget {
+  const _EditProfileBody();
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<EditProfileViewModel>(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 2,
@@ -112,7 +51,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Form(
-          key: _formKey,
+          key: viewModel.formKey,
           child: ListView(
             children: [
               Center(
@@ -133,8 +72,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   child: CircleAvatar(
                     radius: 60,
                     backgroundColor: const Color.fromARGB(255, 250, 233, 215),
-                    backgroundImage: _profileImage != null ? FileImage(_profileImage!) : null,
-                    child: _profileImage == null
+                    backgroundImage: viewModel.profileImage != null ? FileImage(viewModel.profileImage!) : null,
+                    child: viewModel.profileImage == null
                         ? const Icon(
                             Icons.person,
                             size: 60,
@@ -147,7 +86,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               const SizedBox(height: 16),
               Center(
                 child: ElevatedButton.icon(
-                  onPressed: _selecionarImagem,
+                  onPressed: () => viewModel.selecionarImagem(context),
                   icon: const Icon(Icons.photo_camera, color: Colors.white),
                   label: const Text(
                     'Selecionar Imagem',
@@ -171,39 +110,39 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
               const SizedBox(height: 30),
               TextFormField(
-                initialValue: nome,
+                initialValue: viewModel.nome,
                 decoration: _inputDecoration('Nome', Icons.person),
                 validator: (value) => value == null || value.isEmpty ? 'Digite seu nome' : null,
-                onChanged: (value) => nome = value,
+                onChanged: (value) => viewModel.nome = value,
               ),
               const SizedBox(height: 20),
               TextFormField(
-                initialValue: email,
+                initialValue: viewModel.email,
                 decoration: _inputDecoration('E-mail', Icons.email),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) => value == null || !value.contains('@') ? 'Digite um e-mail válido' : null,
-                onChanged: (value) => email = value,
+                onChanged: (value) => viewModel.email = value,
               ),
               const SizedBox(height: 20),
               TextFormField(
-                initialValue: numero,
+                initialValue: viewModel.numero,
                 decoration: _inputDecoration('Número de Celular', Icons.phone),
                 keyboardType: TextInputType.phone,
                 validator: (value) => value == null || value.length < 10 ? 'Digite um número válido' : null,
-                onChanged: (value) => numero = value,
+                onChanged: (value) => viewModel.numero = value,
               ),
               const SizedBox(height: 20),
               TextFormField(
-                initialValue: endereco,
+                initialValue: viewModel.endereco,
                 decoration: _inputDecoration('Endereço', Icons.house),
                 validator: (value) => value == null || value.isEmpty ? 'Digite seu endereço' : null,
-                onChanged: (value) => endereco = value,
+                onChanged: (value) => viewModel.endereco = value,
               ),
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    await _salvarDadosPerfil();
+                  if (viewModel.formKey.currentState!.validate()) {
+                    await viewModel.salvarDadosPerfil();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Perfil atualizado com sucesso!')),
                     );

@@ -1,38 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
+import 'package:mobile_tixup/viewmodels/suporte_viewmodel.dart';
 
 class TelaDeSuporte extends StatelessWidget {
   const TelaDeSuporte({super.key});
 
-  final Color orange500 = const Color.fromARGB(255, 249, 115, 22);
-  final Color black = const Color.fromRGBO(33, 33, 33, 1);
-
-  Future<void> _launchEmail(BuildContext context) async {
-    final Uri emailUri = Uri(
-      scheme: 'mailto',
-      path: 'tixupsuporte@gmail.com',
-      queryParameters: {
-        'subject': 'Suporte - Problema com o App',
-      },
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => SuporteViewModel(),
+      child: const _TelaDeSuporteBody(),
     );
-
-    try {
-      if (await canLaunchUrl(emailUri)) {
-        await launchUrl(emailUri);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Não foi possível abrir o e-mail.')),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Erro ao tentar abrir o e-mail.')),
-      );
-    }
   }
+}
+
+class _TelaDeSuporteBody extends StatelessWidget {
+  const _TelaDeSuporteBody();
 
   @override
   Widget build(BuildContext context) {
+    final Color orange500 = const Color.fromARGB(255, 249, 115, 22);
+    final Color black = const Color.fromRGBO(33, 33, 33, 1);
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 248, 247, 245),
       appBar: AppBar(
@@ -124,7 +113,28 @@ class TelaDeSuporte extends StatelessWidget {
                       const SizedBox(height: 30),
                       Center(
                         child: ElevatedButton(
-                          onPressed: () => _launchEmail(context),
+                          onPressed: () async {
+                            final Uri emailUri = Uri(
+                              scheme: 'mailto',
+                              path: 'tixupsuporte@gmail.com',
+                              queryParameters: {
+                                'subject': 'Suporte - Problema com o App',
+                              },
+                            );
+                            try {
+                              if (await canLaunchUrl(emailUri)) {
+                                await launchUrl(emailUri);
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Não foi possível abrir o e-mail.')),
+                                );
+                              }
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Erro ao tentar abrir o e-mail.')),
+                              );
+                            }
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: orange500,
                             padding: const EdgeInsets.symmetric(
