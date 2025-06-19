@@ -5,7 +5,9 @@ import 'package:mobile_tixup/models/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class LoginViewModel extends ChangeNotifier {
-  final AuthService authService = AuthService();
+  final AuthService authService;
+
+  LoginViewModel({AuthService? authService}) : authService = authService ?? AuthService();
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();

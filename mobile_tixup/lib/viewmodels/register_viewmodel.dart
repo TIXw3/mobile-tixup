@@ -6,7 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class RegisterViewModel extends ChangeNotifier {
-  final AuthService authService = AuthService();
+  final AuthService authService;
+
+  RegisterViewModel({AuthService? authService}) : authService = authService ?? AuthService();
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
