@@ -299,16 +299,9 @@ class _HomeScreenBody extends StatelessWidget {
                                 ? _formatDate(evento['data'])
                                 : '',
                             style: const TextStyle(
-                              color: Colors.white,
+                              color: Colors.white70,
                               fontSize: 14,
                               fontFamily: 'sans-serif',
-                              shadows: [
-                                Shadow(
-                                  color: Colors.deepOrange,
-                                  blurRadius: 10,
-                                  offset: Offset(0, 0),
-                                ),
-                              ],
                             ),
                           ),
                         ],

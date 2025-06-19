@@ -44,29 +44,34 @@ class EditProfileViewModel extends ChangeNotifier {
   Future<void> selecionarImagem(BuildContext context) async {
     final pickedFile = await showDialog<XFile?>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Escolha uma opção'),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              final image = await picker.pickImage(source: ImageSource.gallery);
-              Navigator.pop(context, image);
-            },
-            child: const Text('Galeria'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Escolha uma opção'),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  final image = await picker.pickImage(
+                    source: ImageSource.gallery,
+                  );
+                  Navigator.pop(context, image);
+                },
+                child: const Text('Galeria'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  final image = await picker.pickImage(
+                    source: ImageSource.camera,
+                  );
+                  Navigator.pop(context, image);
+                },
+                child: const Text('Câmera'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () async {
-              final image = await picker.pickImage(source: ImageSource.camera);
-              Navigator.pop(context, image);
-            },
-            child: const Text('Câmera'),
-          ),
-        ],
-      ),
     );
     if (pickedFile != null) {
       profileImage = File(pickedFile.path);
       notifyListeners();
     }
   }
-} 
+}
